@@ -8,13 +8,14 @@
 
 // #include "libft.h"
 ////// LATEST
+// Copies characters from src to buffer, interpreting escape sequences if inside a quoted string.
 int		whileloopstring(int i, int j, int len, char *buffer, const char *src, int bufsize, int string)
 {
 	while (i < len && j < bufsize - 1)
 	{
 		if (src[i] == '\\' && i + 1 < len)
 		{
-			if (string && src[i] == 'n')
+			if (string && src[i + 1] == 'n')
 				buffer[j++] = '\n';
 			else if (src[i] == 't')
 				buffer[j++] = '\t';
@@ -34,7 +35,7 @@ int		whileloopstring(int i, int j, int len, char *buffer, const char *src, int b
 	buffer[j] = '\0';
 	return j;
 }
-
+// Removes surrounding quotes and processes escape sequences in a string.
 char	*unescape_string(const char *src)
 {
 	static char	buffer[1024];
@@ -58,7 +59,7 @@ char	*unescape_string(const char *src)
 	j = whileloopstring(i, j, len, buffer, src, sizeof(buffer), string);
 	return (processed);
 }
-
+// Counts the number of single and double quotes in the input string.
 void	count_quotes(const char *input, int *singleq, int *doubleq)
 {
 	int	i;
@@ -73,7 +74,7 @@ void	count_quotes(const char *input, int *singleq, int *doubleq)
 		i++;
 	}
 }
-
+// Splits the input line into arguments while respecting quotes and escape characters.
 char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
 {
 	static char	*argv[64];
@@ -118,7 +119,8 @@ char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
 		}
 		if (c == '\\' && input[i + 1])
 		{
-			buffer[j++] = input[i++];
+			if(input[i] == '\\')
+				i++;
 			buffer[j++] = input[i++];
 			continue ;
 		}
@@ -135,7 +137,7 @@ char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
 	*quote_error = in_single_quote || in_double_quote;
 	return (argv);
 }
-
+// Runs the main shell loop that reads user input, parses it, and executes commands.
 void	shell_loop(char **envp)
 {
 	char	input[1024];
