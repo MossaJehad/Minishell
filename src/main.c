@@ -59,7 +59,6 @@ char	*unescape_string(const char *src)
 	return (processed);
 }
 
-
 void	count_quotes(const char *input, int *singleq, int *doubleq)
 {
 	int	i;
@@ -106,7 +105,6 @@ char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
 			i++;
 			continue ;
 		}
-		// !in_single_quote && !in_double_quote &&
 		if (!in_single_quote && !in_double_quote && (c == ' ' || c == '\t'))
 		{
 			if (j > 0)
@@ -138,145 +136,6 @@ char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
 	return (argv);
 }
 
-void	handle_echo_command(char **args, int arg_count)
-{
-	int	i;
-
-	i = 1;
-	while (i < arg_count)
-	{
-		printf("%s", unescape_string(args[i]));
-		if (i != arg_count - 1)
-			printf(" ");
-		i++;
-	}
-	printf("\n");
-}
-
-void	handle_cat_command(char **args, char **envp)
-{
-	pid_t	pid;
-	int		status;
-
-	pid = fork();
-	if (pid == 0)
-	{
-		execve("/usr/bin/cat", args, envp);
-		perror("execve failed");
-		exit(1);
-	}
-	else if (pid > 0)
-	{
-		waitpid(pid, &status, 0);
-	}
-	else
-	{
-		perror("fork failed");
-	}
-}
-
-void	handle_ls_command(char **args, char **envp)
-{
-	pid_t	pid;
-	int		status;
-
-	pid = fork();
-	if (pid == 0)
-	{
-		execve("/bin/ls", args, envp);
-		perror("execve failed");
-		exit(1);
-	}
-	else if (pid > 0)
-	{
-		waitpid(pid, &status, 0);
-	}
-	else
-	{
-		perror("fork failed");
-	}
-}
-
-void	handle_type_command(const char *input)
-{
-	char	*path_env;
-	char	*dir;
-	char	*full_path;
-
-	if (is_shell_builtin(input))
-		return ;
-	path_env = ft_strdup(getenv("PATH"));
-	if (path_env)
-	{
-		dir = ft_strtok(path_env, ":");
-		while (dir != NULL)
-		{
-			full_path = path_join(dir, input);
-			if (access(full_path, X_OK) == 0)
-			{
-				printf("%s is %s\n", input, full_path);
-				free(path_env);
-				return ;
-			}
-			dir = ft_strtok(NULL, ":");
-		}
-		free(path_env);
-	}
-	printf("%s: not found\n", input);
-}
-
-void	handle_cd_command(char *path)
-{
-	while (*path == ' ' || *path == '\t')
-		path++;
-	if (*path == '\0' || strcmp(path, "~") == 0)
-		path = getenv("HOME");
-	if (chdir(path) != 0)
-		printf("cd: %s: No such file or directory\n", path);
-}
-
-void	handle_command(char *input, char **args, int arg_count, char **envp)
-{
-	char	cwd[1024];
-	char	*cmd;
-
-	cmd = args[0];
-	if (strcmp(cmd, "exit") == 0 && arg_count > 1 && strcmp(args[1], "0") == 0)
-		exit(0);
-	else if (strcmp(cmd, "echo") == 0)
-		handle_echo_command(args, arg_count);
-	else if (strcmp(cmd, "clear") == 0)
-		system("clear");
-	else if (strcmp(cmd, "ls") == 0)
-		handle_ls_command(args, envp);
-	else if (strcmp(cmd, "cat") == 0)
-		handle_cat_command(args, envp);
-	else if (strcmp(cmd, "type") == 0 && arg_count > 1)
-		handle_type_command(args[1]);
-	else if (strcmp(cmd, "pwd") == 0)
-		printf("%s\n", getcwd(cwd, sizeof(cwd)));
-	else if (strcmp(cmd, "cd") == 0)
-		handle_cd_command(input + 2);
-	else if (arg_count == 2)
-		system_handler(input);
-	else
-		printf("%s: command not found\n", input);
-}
-ssize_t	get_input(char *buffer, size_t size)
-{
-	ssize_t	bytes_read;
-
-	bytes_read = read(STDIN_FILENO, buffer, size - 1);
-	if (bytes_read > 0)
-	{
-		if (buffer[bytes_read - 1] == '\n')
-			buffer[bytes_read - 1] = '\0';
-		else
-			buffer[bytes_read] = '\0';
-	}
-	return (bytes_read);
-}
-
 void	shell_loop(char **envp)
 {
 	char	input[1024];
@@ -289,7 +148,6 @@ void	shell_loop(char **envp)
 	quote_error = 0;
 	singleq = 0;
 	doubleq = 0;
-	// printf("%i", singleq);
 	while (1)
 	{
 		prompt();

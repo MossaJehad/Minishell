@@ -2,9 +2,9 @@
 
 int	is_shell_builtin(const char *cmd)
 {
-	if (strcmp(cmd, "type") == 0 || strcmp(cmd, "echo") == 0 || strcmp(cmd,
-			"exit") == 0 || strcmp(cmd, "pwd") == 0 || strcmp(cmd, "cd") == 0
-		|| strcmp(cmd, "export") == 0 || strcmp(cmd, "env") == 0 || strcmp(cmd,
+	if (ft_strcmp(cmd, "type") == 0 || ft_strcmp(cmd, "echo") == 0 || ft_strcmp(cmd,
+			"exit") == 0 || ft_strcmp(cmd, "pwd") == 0 || ft_strcmp(cmd, "cd") == 0
+		|| ft_strcmp(cmd, "export") == 0 || ft_strcmp(cmd, "env") == 0 || ft_strcmp(cmd,
 			"unset") == 0)
 	{
 		printf("%s is a shell builtin\n", cmd);
