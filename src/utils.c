@@ -1,4 +1,4 @@
-#include "./lib/libft.h"
+#include "minishell.h"
 
 int	is_shell_builtin(const char *cmd)
 {

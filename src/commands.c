@@ -1,18 +1,26 @@
-#include "./lib/libft.h"
+#include "minishell.h"
 
-void	handle_echo_command(char **args, int arg_count)
+void	handle_echo_command(t_token *token)
 {
-	int	i;
-
-	i = 1;
-	while (i < arg_count)
-	{
-		printf("%s", unescape_string(args[i]));
-		if (i != arg_count - 1)
-			printf(" ");
-		i++;
-	}
-	printf("\n");
+    int newline;
+	
+	newline = 1;
+    token = token->next;
+    while (token && ft_strcmp(token->value, "-n") == 0)
+    {
+        newline = 0;
+        token = token->next;
+    }
+    while (token && (ft_strcmp(token->type, "word") == 0 ||
+		ft_strcmp(token->type, "command") == 0))
+    {
+        printf("%s", unescape_string(token->value));
+        if (token->next && ft_strcmp(token->next->type, "word") == 0)
+            printf(" ");
+        token = token->next;
+    }
+    if (newline)
+        printf("\n");
 }
 
 void	handle_cat_command(char **args, char **envp)
@@ -87,8 +95,13 @@ void	handle_type_command(const char *input)
 	printf("%s: not found\n", input);
 }
 
-void	handle_cd_command(char *path)
+void	handle_cd_command(char *path, int arg_count)
 {
+	if(arg_count > 2)
+	{
+		printf("cd: too many arguments\n");
+		return ;
+	}
 	while (*path == ' ' || *path == '\t')
 		path++;
 	if (*path == '\0' || ft_strcmp(path, "~") == 0)

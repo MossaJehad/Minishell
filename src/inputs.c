@@ -1,6 +1,6 @@
-#include "./lib/libft.h"
+#include "minishell.h"
 
-void	handle_command(char *input, char **args, int arg_count, char **envp)
+void	handle_command(char *input, char **args, int arg_count, char **envp, t_token *token)
 {
 	char	cwd[1024];
 	char	*cmd;
@@ -9,7 +9,7 @@ void	handle_command(char *input, char **args, int arg_count, char **envp)
 	if (ft_strcmp(cmd, "exit") == 0 && arg_count > 1 && ft_strcmp(args[1], "0") == 0)
 		exit(0);
 	else if (ft_strcmp(cmd, "echo") == 0)
-		handle_echo_command(args, arg_count);
+		handle_echo_command(token);
 	else if (ft_strcmp(cmd, "clear") == 0)
 		system("clear");
 	else if (ft_strcmp(cmd, "ls") == 0)
@@ -21,7 +21,7 @@ void	handle_command(char *input, char **args, int arg_count, char **envp)
 	else if (ft_strcmp(cmd, "pwd") == 0)
 		printf("%s\n", getcwd(cwd, sizeof(cwd)));
 	else if (ft_strcmp(cmd, "cd") == 0)
-		handle_cd_command(input + 2);
+		handle_cd_command(input + 2, arg_count);
 	else if (arg_count == 2)
 		system_handler(input);
 	else

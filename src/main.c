@@ -1,10 +1,4 @@
-#include "./lib/libft.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
+#include "minishell.h"
 
 // #include "libft.h"
 ////// LATEST
@@ -137,6 +131,21 @@ char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
 	*quote_error = in_single_quote || in_double_quote;
 	return (argv);
 }
+
+// void print_tokens(t_token *token)
+// {
+//     t_token *temp;
+
+//     while (token)
+//     {
+//         printf("type: %s value: %s\n", token->type, token->value);
+//         temp = token;
+//         token = token->next;
+//         free(temp->value);
+//         free(temp->type);
+//         free(temp);
+//     }
+// }
 // Runs the main shell loop that reads user input, parses it, and executes commands.
 void	shell_loop(char **envp)
 {
@@ -146,12 +155,14 @@ void	shell_loop(char **envp)
 	int		singleq;
 	int		doubleq;
 	char	**args;
+	t_token		*token;
 
 	quote_error = 0;
 	singleq = 0;
 	doubleq = 0;
 	while (1)
 	{
+		token = NULL;
 		prompt();
 		if (get_input(input, sizeof(input)) <= 0)
 		{
@@ -167,12 +178,16 @@ void	shell_loop(char **envp)
 		}
 		if (arg_count == 0)
 			continue ;
-		handle_command(input, args, arg_count, envp);
+		if (check_syntax_error(args))
+    		continue;
+		tokenize(args, &token);
+		handle_command(input, args, arg_count, envp, token);
 	}
 }
 
+
 int	main(int argc, char **argv, char **envp)
-{
+{	
 	(void)argc;
 	(void)argv;
 	init_shell();
