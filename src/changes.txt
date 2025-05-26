@@ -3,3 +3,8 @@ julie (cloned from branch <master>)
 2 tokenized the command
 3 the functions in lib are now in libft/ft_strtok.c
 4 handled syntax error like "echo hello >>" and cd with more than one argument
+
+
+mossa (cloned from main2)
+1. memory safe code (changes include libft)
+2. readline/history and clear readline history
