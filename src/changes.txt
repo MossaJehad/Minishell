@@ -8,3 +8,4 @@ julie (cloned from branch <master>)
 mossa (cloned from main2)
 1. memory safe code (changes include libft)
 2. readline/history and clear readline history
+3. fix norm except (25+ lines / too many functions / comments)
