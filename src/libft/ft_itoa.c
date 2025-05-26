@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 10:55:50 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/05/26 14:31:00 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/05/26 17:28:00 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,8 @@ char	*ft_itoa(int n)
 	}
 	temp[i] = '\0';
 	str = (char *)malloc(i + 1);
-	if(!str)
-		ft_free(&str);
+	if (!str)
+		ft_free (&str);
 	return (ft_final(temp, str, i - 1));
 }
 

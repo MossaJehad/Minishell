@@ -1,12 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   inputs.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/26 17:19:51 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/05/26 17:20:31 by mhasoneh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void	handle_command(char *input, char **args, int arg_count, char **envp, t_token *token)
+void	handle_command(char *input, char **args, int arg_count,
+						char **envp, t_token *token)
 {
 	char	cwd[1024];
 	char	*cmd;
 
 	cmd = args[0];
-	if (ft_strcmp(cmd, "exit") == 0 && arg_count > 1 && ft_strcmp(args[1], "0") == 0)
+	if (ft_strcmp(cmd, "exit") == 0 && arg_count > 1
+		&& ft_strcmp(args[1], "0") == 0)
 		exit(0);
 	else if (ft_strcmp(cmd, "echo") == 0)
 		handle_echo_command(token);
@@ -27,6 +41,7 @@ void	handle_command(char *input, char **args, int arg_count, char **envp, t_toke
 	else
 		printf("%s: command not found\n", input);
 }
+
 char	*get_input(void)
 {
 	char	*line;

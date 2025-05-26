@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   commands.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/26 17:18:51 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/05/26 17:39:44 by mhasoneh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	handle_echo_command(t_token *token)
 {
-	int newline;
-	
+	int	newline;
+
 	newline = 1;
 	token = token->next;
 	while (token && ft_strcmp(token->value, "-n") == 0)
@@ -11,8 +23,8 @@ void	handle_echo_command(t_token *token)
 		newline = 0;
 		token = token->next;
 	}
-	while (token && (ft_strcmp(token->type, "word") == 0 ||
-		ft_strcmp(token->type, "command") == 0))
+	while (token && (ft_strcmp(token->type, "word") == 0
+			|| ft_strcmp(token->type, "command") == 0))
 	{
 		printf("%s", unescape_string(token->value));
 		if (token->next && ft_strcmp(token->next->type, "word") == 0)
@@ -85,7 +97,7 @@ void	handle_type_command(const char *input)
 			if (access(full_path, X_OK) == 0)
 			{
 				printf("%s is %s\n", input, full_path);
-				free(path_env);
+				free (path_env);
 				return ;
 			}
 			dir = ft_strtok(NULL, ":");
@@ -97,7 +109,7 @@ void	handle_type_command(const char *input)
 
 void	handle_cd_command(char *path, int arg_count)
 {
-	if(arg_count > 2)
+	if (arg_count > 2)
 	{
 		printf("cd: too many arguments\n");
 		return ;

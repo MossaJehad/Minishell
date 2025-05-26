@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/26 17:26:55 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/05/26 17:27:29 by mhasoneh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	is_shell_builtin(const char *cmd)
 {
-	if (ft_strcmp(cmd, "type") == 0 || ft_strcmp(cmd, "echo") == 0 || ft_strcmp(cmd,
-			"exit") == 0 || ft_strcmp(cmd, "pwd") == 0 || ft_strcmp(cmd, "cd") == 0
-		|| ft_strcmp(cmd, "export") == 0 || ft_strcmp(cmd, "env") == 0 || ft_strcmp(cmd,
-			"unset") == 0)
+	if (ft_strcmp(cmd, "type") == 0 || ft_strcmp(cmd, "echo") == 0
+		|| ft_strcmp(cmd, "exit") == 0 || ft_strcmp(cmd, "pwd") == 0
+		|| ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "export") == 0
+		|| ft_strcmp(cmd, "env") == 0 || ft_strcmp(cmd, "unset") == 0)
 	{
 		printf("%s is a shell builtin\n", cmd);
 		return (1);

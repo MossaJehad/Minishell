@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenize.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/26 17:34:27 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/05/26 17:34:27 by mhasoneh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	create_token(t_token **token, char *value, char *type)
@@ -24,13 +36,13 @@ void	create_token(t_token **token, char *value, char *type)
 
 int	check_command(char *word)
 {
-	if (ft_strcmp(word, "echo") == 0 || ft_strcmp(word, "cd") == 0 ||
-		ft_strcmp(word, "pwd") == 0 || ft_strcmp(word, "export") == 0 ||
-		ft_strcmp(word, "unset") == 0 || ft_strcmp(word, "env") == 0 ||
-		ft_strcmp(word, "exit") == 0)
+	if (ft_strcmp(word, "echo") == 0 || ft_strcmp(word, "cd") == 0
+		|| ft_strcmp(word, "pwd") == 0 || ft_strcmp(word, "export") == 0
+		|| ft_strcmp(word, "unset") == 0 || ft_strcmp(word, "env") == 0
+		|| ft_strcmp(word, "exit") == 0)
 		return (1);
-	else if (ft_strcmp(word, "type") == 0 || ft_strcmp(word, "cat") == 0 ||
-		ft_strcmp(word, "ls") == 0 || ft_strcmp(word, "clear") == 0)
+	else if (ft_strcmp(word, "type") == 0 || ft_strcmp(word, "cat") == 0
+		|| ft_strcmp(word, "ls") == 0 || ft_strcmp(word, "clear") == 0)
 		return (1);
 	return (0);
 }
@@ -40,21 +52,21 @@ int	check_syntax_error(char **array)
 	int	i;
 
 	i = 0;
-	while(array[i])
+	while (array[i])
 	{
-		if(ft_strcmp(array[i], "|") == 0 || ft_strcmp(array[i], "<") == 0 ||
-			ft_strcmp(array[i], ">") == 0 || ft_strcmp(array[i], ">>") == 0 ||
-			ft_strcmp(array[i], "<<") == 0)
+		if (ft_strcmp(array[i], "|") == 0 || ft_strcmp(array[i], "<") == 0
+			|| ft_strcmp(array[i], ">") == 0 || ft_strcmp(array[i], ">>") == 0
+			|| ft_strcmp(array[i], "<<") == 0)
+		{
+			if (!array[++i])
 			{
-				if (!array[++i])
-				{
-					printf("syntax error\n");
-					return (1);
-				}
+				printf ("syntax error\n");
+				return (1);
 			}
+		}
 		i++;
 	}
-	return(0);
+	return (0);
 }
 
 //identify each token's value

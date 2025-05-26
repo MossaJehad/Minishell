@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 12:13:35 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/05/26 14:54:51 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/05/26 17:32:40 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,15 +35,14 @@ char	*ft_strdup(const char *s)
 
 void	ft_free(char **array)
 {
-	int	i = 0;
+	int	i;
 
+	i = 0;
 	if (!array)
-		return;
+		return ;
 	while (array[i])
 		free(array[i++]);
-	
 }
-
 
 /*int	main(void)
 {
