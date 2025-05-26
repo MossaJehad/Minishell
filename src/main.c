@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:20:35 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/05/26 17:39:01 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/05/26 19:57:12 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,13 +94,13 @@ char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
 		if (c == '\'' && !in_double_quote)
 		{
 			in_single_quote = !in_single_quote;
-			i++;
+			buffer[j++] = input[i++];
 			continue ;
 		}
 		if (c == '"' && !in_single_quote)
 		{
 			in_double_quote = !in_double_quote;
-			i++;
+			buffer[j++] = input[i++];
 			continue ;
 		}
 		if (!in_single_quote && !in_double_quote && (c == ' ' || c == '\t'))
@@ -121,8 +121,7 @@ char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
 			buffer[j++] = input[i++];
 			continue ;
 		}
-		buffer[j++] = c;
-		i++;
+		buffer[j++] = input[i++];
 	}
 	if (j > 0)
 	{
@@ -177,6 +176,7 @@ void	shell_loop(char **envp, int arg_count)
 			free(input);
 			continue ;
 		}
+		args = expand(args);
 		tokenize(args, &token);
 		handle_command(input, args, arg_count, envp, token);
 		ft_free(args);
