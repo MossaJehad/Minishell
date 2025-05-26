@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhaddadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 10:18:13 by jhaddadi          #+#    #+#             */
-/*   Updated: 2024/09/09 13:53:49 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/05/26 14:32:38 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "libft.h"
 
 static int	start_index(char const *s1, char const *set)
@@ -72,7 +73,10 @@ static char	*final_str(char const *s1, int start, int end)
 
 	sub = (char *)malloc(end - start + 2);
 	if (!sub)
+	{
+		ft_free(&sub);
 		return (NULL);
+	}
 	i = 0;
 	while (start <= end)
 	{

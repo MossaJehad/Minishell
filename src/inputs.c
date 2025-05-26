@@ -27,17 +27,17 @@ void	handle_command(char *input, char **args, int arg_count, char **envp, t_toke
 	else
 		printf("%s: command not found\n", input);
 }
-ssize_t	get_input(char *buffer, size_t size)
+char	*get_input(void)
 {
-	ssize_t	bytes_read;
+	char	*line;
 
-	bytes_read = read(STDIN_FILENO, buffer, size - 1);
-	if (bytes_read > 0)
+	line = readline("$ ");
+	if (line == NULL)
 	{
-		if (buffer[bytes_read - 1] == '\n')
-			buffer[bytes_read - 1] = '\0';
-		else
-			buffer[bytes_read] = '\0';
+		printf("\n");
+		return (NULL);
 	}
-	return (bytes_read);
+	if (line && *line)
+		add_history(line);
+	return (line);
 }

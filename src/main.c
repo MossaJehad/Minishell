@@ -53,21 +53,7 @@ char	*unescape_string(const char *src)
 	j = whileloopstring(i, j, len, buffer, src, sizeof(buffer), string);
 	return (processed);
 }
-// Counts the number of single and double quotes in the input string.
-void	count_quotes(const char *input, int *singleq, int *doubleq)
-{
-	int	i;
 
-	i = 0;
-	while (input[i])
-	{
-		if (input[i] == '\'')
-			(*singleq)++;
-		else if (input[i] == '"')
-			(*doubleq)++;
-		i++;
-	}
-}
 // Splits the input line into arguments while respecting quotes and escape characters.
 char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
 {
@@ -147,41 +133,36 @@ char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
 //     }
 // }
 // Runs the main shell loop that reads user input, parses it, and executes commands.
-void	shell_loop(char **envp)
+void	shell_loop(char **envp, int arg_count)
 {
-	char	input[1024];
-	int		arg_count;
-	int		quote_error;
-	int		singleq;
-	int		doubleq;
+	char	*input;
 	char	**args;
+	int		quote_error;
 	t_token		*token;
 
 	quote_error = 0;
-	singleq = 0;
-	doubleq = 0;
 	while (1)
 	{
 		token = NULL;
-		prompt();
-		if (get_input(input, sizeof(input)) <= 0)
-		{
-			printf("\n");
+		input = get_input();
+		if (input == NULL)
 			break ;
+		if (*input == '\0')
+		{
+			free(input);
+			continue ;
 		}
-		count_quotes(input, &singleq, &doubleq);
 		args = parse_arguments(input, &arg_count, &quote_error);
 		if (quote_error)
 		{
 			printf("Unmatched quote detected!\n");
+			free(input);
 			continue ;
 		}
-		if (arg_count == 0)
-			continue ;
-		if (check_syntax_error(args))
-    		continue;
 		tokenize(args, &token);
 		handle_command(input, args, arg_count, envp, token);
+		ft_free(args);
+		free_tokens(token);
 	}
 }
 
@@ -191,6 +172,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	init_shell();
-	shell_loop(envp);
+	shell_loop(envp, argc);
+	rl_clear_history();
 	return (0);
 }

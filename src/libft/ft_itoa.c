@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhaddadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 10:55:50 by jhaddadi          #+#    #+#             */
-/*   Updated: 2024/09/09 11:16:04 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/05/26 14:31:00 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "libft.h"
 
 static char	*ft_min(void)
@@ -17,7 +18,10 @@ static char	*ft_min(void)
 
 	str = (char *)malloc(12);
 	if (!str)
+	{
+		ft_free(&str);
 		return (NULL);
+	}
 	ft_strlcpy(str, "-2147483648", 12);
 	return (str);
 }
@@ -53,7 +57,10 @@ static char	*ft_zero_case(void)
 
 	str = (char *)malloc(2);
 	if (!str)
+	{
+		ft_free(&str);
 		return (NULL);
+	}
 	str[0] = '0';
 	str[1] = '\0';
 	return (str);
@@ -67,9 +74,7 @@ char	*ft_itoa(int n)
 
 	i = 0;
 	if (n == 0)
-	{
 		return (ft_zero_case());
-	}
 	else if (n < 0)
 	{
 		if (n == -2147483648)
@@ -84,6 +89,8 @@ char	*ft_itoa(int n)
 	}
 	temp[i] = '\0';
 	str = (char *)malloc(i + 1);
+	if(!str)
+		ft_free(&str);
 	return (ft_final(temp, str, i - 1));
 }
 

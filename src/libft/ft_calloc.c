@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhaddadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 14:03:27 by jhaddadi          #+#    #+#             */
-/*   Updated: 2024/09/08 11:19:51 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/05/26 14:36:17 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "libft.h"
 
 void	*ft_calloc(size_t nmemb, size_t size)
@@ -21,7 +22,10 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	total = nmemb * size;
 	arr = (char *)malloc(total);
 	if (!arr)
+	{
+		ft_free(&arr);
 		return (NULL);
+	}
 	while (i < total)
 	{
 		arr[i] = 0;

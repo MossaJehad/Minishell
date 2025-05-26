@@ -28,16 +28,6 @@ char	*ft_strtok(char *str, const char *delim)
 	return (token);
 }
 
-char	*ft_free(char **ptr)
-{
-	if (*ptr)
-	{
-		free(*ptr);
-		*ptr = NULL;
-	}
-	return (NULL);
-}
-
 char	*path_join(const char *dir, const char *file)
 {
 	size_t	len_dir;

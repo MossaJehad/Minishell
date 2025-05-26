@@ -2,25 +2,25 @@
 
 void	handle_echo_command(t_token *token)
 {
-    int newline;
+	int newline;
 	
 	newline = 1;
-    token = token->next;
-    while (token && ft_strcmp(token->value, "-n") == 0)
-    {
-        newline = 0;
-        token = token->next;
-    }
-    while (token && (ft_strcmp(token->type, "word") == 0 ||
+	token = token->next;
+	while (token && ft_strcmp(token->value, "-n") == 0)
+	{
+		newline = 0;
+		token = token->next;
+	}
+	while (token && (ft_strcmp(token->type, "word") == 0 ||
 		ft_strcmp(token->type, "command") == 0))
-    {
-        printf("%s", unescape_string(token->value));
-        if (token->next && ft_strcmp(token->next->type, "word") == 0)
-            printf(" ");
-        token = token->next;
-    }
-    if (newline)
-        printf("\n");
+	{
+		printf("%s", unescape_string(token->value));
+		if (token->next && ft_strcmp(token->next->type, "word") == 0)
+			printf(" ");
+		token = token->next;
+	}
+	if (newline)
+		printf("\n");
 }
 
 void	handle_cat_command(char **args, char **envp)
