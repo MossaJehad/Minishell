@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-char *expand_dollar(char *arg)
+char	*expand_dollar(char *arg)
 {
 	char	*var_name;
 	char	*value;
@@ -19,22 +19,23 @@ char *expand_dollar(char *arg)
 	{
 		value = getenv(var_name);
 		if (value)
-			return(ft_strdup(value));
-		return(ft_strdup(""));
+			return (ft_strdup(value));
+		return (ft_strdup(""));
 	}
 }
 
-char *expand_double_quote(char *arg)
+char	*expand_double_quote(char *arg)
 {
-	return(arg); //i will do it later
+	return (arg); //i will do it later
 }
-char *expand_single_quote(char *arg)
+
+char	*expand_single_quote(char *arg)
 {
 	char	*str;
 	int		i;
 	int		j;
 	int		len;
-	
+
 	len = ft_strlen(arg);
 	i = 1;
 	j = 0;
@@ -44,7 +45,7 @@ char *expand_single_quote(char *arg)
 	if (!str)
 	{
 		ft_free(&str);
-		return NULL;
+		return (NULL);
 	}
 	while (i < len - 1)
 	{
@@ -54,7 +55,8 @@ char *expand_single_quote(char *arg)
 	free(arg);
 	return (str);
 }
-char    **expand(char **args)
+
+char	**expand(char **args)
 {
 	int		i;
 	char	*new;
@@ -75,5 +77,5 @@ char    **expand(char **args)
 			args[i] = expand_double_quote(args[i]);
 		i++;
 	}
-	return(args);
+	return (args);
 }

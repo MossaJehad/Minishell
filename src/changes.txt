@@ -5,7 +5,9 @@ julie (cloned from branch <master>)
 4 handled syntax error like "echo hello >>" and cd with more than one argument
 
 
-mossa (cloned from main2)
+mossa (cloned from main2) | new 
 1. memory safe code (changes include libft)
 2. readline/history and clear readline history
 3. fix norm except (25+ lines / too many functions / comments)
+
+4. change the unescape_string to (print_inside_quotes) function that print what's inside the string whatever what 

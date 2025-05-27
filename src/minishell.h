@@ -12,7 +12,8 @@
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-
+# define MAX_ARGS 1024
+# define BUFFER_SIZE 4096
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -32,6 +33,15 @@ typedef struct s_token
 	char			*type;
 	struct s_token	*next;
 }	t_token;
+
+typedef struct s_parse_state
+{
+	int	i;
+	int	j;
+	int	k;
+	int	in_single_quote;
+	int	in_double_quote;
+}	t_parse_state;
 // ─────────────────────────────────────────────
 // Tokenizer Functions
 // ─────────────────────────────────────────────
@@ -69,5 +79,6 @@ void	init_shell(void); // Assumed to be implemented
 int		is_shell_builtin(const char *cmd); // Assumed to be implemented
 void	system_handler(char *input); // Assumed to be implemented
 char	**expand(char **args);
+char	*print_inside_quotes(const char *src);
 
 #endif // MINISHELL_H

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:20:35 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/05/26 19:57:12 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/05/27 16:59:44 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,43 @@
 
 // #include "libft.h"
 ////// LATEST
+
+void	check_inloop(int j, char next, char *buffer)
+{
+	if (next == 'n')
+		buffer[j++] = '\n';
+	else if (next == 't')
+		buffer[j++] = '\t';
+	else if (next == '\\')
+		buffer[j++] = '\\';
+	else if (next == '"')
+		buffer[j++] = '"';
+	else if (next == '\'')
+		buffer[j++] = '\'';
+	else
+		buffer[j++] = next;
+}
+
 // Copies characters from src to buffer
 // interpreting escape sequences if inside a quoted string.
 int	whileloopstring(int i, int j, int len, char *buffer,
 						const char *src, int bufsize, int string)
 {
+	char	next;
+
 	while (i < len && j < bufsize - 1)
 	{
 		if (src[i] == '\\' && i + 1 < len)
 		{
-			if (string && src[i + 1] == 'n')
-				buffer[j++] = '\n';
-			else if (src[i] == 't')
-				buffer[j++] = '\t';
-			else if (src[i] == '\\')
-				buffer[j++] = '\\';
-			else if (src[i] == '"')
-				buffer[j++] = '"';
-			else if (src[i] == '\'')
-				buffer[j++] = '\'';
+			next = src[i + 1];
+			if (string)
+				check_inloop(j, next, buffer);
 			else
+			{
 				buffer[j++] = src[i];
-			i++;
+				buffer[j++] = next;
+			}
+			i += 2;
 		}
 		else
 			buffer[j++] = src[i++];
@@ -44,93 +59,105 @@ int	whileloopstring(int i, int j, int len, char *buffer,
 	return (j);
 }
 
-// Removes surrounding quotes and processes escape sequences in a string.
-char	*unescape_string(const char *src)
+char	*print_inside_quotes(const char *src)
 {
-	static char	buffer[1024];
-	char		*processed;
-	int			i;
-	int			j;
-	size_t		len;
-	int			string;
+	char	quote_char;
+	char	*string;
+	int		i;
+	int		j;
 
-	processed = buffer;
-	i = 0;
+	i = 1;
 	j = 0;
-	string = 0;
-	len = ft_strlen(src);
-	if (len >= 2 && ((src[0] == '\'' && src[len - 1] == '\'')
-			|| (src[0] == '"' && src[len - 1] == '"')))
-	{
-		src++;
-		len -= 2;
-		string = 1;
-	}
-	j = whileloopstring (i, j, len, buffer, src, sizeof(buffer), string);
-	return (processed);
+	if (!src || (src[0] != '\'' && src[0] != '"'))
+		return (strdup(src));
+	quote_char = src[0];
+	string = malloc(strlen(src));
+	if (!string)
+		return (NULL);
+	while (src[i] && src[i] != quote_char)
+		string[j++] = src[i++];
+	string[j] = '\0';
+	return (string);
+}
+
+void	nully(t_parse_state *s)
+{
+	s->i = 0;
+	s->j = 0;
+	s->k = 0;
+	s->in_single_quote = 0;
+	s->in_double_quote = 0;
 }
 
 // Splits the input line into arguments
 // while respecting quotes and escape characters.
 char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
 {
-	static char	*argv[64];
-	char		buffer[1024];
-	int			in_single_quote;
-	int			in_double_quote;
-	int			k;
-	int			j;
-	int			i;
-	char		c;
+	t_parse_state	s;
+	static char		*argv[MAX_ARGS];
+	char			buffer[BUFFER_SIZE];
 
-	i = 0;
-	j = 0;
-	k = 0;
-	in_single_quote = 0;
-	in_double_quote = 0;
-	while (input[i])
+	nully(&s);
+	while (input[s.i])
 	{
-		c = input[i];
-		if (c == '\'' && !in_double_quote)
+		if (input[s.i] == '\'' && !s.in_double_quote)
 		{
-			in_single_quote = !in_single_quote;
-			buffer[j++] = input[i++];
+			s.in_single_quote = !s.in_single_quote;
+			buffer[s.j++] = input[s.i++];
 			continue ;
 		}
-		if (c == '"' && !in_single_quote)
+		if (input[s.i] == '"' && !s.in_single_quote)
 		{
-			in_double_quote = !in_double_quote;
-			buffer[j++] = input[i++];
+			s.in_double_quote = !s.in_double_quote;
+			buffer[s.j++] = input[s.i++];
 			continue ;
 		}
-		if (!in_single_quote && !in_double_quote && (c == ' ' || c == '\t'))
+		if (!s.in_single_quote && !s.in_double_quote
+			&& (input[s.i] == ' ' || input[s.i] == '\t'))
 		{
-			if (j > 0)
+			if (s.j > 0)
 			{
-				buffer[j] = '\0';
-				argv[k++] = ft_strdup(buffer);
-				j = 0;
+				buffer[s.j] = '\0';
+				argv[s.k++] = ft_strdup(buffer);
+				s.j = 0;
 			}
-			i++;
+			s.i++;
 			continue ;
 		}
-		if (c == '\\' && input[i + 1])
+		if ((s.in_single_quote || s.in_double_quote)
+			&& (input[s.i] == '\\' && input[s.i + 1] == 'n'))
 		{
-			if (input[i] == '\\')
-				i++;
-			buffer[j++] = input[i++];
+			buffer[s.j++] = input[s.i++];
 			continue ;
 		}
-		buffer[j++] = input[i++];
+		if (input[s.i] == '\\' && input[s.i + 1])
+		{
+			next = input[s.i + 1];
+			if (!s.in_single_quote && !s.in_double_quote)
+			{
+				// Outside quotes: drop the backslash, keep character
+				buffer[s.j++] = next;
+				s.i += 2;
+				continue ;
+			}
+			else
+			{
+				// Inside quotes: preserve both
+				buffer[s.j++] = input[s.i++];
+				buffer[s.j++] = input[s.i++];
+				continue ;
+			}
+		}
+		buffer[s.j++] = input[s.i++];
 	}
-	if (j > 0)
+	if (s.j > 0)
 	{
-		buffer[j] = '\0';
-		argv[k++] = ft_strdup(buffer);
+		buffer[s.j] = '\0';
+		argv[s.k++] = ft_strdup(buffer);
 	}
-	argv[k] = NULL;
-	*arg_count = k;
-	*quote_error = in_single_quote || in_double_quote;
+	argv[s.k] = NULL;
+	*arg_count = s.k;
+	*quote_error = s.in_single_quote || s.in_double_quote;
 	return (argv);
 }
 

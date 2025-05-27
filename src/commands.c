@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:18:51 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/05/26 17:39:44 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/05/27 16:07:51 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	handle_echo_command(t_token *token)
 	while (token && (ft_strcmp(token->type, "word") == 0
 			|| ft_strcmp(token->type, "command") == 0))
 	{
-		printf("%s", unescape_string(token->value));
+		printf("%s", print_inside_quotes(token->value));
 		if (token->next && ft_strcmp(token->next->type, "word") == 0)
 			printf(" ");
 		token = token->next;
