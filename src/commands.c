@@ -35,29 +35,35 @@ void	handle_echo_command(t_token *token)
 		printf("\n");
 }
 
-void	handle_cat_command(char **args, char **envp)
+void handle_cat_command(char **args, char **envp, int *last_status)
 {
-	pid_t	pid;
-	int		status;
+	pid_t pid;
+	int status;
 
 	pid = fork();
 	if (pid == 0)
 	{
 		execve("/usr/bin/cat", args, envp);
 		perror("execve failed");
+		//*last_status = 1; ??
 		exit(1);
 	}
 	else if (pid > 0)
 	{
 		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			*last_status = WEXITSTATUS(status);
+		else
+			*last_status = 1;
 	}
 	else
 	{
 		perror("fork failed");
+		*last_status = 1;
 	}
 }
 
-void	handle_ls_command(char **args, char **envp)
+void	handle_ls_command(char **args, char **envp, int *last_status)
 {
 	pid_t	pid;
 	int		status;
@@ -67,19 +73,25 @@ void	handle_ls_command(char **args, char **envp)
 	{
 		execve("/bin/ls", args, envp);
 		perror("execve failed");
+		//*last_status = 1; ??
 		exit(1);
 	}
 	else if (pid > 0)
 	{
 		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			*last_status = WEXITSTATUS(status);
+		else
+			*last_status = 1;
 	}
 	else
 	{
 		perror("fork failed");
+		*last_status = 1;
 	}
 }
 
-void	handle_type_command(const char *input)
+void	handle_type_command(const char *input, int *last_status)
 {
 	char	*path_env;
 	char	*dir;
@@ -105,13 +117,15 @@ void	handle_type_command(const char *input)
 		free(path_env);
 	}
 	printf("%s: not found\n", input);
+	*last_status = 1;
 }
 
-void	handle_cd_command(char *path, int arg_count)
+void	handle_cd_command(char *path, int arg_count, int *last_status)
 {
 	if (arg_count > 2)
 	{
 		printf("cd: too many arguments\n");
+		*last_status = 1;
 		return ;
 	}
 	while (*path == ' ' || *path == '\t')
@@ -119,5 +133,8 @@ void	handle_cd_command(char *path, int arg_count)
 	if (*path == '\0' || ft_strcmp(path, "~") == 0)
 		path = getenv("HOME");
 	if (chdir(path) != 0)
-		printf("cd: %s: No such file or directory\n", path);
+	{
+    	printf("cd: %s: No such file or directory\n", path);
+    	*last_status = 1;
+	}
 }

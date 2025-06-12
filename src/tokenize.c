@@ -47,26 +47,35 @@ int	check_command(char *word)
 	return (0);
 }
 
-int	check_syntax_error(char **array)
+int check_syntax_error(char **array, int *last_status)
 {
-	int	i;
+    int		i;
 
 	i = 0;
-	while (array[i])
-	{
-		if (ft_strcmp(array[i], "|") == 0 || ft_strcmp(array[i], "<") == 0
-			|| ft_strcmp(array[i], ">") == 0 || ft_strcmp(array[i], ">>") == 0
-			|| ft_strcmp(array[i], "<<") == 0)
-		{
-			if (!array[++i])
-			{
-				printf ("syntax error\n");
-				return (1);
-			}
-		}
-		i++;
-	}
-	return (0);
+    while (array[i])
+    {
+        if (ft_strcmp(array[i], "|") == 0 || ft_strcmp(array[i], "<") == 0 ||
+            ft_strcmp(array[i], ">") == 0 || ft_strcmp(array[i], ">>") == 0 ||
+            ft_strcmp(array[i], "<<") == 0)
+        {
+            if (!array[i + 1])
+            {
+                printf("syntax error near unexpected token `newline'\n");
+                *last_status = 1;
+                return (1);
+            }
+            else if (ft_strcmp(array[i + 1], "|") == 0 || ft_strcmp(array[i + 1], "<") == 0 ||
+                     ft_strcmp(array[i + 1], ">") == 0 || ft_strcmp(array[i + 1], ">>") == 0 ||
+                     ft_strcmp(array[i + 1], "<<") == 0)
+            {
+                printf("syntax error near unexpected token '%s'\n", array[i + 1]);
+                *last_status = 1;
+                return (1);
+            }
+        }
+        i++;
+    }
+    return (0);
 }
 
 //identify each token's value

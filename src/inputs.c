@@ -13,7 +13,7 @@
 #include "minishell.h"
 
 void	handle_command(char *input, char **args, int arg_count,
-						char **envp, t_token *token)
+						char **envp, t_token *token, int *last_status)
 {
 	char	cwd[1024];
 	char	*cmd;
@@ -27,15 +27,15 @@ void	handle_command(char *input, char **args, int arg_count,
 	else if (ft_strcmp(cmd, "clear") == 0)
 		system("clear");
 	else if (ft_strcmp(cmd, "ls") == 0)
-		handle_ls_command(args, envp);
+		handle_ls_command(args, envp, last_status);
 	else if (ft_strcmp(cmd, "cat") == 0)
-		handle_cat_command(args, envp);
+		handle_cat_command(args, envp, last_status);
 	else if (ft_strcmp(cmd, "type") == 0 && arg_count > 1)
-		handle_type_command(args[1]);
+		handle_type_command(args[1], last_status);
 	else if (ft_strcmp(cmd, "pwd") == 0)
 		printf("%s\n", getcwd(cwd, sizeof(cwd)));
 	else if (ft_strcmp(cmd, "cd") == 0)
-		handle_cd_command(input + 2, arg_count);
+		handle_cd_command(input + 2, arg_count, last_status);
 	else if (arg_count == 2)
 		system_handler(input);
 	else

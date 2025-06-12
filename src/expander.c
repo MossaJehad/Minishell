@@ -1,14 +1,18 @@
 #include "minishell.h"
 
-char	*expand_dollar(char *arg)
+char	*expand_dollar(char *arg, int last_status)
 {
 	char	*var_name;
 	char	*value;
+	char	*str;
 
 	var_name = arg + 1;
 	value = NULL;
-	// if(ft_strcmp(arg, "$?") == 0)
-		//last exit status
+	if(ft_strcmp(arg, "$?") == 0)
+	{
+		str = ft_itoa(last_status);
+		return(str);
+	}
 	//else if (ft_strcmp(arg, "$$") == 0)
 		//i dont know
 	if (ft_strcmp(arg, "$0") == 0)
@@ -24,9 +28,16 @@ char	*expand_dollar(char *arg)
 	}
 }
 
-char	*expand_double_quote(char *arg)
+char	*expand_double_quote(char *arg, int last_status)
 {
-	return (arg); //i will do it later
+	char	*str;
+	char	*exp;
+
+	str = ft_substr(arg, 1, ft_strlen(arg) - 2);
+	free(arg);
+	exp = expand_token(str, last_status);
+	free(str);
+	return (exp);
 }
 
 char	*expand_single_quote(char *arg)
@@ -56,25 +67,87 @@ char	*expand_single_quote(char *arg)
 	return (str);
 }
 
-char	**expand(char **args)
+char	*ft_strjoin_free(char *s1, char *s2)
+{
+	char	*joined;
+	
+	joined = ft_strjoin(s1, s2);
+	free(s1);
+	free(s2);
+	return (joined);
+}
+
+char	*join_expanded_part(const char *arg, int *j, int *start, char *new, int last_status)
+{
+	char	*sub;
+	char	*exp;
+	int		k;
+
+	if (*j > *start)
+	{
+		sub = ft_substr(arg, *start, *j - *start);
+		new = ft_strjoin_free(new, sub);
+	}
+	(*j)++;
+	k = *j;
+	if (arg[k] == '?')
+	    k++;
+	else
+    	while (ft_isalnum(arg[k]) || arg[k] == '_')
+	        k++;
+	sub = ft_substr(arg, *j - 1, k - *j + 1);
+	exp = expand_dollar(sub, last_status);
+	new = ft_strjoin_free(new, exp);
+	free(sub);
+	*j = k;
+	*start = k;
+	return (new);
+}
+
+char	*expand_token(char *arg, int last_status)
+{
+	int		j;
+	int		start;
+	char	*new;
+	char	*sub;
+
+	j = 0;
+	start = 0;
+	new = ft_strdup("");
+	while (arg[j])
+	{
+		if (arg[j] == '$')
+			new = join_expanded_part(arg, &j, &start, new, last_status);
+		else
+			j++;
+	}
+	if (j > start)
+	{
+		sub = ft_substr(arg, start, j - start);
+		new = ft_strjoin_free(new, sub);
+	}
+	return (new);
+}
+
+char	**expand(char **args, int last_status)
 {
 	int		i;
-	char	*new;
+	char		*exp;
 
 	i = 0;
-	new = NULL;
+	exp = NULL;
 	while (args[i])
 	{
-		if (args[i][0] == '$')
+		if (ft_strchr(args[i], '$'))
 		{
-			new = expand_dollar(args[i]);
-			free (args[i]);
-			args[i] = new;
+			exp = expand_token(args[i], last_status);
+			free(args[i]);
+			args[i] = exp;
 		}
 		else if (args[i][0] == '\'')
 			args[i] = expand_single_quote(args[i]);
 		else if (args[i][0] == '"')
-			args[i] = expand_double_quote(args[i]);
+			args[i] = expand_double_quote(args[i], last_status);
 		i++;
 	}
 	return (args);

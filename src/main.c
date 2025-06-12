@@ -96,6 +96,7 @@ char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
 	t_parse_state	s;
 	static char		*argv[MAX_ARGS];
 	char			buffer[BUFFER_SIZE];
+	char	next;
 
 	nully(&s);
 	while (input[s.i])
@@ -177,7 +178,7 @@ char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
 // }
 // Runs the main shell loop that reads user input,
 // parses it, and executes commands.
-void	shell_loop(char **envp, int arg_count)
+void	shell_loop(char **envp, int arg_count, int *last_status)
 {
 	char		*input;
 	char		**args;
@@ -203,9 +204,15 @@ void	shell_loop(char **envp, int arg_count)
 			free(input);
 			continue ;
 		}
-		args = expand(args);
+		if(check_syntax_error(args, last_status))
+		{
+			free(input);
+			continue;
+		}
+		args = expand(args, *last_status);
 		tokenize(args, &token);
-		handle_command(input, args, arg_count, envp, token);
+		// print_tokens(token);
+		handle_command(input, args, arg_count, envp, token, last_status);
 		ft_free(args);
 		free_tokens(token);
 	}
@@ -213,10 +220,13 @@ void	shell_loop(char **envp, int arg_count)
 
 int	main(int argc, char **argv, char **envp)
 {
+	int		last_status;
+
+	last_status = 0;
 	(void)argc;
 	(void)argv;
 	init_shell();
-	shell_loop(envp, argc);
+	shell_loop(envp, argc, &last_status);
 	rl_clear_history();
-	return (0);
+	return (last_status);
 }
