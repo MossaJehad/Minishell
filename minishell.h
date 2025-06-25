@@ -34,7 +34,7 @@ int		check_command(char *word);
 void	free_tokens(t_token *token);
 int		check_syntax_error(char **array);
 
-char	**parse_arguments(const char *input, int *arg_count, int *quote_error);
+char	**parse_arguments(const char *input, int *arg_count);
 char	*unescape_string(const char *src);
 int		whileloopstring(int i, int j, int len, char *buffer,
 			const char *src, int bufsize, int string);
