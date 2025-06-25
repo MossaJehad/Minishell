@@ -39,10 +39,9 @@ char	*unescape_string(const char *src);
 int		whileloopstring(int i, int j, int len, char *buffer,
 			const char *src, int bufsize, int string);
 
-
 void	shell_loop(int argc);
 void	handle_command(char *input, char **args, int arg_count,
-						t_token *token);
+			t_token *token);
 char	*get_input(void);
 
 void	handle_echo_command(t_token *token);
@@ -50,7 +49,6 @@ void	handle_cat_command(char **args, char **envp);
 void	handle_ls_command(char **args, char **envp);
 void	handle_type_command(const char *input);
 void	handle_cd_command(char *path, int arg_count);
-
 
 void	init_shell(char **envp);
 int		is_shell_builtin(const char *cmd);

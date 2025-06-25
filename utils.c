@@ -26,5 +26,3 @@ void	init_shell(char **envp)
 	(void)envp;
 	print_welcome_banner();
 }
-
-

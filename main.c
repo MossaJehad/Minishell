@@ -1,6 +1,5 @@
 #include "minishell.h"
 
-
 void	check_inloop(int j, char next, char *buffer)
 {
 	if (next == 'n')
@@ -78,7 +77,8 @@ char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
 	t_parse_state	s;
 	static char		*argv[MAX_ARGS];
 	char			buffer[BUFFER_SIZE];
-  char      next;
+	char			next;
+
 	nully(&s);
 	while (input[s.i])
 	{
@@ -179,7 +179,6 @@ int	main(int argc, char **argv, char **envp)
 {
 	(void)argc;
 	(void)argv;
-
 	init_shell(envp);
 	shell_loop(argc);
 	rl_clear_history();

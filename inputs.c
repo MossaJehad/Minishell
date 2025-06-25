@@ -27,7 +27,6 @@ char	*get_input(void)
 	char	*line;
 
 	prompt();
-
 	line = readline("");
 	if (line == NULL)
 	{
@@ -41,7 +40,8 @@ char	*get_input(void)
 
 void	prompt(void)
 {
-	char cwd[1024];
+	char	cwd[1024];
+
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
 		printf("%s$ ", cwd);
 	else
