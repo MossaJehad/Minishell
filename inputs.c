@@ -26,7 +26,9 @@ char	*get_input(void)
 {
 	char	*line;
 
-	line = readline("$ ");
+	prompt();
+
+	line = readline("");
 	if (line == NULL)
 	{
 		printf("\n");
@@ -35,4 +37,13 @@ char	*get_input(void)
 	if (line && *line)
 		add_history(line);
 	return (line);
+}
+
+void	prompt(void)
+{
+	char cwd[1024];
+	if (getcwd(cwd, sizeof(cwd)) != NULL)
+		printf("%s$ ", cwd);
+	else
+		printf("$ ");
 }

@@ -24,13 +24,7 @@ void	print_welcome_banner(void)
 void	init_shell(char **envp)
 {
 	(void)envp;
+	print_welcome_banner();
 }
 
-void	prompt(void)
-{
-	char cwd[1024];
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		printf("%s$ ", cwd);
-	else
-		printf("$ ");
-}
+
