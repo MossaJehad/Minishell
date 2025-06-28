@@ -178,7 +178,7 @@ char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
 // }
 // Runs the main shell loop that reads user input,
 // parses it, and executes commands.
-void	shell_loop(char **envp, int arg_count, int *last_status)
+void	shell_loop(int arg_count, t_data *data)
 {
 	char		*input;
 	char		**args;
@@ -204,29 +204,51 @@ void	shell_loop(char **envp, int arg_count, int *last_status)
 			free(input);
 			continue ;
 		}
-		if(check_syntax_error(args, last_status))
+		if(check_syntax_error(args, data))
 		{
 			free(input);
 			continue;
 		}
-		args = expand(args, *last_status);
+		args = expand(args, data);
 		tokenize(args, &token);
 		// print_tokens(token);
-		handle_command(input, args, arg_count, envp, token, last_status);
+		handle_command(input, args, arg_count, token, data);
 		ft_free(args);
 		free_tokens(token);
 	}
 }
 
+char	**copy_env(char **envp)
+{
+	int		i = 0;
+	char	**new_env;
+
+	while (envp[i])
+		i++;
+	new_env = malloc(sizeof(char *) * (i + 1));
+	if (!new_env)
+		return (NULL);
+	i = 0;
+	while (envp[i])
+	{
+		new_env[i] = ft_strdup(envp[i]);
+		i++;
+	}
+	new_env[i] = NULL;
+	return (new_env);
+}
 int	main(int argc, char **argv, char **envp)
 {
-	int		last_status;
-
-	last_status = 0;
+	t_data data;
+	
 	(void)argc;
 	(void)argv;
+	data.env = copy_env(envp);
+	data.last_status = 0;
 	init_shell();
-	shell_loop(envp, argc, &last_status);
+	shell_loop(argc, &data);
 	rl_clear_history();
-	return (last_status);
+	free_env(data.env);
+	return (data.last_status);
 }
+

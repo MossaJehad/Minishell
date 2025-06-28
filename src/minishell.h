@@ -28,6 +28,12 @@
 // ─────────────────────────────────────────────
 // Structs
 // ─────────────────────────────────────────────
+typedef struct s_data
+{
+	char	**env;
+	int		last_status;
+}	t_data;
+
 typedef struct s_token
 {
 	char			*value;

@@ -8,15 +8,15 @@ char	*expand_dollar(char *arg, int last_status)
 
 	var_name = arg + 1;
 	value = NULL;
-	if(ft_strcmp(arg, "$?") == 0)
+	if (ft_strcmp(arg, "$?") == 0)
 	{
 		str = ft_itoa(last_status);
-		return(str);
+		return (str);
 	}
-	//else if (ft_strcmp(arg, "$$") == 0)
-		//i dont know
 	if (ft_strcmp(arg, "$0") == 0)
 		return (ft_strdup("minishell"));
+	//else if (ft_strcmp(arg, "$$") == 0)
+    	//i dont know
 	else if (ft_strcmp(arg, "$") == 0)
 		return (ft_strdup("$"));
 	else
@@ -28,14 +28,14 @@ char	*expand_dollar(char *arg, int last_status)
 	}
 }
 
-char	*expand_double_quote(char *arg, int last_status)
+char	*expand_double_quote(char *arg, t_data *data)
 {
 	char	*str;
 	char	*exp;
 
 	str = ft_substr(arg, 1, ft_strlen(arg) - 2);
 	free(arg);
-	exp = expand_token(str, last_status);
+	exp = expand_token(str, data);
 	free(str);
 	return (exp);
 }
@@ -54,14 +54,9 @@ char	*expand_single_quote(char *arg)
 		return (ft_strdup(""));
 	str = malloc(len - 1);
 	if (!str)
-	{
-		ft_free(&str);
 		return (NULL);
-	}
 	while (i < len - 1)
-	{
 		str[j++] = arg[i++];
-	}
 	str[j] = '\0';
 	free(arg);
 	return (str);
@@ -70,7 +65,7 @@ char	*expand_single_quote(char *arg)
 char	*ft_strjoin_free(char *s1, char *s2)
 {
 	char	*joined;
-	
+
 	joined = ft_strjoin(s1, s2);
 	free(s1);
 	free(s2);
@@ -91,10 +86,10 @@ char	*join_expanded_part(const char *arg, int *j, int *start, char *new, int las
 	(*j)++;
 	k = *j;
 	if (arg[k] == '?')
-	    k++;
+		k++;
 	else
-    	while (ft_isalnum(arg[k]) || arg[k] == '_')
-	        k++;
+		while (ft_isalnum(arg[k]) || arg[k] == '_')
+			k++;
 	sub = ft_substr(arg, *j - 1, k - *j + 1);
 	exp = expand_dollar(sub, last_status);
 	new = ft_strjoin_free(new, exp);
@@ -104,7 +99,7 @@ char	*join_expanded_part(const char *arg, int *j, int *start, char *new, int las
 	return (new);
 }
 
-char	*expand_token(char *arg, int last_status)
+char	*expand_token(char *arg, t_data *data)
 {
 	int		j;
 	int		start;
@@ -117,7 +112,7 @@ char	*expand_token(char *arg, int last_status)
 	while (arg[j])
 	{
 		if (arg[j] == '$')
-			new = join_expanded_part(arg, &j, &start, new, last_status);
+			new = join_expanded_part(arg, &j, &start, new, data->last_status);
 		else
 			j++;
 	}
@@ -129,25 +124,24 @@ char	*expand_token(char *arg, int last_status)
 	return (new);
 }
 
-char	**expand(char **args, int last_status)
+char	**expand(char **args, t_data *data)
 {
 	int		i;
-	char		*exp;
+	char	*exp;
 
 	i = 0;
-	exp = NULL;
 	while (args[i])
 	{
 		if (ft_strchr(args[i], '$'))
 		{
-			exp = expand_token(args[i], last_status);
+			exp = expand_token(args[i], data);
 			free(args[i]);
 			args[i] = exp;
 		}
 		else if (args[i][0] == '\'')
 			args[i] = expand_single_quote(args[i]);
 		else if (args[i][0] == '"')
-			args[i] = expand_double_quote(args[i], last_status);
+			args[i] = expand_double_quote(args[i], data);
 		i++;
 	}
 	return (args);

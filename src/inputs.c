@@ -9,11 +9,10 @@
 /*   Updated: 2025/05/26 17:20:31 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "minishell.h"
 
 void	handle_command(char *input, char **args, int arg_count,
-						char **envp, t_token *token, int *last_status)
+						t_token *token, t_data *data)
 {
 	char	cwd[1024];
 	char	*cmd;
@@ -27,15 +26,15 @@ void	handle_command(char *input, char **args, int arg_count,
 	else if (ft_strcmp(cmd, "clear") == 0)
 		system("clear");
 	else if (ft_strcmp(cmd, "ls") == 0)
-		handle_ls_command(args, envp, last_status);
+		handle_ls_command(args, data);
 	else if (ft_strcmp(cmd, "cat") == 0)
-		handle_cat_command(args, envp, last_status);
+		handle_cat_command(args, data);
 	else if (ft_strcmp(cmd, "type") == 0 && arg_count > 1)
-		handle_type_command(args[1], last_status);
+		handle_type_command(args[1], data);
 	else if (ft_strcmp(cmd, "pwd") == 0)
 		printf("%s\n", getcwd(cwd, sizeof(cwd)));
 	else if (ft_strcmp(cmd, "cd") == 0)
-		handle_cd_command(input + 2, arg_count, last_status);
+		handle_cd_command(input + 2, arg_count, data);
 	else if (arg_count == 2)
 		system_handler(input);
 	else

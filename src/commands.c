@@ -9,7 +9,6 @@
 /*   Updated: 2025/05/27 16:07:51 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "minishell.h"
 
 void	handle_echo_command(t_token *token)
@@ -35,7 +34,7 @@ void	handle_echo_command(t_token *token)
 		printf("\n");
 }
 
-void handle_cat_command(char **args, char **envp, int *last_status)
+void handle_cat_command(char **args, t_data *data)
 {
 	pid_t pid;
 	int status;
@@ -43,27 +42,26 @@ void handle_cat_command(char **args, char **envp, int *last_status)
 	pid = fork();
 	if (pid == 0)
 	{
-		execve("/usr/bin/cat", args, envp);
+		execve("/usr/bin/cat", args, data->env);
 		perror("execve failed");
-		//*last_status = 1; ??
 		exit(1);
 	}
 	else if (pid > 0)
 	{
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
-			*last_status = WEXITSTATUS(status);
+			data->last_status = WEXITSTATUS(status);
 		else
-			*last_status = 1;
+			data->last_status = 1;
 	}
 	else
 	{
 		perror("fork failed");
-		*last_status = 1;
+		data->last_status = 1;
 	}
 }
 
-void	handle_ls_command(char **args, char **envp, int *last_status)
+void	handle_ls_command(char **args, t_data *data)
 {
 	pid_t	pid;
 	int		status;
@@ -71,27 +69,26 @@ void	handle_ls_command(char **args, char **envp, int *last_status)
 	pid = fork();
 	if (pid == 0)
 	{
-		execve("/bin/ls", args, envp);
+		execve("/bin/ls", args, data->env);
 		perror("execve failed");
-		//*last_status = 1; ??
 		exit(1);
 	}
 	else if (pid > 0)
 	{
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
-			*last_status = WEXITSTATUS(status);
+			data->last_status = WEXITSTATUS(status);
 		else
-			*last_status = 1;
+			data->last_status = 1;
 	}
 	else
 	{
 		perror("fork failed");
-		*last_status = 1;
+		data->last_status = 1;
 	}
 }
 
-void	handle_type_command(const char *input, int *last_status)
+void	handle_type_command(const char *input, t_data *data)
 {
 	char	*path_env;
 	char	*dir;
@@ -117,15 +114,15 @@ void	handle_type_command(const char *input, int *last_status)
 		free(path_env);
 	}
 	printf("%s: not found\n", input);
-	*last_status = 1;
+	data->last_status = 1;
 }
 
-void	handle_cd_command(char *path, int arg_count, int *last_status)
+void	handle_cd_command(char *path, int arg_count, t_data *data)
 {
 	if (arg_count > 2)
 	{
 		printf("cd: too many arguments\n");
-		*last_status = 1;
+		data->last_status = 1;
 		return ;
 	}
 	while (*path == ' ' || *path == '\t')
@@ -134,7 +131,12 @@ void	handle_cd_command(char *path, int arg_count, int *last_status)
 		path = getenv("HOME");
 	if (chdir(path) != 0)
 	{
-    	printf("cd: %s: No such file or directory\n", path);
-    	*last_status = 1;
+		printf("cd: %s: No such file or directory\n", path);
+		data->last_status = 1;
 	}
+	else
+		data->last_status = 0;
 }
+
+
+
