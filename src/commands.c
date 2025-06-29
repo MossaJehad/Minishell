@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:18:51 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/06/29 16:27:30 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/06/29 18:04:11 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,10 @@ void	handle_type_command(const char *input, t_data *data)
 	char	*full_path;
 
 	if (is_shell_builtin(input))
+	{
+		printf("%s is sigma shell builtin\n", input);
 		return ;
+	}
 	path_env = ft_strdup(getenv("PATH"));
 	if (path_env)
 	{
