@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 14:46:24 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/06/29 16:25:23 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/06/29 19:59:06 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,8 @@ void	update_env_var(t_data *data, char *var, char *value)
 		{
 			free(data->env[i]);
 			joined = ft_strjoin(var, "=");
-			data->env[i] = ft_strjoin_free(joined, value);
+			data->env[i] = ft_strjoin(joined, value);
+			free(joined);
 			return ;
 		}
 		i++;
@@ -183,5 +184,6 @@ void	handle_export_command(char **args, t_data *data)
 		}
 		i++;
 	}
+	
 	data->last_status = error;
 }

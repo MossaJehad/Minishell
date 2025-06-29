@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:19:51 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/06/29 17:59:08 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/06/29 19:27:12 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,15 +70,23 @@ void	handle_command(char *input, char **args, int arg_count,
 						t_token *token, t_data *data)
 {
 	char	*cmd;
+	char	*found;
 
 	cmd = args[0];
-	if(found_commands(cmd))
-		execute_command(cmd, args, data);
-	else if (ft_strcmp(cmd, "exit") == 0 || ft_strcmp(cmd, "echo") == 0 
+	if (ft_strcmp(cmd, "exit") == 0 || ft_strcmp(cmd, "echo") == 0 
 		|| ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "pwd") == 0
 		|| ft_strcmp(cmd, "export") == 0 || ft_strcmp(cmd, "unset") == 0
 		|| ft_strcmp(cmd, "env") == 0 || ft_strcmp(cmd, "type") == 0)
+	{
 		execute_builtin(input, args, arg_count, token, data);
+		return ;
+	}
+	found = found_commands(cmd);
+	if(found)
+	{
+		free(found);
+		execute_command(cmd, args, data);
+	}
 	else if (ft_strcmp(cmd, "ls") == 0)
 		handle_ls_command(args, data);
 	else if (ft_strcmp(cmd, "cat") == 0)

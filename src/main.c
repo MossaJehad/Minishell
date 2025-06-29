@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:20:35 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/06/29 18:55:42 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/06/29 19:30:18 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char	*print_inside_quotes(const char *src)
 	i = 1;
 	j = 0;
 	if (!src || (src[0] != '\'' && src[0] != '"'))
-		return (strdup(src));
+		return (ft_strdup(src));
 	quote_char = src[0];
 	string = malloc(strlen(src));
 	if (!string)
@@ -213,7 +213,6 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	data.env = copy_env(envp);
-	free_env(data.env);
 	data.last_status = 0;
 	init_shell();
 	shell_loop(argc, &data);

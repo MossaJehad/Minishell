@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 14:43:37 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/06/29 17:44:07 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/06/29 19:59:45 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,7 @@ char **expand(char **args, t_data *data)
 			exp = expand_token(args[i], data);
 			free(args[i]);
 			args[i] = exp;
+			free(exp);
 		}
 		i++;
 	}
