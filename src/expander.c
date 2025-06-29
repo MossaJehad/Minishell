@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 14:43:37 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/06/29 19:59:45 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/06/29 20:00:51 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ char	*ft_strjoin_free(char *s1, char *s2)
 	free(s2);
 	return (joined);
 }
-
+ 
 char	*join_expanded_part(const char *arg, int *j, int *start, char *new,
 		int last_status)
 {
