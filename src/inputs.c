@@ -23,6 +23,14 @@ void	handle_command(char *input, char **args, int arg_count,
 		exit(0);
 	else if (ft_strcmp(cmd, "echo") == 0)
 		handle_echo_command(token);
+	else if (ft_strcmp(cmd, "cd") == 0)
+		handle_cd_command(input + 2, arg_count, data);
+	else if (ft_strcmp(cmd, "env") == 0)
+		handle_env_command(args, data);
+	else if (ft_strcmp(cmd, "unset") == 0)
+		handle_unset_command(args, arg_count, data);
+	else if (ft_strcmp(cmd, "export") == 0)
+		handle_export_command(args, data);
 	else if (ft_strcmp(cmd, "clear") == 0)
 		system("clear");
 	else if (ft_strcmp(cmd, "ls") == 0)
@@ -33,12 +41,13 @@ void	handle_command(char *input, char **args, int arg_count,
 		handle_type_command(args[1], data);
 	else if (ft_strcmp(cmd, "pwd") == 0)
 		printf("%s\n", getcwd(cwd, sizeof(cwd)));
-	else if (ft_strcmp(cmd, "cd") == 0)
-		handle_cd_command(input + 2, arg_count, data);
 	else if (arg_count == 2)
 		system_handler(input);
 	else
+	{
 		printf("%s: command not found\n", input);
+		data->last_status = 127;
+	}
 }
 
 char	*get_input(void)
