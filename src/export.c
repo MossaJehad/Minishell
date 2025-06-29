@@ -1,43 +1,55 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jhaddadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/29 14:46:24 by jhaddadi          #+#    #+#             */
+/*   Updated: 2025/06/29 14:47:41 by jhaddadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void    print_exported_env(char **env)
-{
-    int     i;
-    char    *equal;
-    int     var_len;
-    char    *var;
-    char    *value;
-
-    i = 0;
-    while(env[i])
-    {
-        equal = ft_strchr(env[i], '=');
-        if (equal)
-        {
-            var_len = equal - env[i];
-            var = ft_substr(env[i], 0, var_len);
-            value = equal + 1;
-            ft_printf("declare -x %s=\"%s\"\n", var, value);
-            free(var);
-        }
-        else
-        {
-            ft_printf("declare -x %s\n", env[i]);
-        }
-        i++;
-    }
-}
-int     var_exist(char *var, t_data *data)
+void	print_exported_env(char **env)
 {
 	int		i;
-	int		len;
+	char	*equal;
+	int		var_len;
+	char	*var;
+	char	*value;
 
-    i = 0;
+	i = 0;
+	while (env[i])
+	{
+		equal = ft_strchr(env[i], '=');
+		if (equal)
+		{
+			var_len = equal - env[i];
+			var = ft_substr(env[i], 0, var_len);
+			value = equal + 1;
+			ft_printf("declare -x %s=\"%s\"\n", var, value);
+			free(var);
+		}
+		else
+		{
+			ft_printf("declare -x %s\n", env[i]);
+		}
+		i++;
+	}
+}
+
+int	var_exist(char *var, t_data *data)
+{
+	int	i;
+	int	len;
+
+	i = 0;
 	len = ft_strlen(var);
 	while (data->env[i])
 	{
-		if (!ft_strncmp(data->env[i], var, len)
-			&& data->env[i][len] == '=')
+		if (!ft_strncmp(data->env[i], var, len) && data->env[i][len] == '=')
 			return (1);
 		i++;
 	}
@@ -54,7 +66,7 @@ void	add_to_env(char *var, t_data *data)
 		i++;
 	new_env = malloc(sizeof(char *) * (i + 2));
 	if (!new_env)
-		return; //
+		return ;
 	i = 0;
 	while (data->env[i])
 	{
@@ -63,29 +75,29 @@ void	add_to_env(char *var, t_data *data)
 	}
 	new_env[i++] = ft_strdup(var);
 	new_env[i] = NULL;
-    i = 0;
-    while(data->env[i])
-    {
-        free(data->env[i]);
-        i++;
-    }
-    free(data->env);
+	i = 0;
+	while (data->env[i])
+	{
+		free(data->env[i]);
+		i++;
+	}
+	free(data->env);
 	data->env = new_env;
 }
 
-int     handle_without_equal(char *arg, t_data *data)
+int	handle_without_equal(char *arg, t_data *data)
 {
-    if(!valid_identifier(arg))
-    {
-        ft_printf("export: %s: not a valid identifier", arg);
-        return(1);
-    }
-    else
-    {
-        if(!var_exist(arg, data))
-            add_to_env(arg, data);
-    }
-    return(0);
+	if (!valid_identifier(arg))
+	{
+		ft_printf("export: %s: not a valid identifier", arg);
+		return (1);
+	}
+	else
+	{
+		if (!var_exist(arg, data))
+			add_to_env(arg, data);
+	}
+	return (0);
 }
 
 void	update_env_var(t_data *data, char *var, char *value)
@@ -98,8 +110,7 @@ void	update_env_var(t_data *data, char *var, char *value)
 	len = ft_strlen(var);
 	while (data->env[i])
 	{
-		if (ft_strncmp(data->env[i], var, len) == 0
-            && data->env[i][len] == '=')
+		if (ft_strncmp(data->env[i], var, len) == 0 && data->env[i][len] == '=')
 		{
 			free(data->env[i]);
 			joined = ft_strjoin(var, "=");
@@ -110,55 +121,55 @@ void	update_env_var(t_data *data, char *var, char *value)
 	}
 }
 
-int     handle_with_equal(char *arg, t_data *data, char *equal)
+int	handle_with_equal(char *arg, t_data *data, char *equal)
 {
-    int     var_len;
-    char    *var;
-    char    *value;
+	int		var_len;
+	char	*var;
+	char	*value;
 
-    var_len = equal - arg;
-    var = ft_substr(arg, 0, var_len);
-    value = ft_strdup(equal + 1);
-    if(!valid_identifier(var))
-    {
-        ft_printf("export: %s: not a valid identifier", arg);
-        free(var);
-        free(value);
-        return (1);
-    }
-    if(var_exist(var, data))
-        update_env_var(data, var, value);
-    else
-        add_to_env(arg, data);
-    free(var);
-    free(value);
-    return(0);
+	var_len = equal - arg;
+	var = ft_substr(arg, 0, var_len);
+	value = ft_strdup(equal + 1);
+	if (!valid_identifier(var))
+	{
+		ft_printf("export: %s: not a valid identifier", arg);
+		free(var);
+		free(value);
+		return (1);
+	}
+	if (var_exist(var, data))
+		update_env_var(data, var, value);
+	else
+		add_to_env(arg, data);
+	free(var);
+	free(value);
+	return (0);
 }
 
-void    handle_export_command(char **args, t_data *data)
+void	handle_export_command(char **args, t_data *data)
 {
-    int     i;
-    char    *equal;
-    int     error;
+	int		i;
+	char	*equal;
+	int		error;
 
-    i = 1;
-    error = 0;
-    if(!args[i])
-        print_exported_env(data->env);
-    while(args[i])
-    {
-        equal = ft_strchr(args[i], '=');
-        if(equal)
-        {
-            if(handle_with_equal(args[i], data, equal))
-                error = 1;
-        }
-        else
-        {
-            if(handle_without_equal(args[i], data))
-                error = 1;
-        }
-        i++;
-    }
-    data->last_status = error;
+	i = 1;
+	error = 0;
+	if (!args[i])
+		print_exported_env(data->env);
+	while (args[i])
+	{
+		equal = ft_strchr(args[i], '=');
+		if (equal)
+		{
+			if (handle_with_equal(args[i], data, equal))
+				error = 1;
+		}
+		else
+		{
+			if (handle_without_equal(args[i], data))
+				error = 1;
+		}
+		i++;
+	}
+	data->last_status = error;
 }

@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhaddadi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 17:34:27 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/05/26 17:34:27 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/06/29 14:49:43 by jhaddadi          #+#    #+#             */
+/*   Updated: 2025/06/29 14:52:48 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
 void	create_token(t_token **token, char *value, char *type)
@@ -46,16 +47,16 @@ int	check_command(char *word)
 	return (0);
 }
 
-int check_syntax_error(char **array, t_data *data)
+int	check_syntax_error(char **array, t_data *data)
 {
 	int	i;
 
 	i = 0;
 	while (array[i])
 	{
-		if (ft_strcmp(array[i], "|") == 0 || ft_strcmp(array[i], "<") == 0 ||
-			ft_strcmp(array[i], ">") == 0 || ft_strcmp(array[i], ">>") == 0 ||
-			ft_strcmp(array[i], "<<") == 0)
+		if (ft_strcmp(array[i], "|") == 0 || ft_strcmp(array[i], "<") == 0
+			|| ft_strcmp(array[i], ">") == 0 || ft_strcmp(array[i], ">>") == 0
+			|| ft_strcmp(array[i], "<<") == 0)
 		{
 			if (!array[i + 1])
 			{
@@ -63,11 +64,14 @@ int check_syntax_error(char **array, t_data *data)
 				data->last_status = 1;
 				return (1);
 			}
-			else if (ft_strcmp(array[i + 1], "|") == 0 || ft_strcmp(array[i + 1], "<") == 0 ||
-				ft_strcmp(array[i + 1], ">") == 0 || ft_strcmp(array[i + 1], ">>") == 0 ||
-				ft_strcmp(array[i + 1], "<<") == 0)
+			else if (ft_strcmp(array[i + 1], "|") == 0
+				|| ft_strcmp(array[i + 1], "<") == 0
+				|| ft_strcmp(array[i + 1], ">") == 0
+				|| ft_strcmp(array[i + 1], ">>") == 0
+				|| ft_strcmp(array[i + 1], "<<") == 0)
 			{
-				printf("syntax error near unexpected token '%s'\n", array[i + 1]);
+				printf("syntax error near unexpected token '%s'\n", array[i
+					+ 1]);
 				data->last_status = 1;
 				return (1);
 			}
@@ -115,4 +119,3 @@ void	free_tokens(t_token *token)
 		free(temp);
 	}
 }
-
