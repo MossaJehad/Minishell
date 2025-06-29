@@ -64,7 +64,7 @@ char	*get_input(void);
 // Argument Parsing & Tokens
 // ─────────────────────────────────────────────
 
-char	**parse_arguments(const char *input, int *arg_count, int *quote_error);
+char	**parse_arguments(const char *input, int *arg_count);
 void	tokenize(char **array, t_token **token);
 void	create_token(t_token **token, char *value, char *type);
 int		check_command(char *word);
@@ -124,5 +124,12 @@ char	*print_inside_quotes(const char *src);
 int		env_len(char **env);
 int		whileloopstring(int i, int j, int len, char *buffer,
 			const char *src, int bufsize, int string);
+
+
+void 	execute_builtin(char *input, char **args, int arg_count,
+						t_token *token, t_data *data);
+
+char*	search_commands(const char *input);
+char*	found_commands(const char *input);
 
 #endif

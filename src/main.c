@@ -6,14 +6,11 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:20:35 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/05/27 16:59:44 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/06/29 17:05:47 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// #include "libft.h"
-////// LATEST
 
 void	check_inloop(int j, char next, char *buffer)
 {
@@ -91,7 +88,7 @@ void	nully(t_parse_state *s)
 
 // Splits the input line into arguments
 // while respecting quotes and escape characters.
-char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
+char	**parse_arguments(const char *input, int *arg_count)
 {
 	t_parse_state	s;
 	static char		*argv[MAX_ARGS];
@@ -136,14 +133,12 @@ char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
 			next = input[s.i + 1];
 			if (!s.in_single_quote && !s.in_double_quote)
 			{
-				// Outside quotes: drop the backslash, keep character
 				buffer[s.j++] = next;
 				s.i += 2;
 				continue ;
 			}
 			else
 			{
-				// Inside quotes: preserve both
 				buffer[s.j++] = input[s.i++];
 				buffer[s.j++] = input[s.i++];
 				continue ;
@@ -158,34 +153,15 @@ char	**parse_arguments(const char *input, int *arg_count, int *quote_error)
 	}
 	argv[s.k] = NULL;
 	*arg_count = s.k;
-	*quote_error = s.in_single_quote || s.in_double_quote;
 	return (argv);
 }
 
-// void print_tokens(t_token *token)
-// {
-//     t_token *temp;
-
-//     while (token)
-//     {
-//         printf("type: %s value: %s\n", token->type, token->value);
-//         temp = token;
-//         token = token->next;
-//         free(temp->value);
-//         free(temp->type);
-//         free(temp);
-//     }
-// }
-// Runs the main shell loop that reads user input,
-// parses it, and executes commands.
 void	shell_loop(int arg_count, t_data *data)
 {
 	char		*input;
 	char		**args;
-	int			quote_error;
 	t_token		*token;
 
-	quote_error = 0;
 	while (1)
 	{
 		token = NULL;
@@ -197,13 +173,7 @@ void	shell_loop(int arg_count, t_data *data)
 			free(input);
 			continue ;
 		}
-		args = parse_arguments(input, &arg_count, &quote_error);
-		if (quote_error)
-		{
-			printf("Unmatched quote detected!\n");
-			free(input);
-			continue ;
-		}
+		args = parse_arguments(input, &arg_count);
 		if(check_syntax_error(args, data))
 		{
 			free(input);
@@ -211,7 +181,6 @@ void	shell_loop(int arg_count, t_data *data)
 		}
 		args = expand(args, data);
 		tokenize(args, &token);
-		// print_tokens(token);
 		handle_command(input, args, arg_count, token, data);
 		ft_free(args);
 		free_tokens(token);

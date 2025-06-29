@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:26:55 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/05/26 17:27:29 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/06/29 17:26:10 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ int	is_shell_builtin(const char *cmd)
 		|| ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "export") == 0
 		|| ft_strcmp(cmd, "env") == 0 || ft_strcmp(cmd, "unset") == 0)
 	{
-		printf("%s is a shell builtin\n", cmd);
 		return (1);
 	}
 	return (0);
