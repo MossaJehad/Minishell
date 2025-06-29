@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   inputs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:19:51 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/05/26 17:20:31 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/06/29 15:36:22 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
 void	handle_command(char *input, char **args, int arg_count,
@@ -28,7 +29,7 @@ void	handle_command(char *input, char **args, int arg_count,
 	else if (ft_strcmp(cmd, "env") == 0)
 		handle_env_command(args, data);
 	else if (ft_strcmp(cmd, "unset") == 0)
-		handle_unset_command(args, arg_count, data);
+		handle_unset_command(args, data);
 	else if (ft_strcmp(cmd, "export") == 0)
 		handle_export_command(args, data);
 	else if (ft_strcmp(cmd, "clear") == 0)

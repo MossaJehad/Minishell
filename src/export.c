@@ -3,14 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhaddadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 14:46:24 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/06/29 14:47:41 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/06/29 15:42:21 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void free_env(char **env)
+{
+	int i = 0;
+
+	if (!env)
+		return;
+	while (env[i])
+		free(env[i++]);
+	free(env);
+}
 
 void	print_exported_env(char **env)
 {
@@ -29,12 +40,12 @@ void	print_exported_env(char **env)
 			var_len = equal - env[i];
 			var = ft_substr(env[i], 0, var_len);
 			value = equal + 1;
-			ft_printf("declare -x %s=\"%s\"\n", var, value);
+			printf("declare -x %s=\"%s\"\n", var, value);
 			free(var);
 		}
 		else
 		{
-			ft_printf("declare -x %s\n", env[i]);
+			printf("declare -x %s\n", env[i]);
 		}
 		i++;
 	}
@@ -89,7 +100,7 @@ int	handle_without_equal(char *arg, t_data *data)
 {
 	if (!valid_identifier(arg))
 	{
-		ft_printf("export: %s: not a valid identifier", arg);
+		printf("export: %s: not a valid identifier", arg);
 		return (1);
 	}
 	else
@@ -132,7 +143,7 @@ int	handle_with_equal(char *arg, t_data *data, char *equal)
 	value = ft_strdup(equal + 1);
 	if (!valid_identifier(var))
 	{
-		ft_printf("export: %s: not a valid identifier", arg);
+		printf("export: %s: not a valid identifier", arg);
 		free(var);
 		free(value);
 		return (1);

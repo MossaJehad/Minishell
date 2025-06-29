@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhaddadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 14:43:37 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/06/29 14:43:51 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/06/29 15:41:59 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,4 +110,52 @@ char	*join_expanded_part(const char *arg, int *j, int *start, char *new,
 	*j = k;
 	*start = k;
 	return (new);
+}
+
+char *expand_token(char *arg, t_data *data)
+{
+	int		j;
+	int		start;
+	char	*new;
+	char	*sub;
+
+	j = 0;
+	start = 0;
+	new = ft_strdup("");
+	while (arg[j])
+	{
+		if (arg[j] == '$')
+			new = join_expanded_part(arg, &j, &start, new, data->last_status);
+		else
+			j++;
+	}
+	if (j > start)
+	{
+		sub = ft_substr(arg, start, j - start);
+		new = ft_strjoin_free(new, sub);
+	}
+	return (new);
+}
+
+char **expand(char **args, t_data *data)
+{
+	int		i;
+	char	*exp;
+
+	i = 0;
+	while (args[i])
+	{
+		if (ft_strchr(args[i], '$'))
+		{
+			exp = expand_token(args[i], data);
+			free(args[i]);
+			args[i] = exp;
+		}
+		else if (args[i][0] == '\'')
+			args[i] = expand_single_quote(args[i]);
+		else if (args[i][0] == '"')
+			args[i] = expand_double_quote(args[i], data);
+		i++;
+	}
+	return (args);
 }
