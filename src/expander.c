@@ -6,7 +6,7 @@
 /*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 14:43:37 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/06/29 15:41:59 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/06/29 17:24:34 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,16 +145,16 @@ char **expand(char **args, t_data *data)
 	i = 0;
 	while (args[i])
 	{
-		if (ft_strchr(args[i], '$'))
+		if (args[i][0] == '\'')
+			args[i] = expand_single_quote(args[i]);
+		else if (args[i][0] == '"')
+			args[i] = expand_double_quote(args[i], data);
+		else if (ft_strchr(args[i], '$'))
 		{
 			exp = expand_token(args[i], data);
 			free(args[i]);
 			args[i] = exp;
 		}
-		else if (args[i][0] == '\'')
-			args[i] = expand_single_quote(args[i]);
-		else if (args[i][0] == '"')
-			args[i] = expand_double_quote(args[i], data);
 		i++;
 	}
 	return (args);
