@@ -6,7 +6,7 @@
 /*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:19:51 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/06/29 15:36:22 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/06/29 16:27:47 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ void	handle_command(char *input, char **args, int arg_count,
 		handle_cat_command(args, data);
 	else if (ft_strcmp(cmd, "type") == 0 && arg_count > 1)
 		handle_type_command(args[1], data);
+	else if (ft_strcmp(cmd, "exit") == 0)
+		handle_exit_command(args, data);
 	else if (ft_strcmp(cmd, "pwd") == 0)
 		printf("%s\n", getcwd(cwd, sizeof(cwd)));
 	else if (arg_count == 2)

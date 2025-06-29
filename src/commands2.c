@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhaddadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 14:45:04 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/06/29 14:45:15 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/06/29 16:26:12 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,8 +110,49 @@ void	handle_env_command(char **args, t_data *data)
 	}
 	while (data->env[i])
 	{
-		printf("%s\n", data->env[i]);
+		if (ft_strchr(data->env[i], '='))
+			printf("%s\n", data->env[i]);
 		i++;
 	}
 	data->last_status = 0;
+}
+
+int	is_numeric(const char *str)
+{
+	int		i;
+
+	i = 0;
+	if (!str)
+		return (0);
+	if (str[0] == '-' || str[0] == '+')
+		i++;
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+void	handle_exit_command(char **args, t_data *data)
+{
+	int		i;
+
+	printf("exit\n");
+	if (!args[1])
+		exit(data->last_status);
+	if (!is_numeric(args[1]))
+	{
+		printf("exit: %s: numeric argument required\n", args[1]);
+		exit(255);
+	}
+	if (args[2])
+	{
+		printf("exit: too many arguments\n");
+		data->last_status = 1;
+		return ;
+	}
+	i = ft_atoi(args[1]) % 256;
+	exit(i);
 }

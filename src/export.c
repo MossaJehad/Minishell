@@ -6,18 +6,19 @@
 /*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 14:46:24 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/06/29 15:42:21 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/06/29 16:25:23 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void free_env(char **env)
+void	free_env(char **env)
 {
-	int i = 0;
+	int		i;
 
+	i = 0;
 	if (!env)
-		return;
+		return ;
 	while (env[i])
 		free(env[i++]);
 	free(env);

@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   commands.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:18:51 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/05/27 16:07:51 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/06/29 16:27:30 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
 void	handle_echo_command(t_token *token)
@@ -34,10 +35,10 @@ void	handle_echo_command(t_token *token)
 		printf("\n");
 }
 
-void handle_cat_command(char **args, t_data *data)
+void	handle_cat_command(char **args, t_data *data)
 {
-	pid_t pid;
-	int status;
+	pid_t	pid;
+	int		status;
 
 	pid = fork();
 	if (pid == 0)
@@ -137,6 +138,3 @@ void	handle_cd_command(char *path, int arg_count, t_data *data)
 	else
 		data->last_status = 0;
 }
-
-
-
