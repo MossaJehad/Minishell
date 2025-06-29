@@ -63,15 +63,6 @@ char	*print_inside_quotes(const char *src)
 	return (string);
 }
 
-void	nully(t_parse_state *s)
-{
-	s->i = 0;
-	s->j = 0;
-	s->k = 0;
-	s->in_single_quote = 0;
-	s->in_double_quote = 0;
-}
-
 char	**parse_arguments(const char *input, int *arg_count)
 {
 	t_parse_state	s;
@@ -79,7 +70,7 @@ char	**parse_arguments(const char *input, int *arg_count)
 	char			buffer[BUFFER_SIZE];
 	char			next;
 
-	nully(&s);
+	ft_memset(&s, 0, sizeof(s));
 	while (input[s.i])
 	{
 		if (input[s.i] == '\'' && !s.in_double_quote)

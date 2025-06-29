@@ -55,5 +55,6 @@ int		is_shell_builtin(const char *cmd);
 char	**expand(char **args);
 char	*print_inside_quotes(const char *src);
 void	prompt(void);
+char	*search_commands(const char *input);
 
 #endif

@@ -1,5 +1,14 @@
 #include "minishell.h"
 
+// function to search in the path and return whatever commands that may be used
+char*	found_commands(const char *input)
+{
+	char	*arr;
+
+	arr = search_commands(input);
+	return (arr);
+}
+
 void	handle_command(char *input, char **args, int arg_count,
 						t_token *token)
 {
@@ -18,6 +27,8 @@ void	handle_command(char *input, char **args, int arg_count,
 		printf("%s\n", getcwd(cwd, sizeof(cwd)));
 	else if (ft_strcmp(cmd, "cd") == 0)
 		handle_cd_command(input + 2, arg_count);
+	else if (found_commands(cmd))
+		printf("mossa");
 	else
 		printf("%s: command not found\n", input);
 }
@@ -27,7 +38,7 @@ char	*get_input(void)
 	char	*line;
 
 	prompt();
-	line = readline("");
+	line = readline(" ");
 	if (line == NULL)
 	{
 		printf("\n");
@@ -43,7 +54,7 @@ void	prompt(void)
 	char	cwd[1024];
 
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		printf("%s$ ", cwd);
+		printf("%s$", cwd);
 	else
-		printf("$ ");
+		printf("$");
 }
