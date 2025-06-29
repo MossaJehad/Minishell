@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 14:45:04 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/06/29 16:26:12 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/06/29 18:53:59 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,8 @@ void	remove_env_var(t_data *data, char *str)
 	i = 0;
 	while (data->env[i])
 		free(data->env[i++]);
-	free(data->env);
 	data->env = new_env;
+	free(data->env);
 }
 
 void	handle_unset_command(char **args, t_data *data)
