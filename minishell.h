@@ -39,22 +39,33 @@ char	*unescape_string(const char *src);
 int		whileloopstring(int i, int j, int len, char *buffer,
 			const char *src, int bufsize, int string);
 
-void	shell_loop(int argc);
-void	handle_command(char *input, char **args, int arg_count,
-			t_token *token);
+void	shell_loop(int argc, char ***envp);
+void	handle_command(char *input,
+                        char **args,
+                        int arg_count,
+                        t_token *token,
+                        char ***envp);
 char	*get_input(void);
 
 void	handle_echo_command(t_token *token);
+void	handle_env_command(char **env);
+void	handle_export_command(char ***envp,
+                             char **args,
+					         int arg_count);
 void	handle_cat_command(char **args, char **envp);
 void	handle_ls_command(char **args, char **envp);
 void	handle_type_command(const char *input);
 void	handle_cd_command(char *path, int arg_count);
-
 void	init_shell(char **envp);
 int		is_shell_builtin(const char *cmd);
 char	**expand(char **args);
 char	*print_inside_quotes(const char *src);
 void	prompt(void);
-char	*search_commands(const char *input);
+int has_unclosed_quotes(const char *input);
+char	*ft_strndup(const char *s1, size_t n);
+int is_valid_identifier(const char *str);
+void handle_unset_command(char ***envp, char **args, int arg_count);
+void remove_env_var(char ***envp, const char *name);
+
 
 #endif
