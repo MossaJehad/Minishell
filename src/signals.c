@@ -6,13 +6,14 @@
 /*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 13:05:22 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/07/01 15:28:49 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/07/01 17:52:52 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	fatal_error(char *msg, char *input, char **args, t_token *token, t_data *data)
+void	fatal_error(char *msg, char *input,
+	char **args, t_token *token, t_data *data)
 {
 	if (msg)
 		ft_putendl_fd(msg, STDERR_FILENO);
@@ -43,7 +44,6 @@ void	set_signals_interactive(void)
 	act.sa_handler = signal_reset_prompt;
 	sigemptyset(&act.sa_mask);
 	act.sa_flags = SA_RESTART;
-
 	sigaction(SIGINT, &act, NULL);
 	signal(SIGQUIT, SIG_IGN);
 }

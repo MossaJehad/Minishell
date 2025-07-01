@@ -6,7 +6,7 @@
 /*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 14:43:37 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/07/01 17:46:52 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/07/01 17:52:07 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ char	*expand_dollar(char *arg, int last_status)
 	}
 	if (ft_strcmp(arg, "$0") == 0)
 		return (ft_strdup("minishell"));
-	//else if (ft_strcmp(arg, "$$") == 0)
-	//i dont know
 	else if (ft_strcmp(arg, "$") == 0)
 		return (ft_strdup("$"));
 	else
@@ -99,7 +97,8 @@ static int	get_var_end(const char *arg, int start)
 	return (start);
 }
 
-static char	*get_expanded_var(const char *arg, int var_start, int var_end, int last_status)
+static char	*get_expanded_var(const char *arg, int var_start,
+	int var_end, int last_status)
 {
 	char	*sub;
 	char	*exp;
@@ -113,7 +112,8 @@ static char	*get_expanded_var(const char *arg, int var_start, int var_end, int l
 	return (exp);
 }
 
-char	*join_expanded_part(const char *arg, int *j, int *start, char *new, int last_status)
+char	*join_expanded_part(const char *arg, int *j,
+	int *start, char *new, int last_status)
 {
 	char	*sub;
 	char	*exp;
@@ -171,7 +171,7 @@ char	*join_expanded_part(const char *arg, int *j, int *start, char *new, int las
 // 	return (new);
 // }
 
-char *expand_token(char *arg, t_data *data)
+char	*expand_token(char *arg, t_data *data)
 {
 	int		j;
 	int		start;
@@ -196,7 +196,7 @@ char *expand_token(char *arg, t_data *data)
 	return (new);
 }
 
-char **expand(char **args, t_data *data)
+char	**expand(char **args, t_data *data)
 {
 	int		i;
 	char	*exp;

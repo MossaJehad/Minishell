@@ -5,15 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/07/01 17:44:24 by jhaddadi         ###   ########.fr       */
+/*   Created: 2025/07/01 17:53:51 by jhaddadi          #+#    #+#             */
+/*   Updated: 2025/07/01 17:56:59 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "minishell.h"
 
-void 	execute_builtin(char *input, char **args, int arg_count,
+void	execute_builtin(char *input, char **args, int arg_count,
 						t_token *token, t_data *data)
 {
 	char	cwd[1024];
@@ -42,7 +41,8 @@ void	execute_command(char *cmd, char **args, t_data *data)
 {
 	char	*full_path;
 	pid_t	pid;
-	
+	int		status;
+
 	full_path = found_commands(cmd);
 	pid = fork();
 	if (pid == 0)
@@ -54,7 +54,6 @@ void	execute_command(char *cmd, char **args, t_data *data)
 	}
 	else if (pid > 0)
 	{
-		int status;
 		waitpid(pid, &status, 0);
 		data->last_status = WEXITSTATUS(status);
 	}
@@ -73,7 +72,7 @@ void	handle_command(char *input, char **args, int arg_count,
 	char	*found;
 
 	cmd = args[0];
-	if (ft_strcmp(cmd, "exit") == 0 || ft_strcmp(cmd, "echo") == 0 
+	if (ft_strcmp(cmd, "exit") == 0 || ft_strcmp(cmd, "echo") == 0
 		|| ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "pwd") == 0
 		|| ft_strcmp(cmd, "export") == 0 || ft_strcmp(cmd, "unset") == 0
 		|| ft_strcmp(cmd, "env") == 0 || ft_strcmp(cmd, "type") == 0)
@@ -82,7 +81,7 @@ void	handle_command(char *input, char **args, int arg_count,
 		return ;
 	}
 	found = found_commands(cmd);
-	if(found)
+	if (found)
 	{
 		free(found);
 		execute_command(cmd, args, data);
@@ -109,8 +108,7 @@ char	*get_input(t_data *data)
 	return (line);
 }
 
-
-char*	search_commands(const char *input)
+char	*search_commands(const char *input)
 {
 	char	*path_env;
 	char	*dir;
@@ -138,7 +136,7 @@ char*	search_commands(const char *input)
 	return (NULL);
 }
 
-char*	found_commands(const char *input)
+char	*found_commands(const char *input)
 {
 	char	*arr;
 
