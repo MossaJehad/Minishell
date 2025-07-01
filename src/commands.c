@@ -6,7 +6,7 @@
 /*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:18:51 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/01 16:42:00 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/07/01 17:47:03 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,62 +33,6 @@ void	handle_echo_command(t_token *token)
 	}
 	if (newline)
 		printf("\n");
-}
-
-void	handle_cat_command(char **args, t_data *data)
-{
-	pid_t	pid;
-	int		status;
-
-	pid = fork();
-	if (pid == 0)
-	{
-		set_signals_noninteractive();
-		execve("/usr/bin/cat", args, data->env);
-		perror("execve failed");
-		exit(1);
-	}
-	else if (pid > 0)
-	{
-		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			data->last_status = WEXITSTATUS(status);
-		else
-			data->last_status = 1;
-	}
-	else
-	{
-		perror("fork failed");
-		data->last_status = 1;
-	}
-}
-
-void	handle_ls_command(char **args, t_data *data)
-{
-	pid_t	pid;
-	int		status;
-
-	pid = fork();
-	if (pid == 0)
-	{
-		set_signals_noninteractive();
-		execve("/bin/ls", args, data->env);
-		perror("execve failed");
-		exit(1);
-	}
-	else if (pid > 0)
-	{
-		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			data->last_status = WEXITSTATUS(status);
-		else
-			data->last_status = 1;
-	}
-	else
-	{
-		perror("fork failed");
-		data->last_status = 1;
-	}
 }
 
 void	handle_type_command(const char *input, t_data *data)

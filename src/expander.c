@@ -6,7 +6,7 @@
 /*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 14:43:37 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/07/01 16:58:24 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/07/01 17:46:52 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,7 +213,6 @@ char **expand(char **args, t_data *data)
 			exp = expand_token(args[i], data);
 			free(args[i]);
 			args[i] = exp;
-			//free(exp);
 		}
 		i++;
 	}

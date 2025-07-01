@@ -5,10 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 17:19:51 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/01 14:32:43 by jhaddadi         ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2025/07/01 17:44:24 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "minishell.h"
 
@@ -86,10 +87,6 @@ void	handle_command(char *input, char **args, int arg_count,
 		free(found);
 		execute_command(cmd, args, data);
 	}
-	else if (ft_strcmp(cmd, "ls") == 0)
-		handle_ls_command(args, data);
-	else if (ft_strcmp(cmd, "cat") == 0)
-		handle_cat_command(args, data);
 	else
 	{
 		printf("%s: command not found\n", input);
