@@ -105,6 +105,7 @@ void	print_exported_env(char **env);
 // Expansion
 // ─────────────────────────────────────────────
 
+void	printf_split(char *str, char **split);
 char	**expand(char **args, t_data *data);
 char	*expand_token(char *arg, t_data *data);
 char	*expand_dollar(char *arg, int last_status);

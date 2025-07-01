@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:20:35 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/06/29 19:30:18 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/01 18:26:06 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ char	**parse_arguments(const char *input, int *arg_count)
 			s.in_double_quote = !s.in_double_quote;
 			buffer[s.j++] = input[s.i++];
 			continue ;
-		}
+		}// issue in " export "name" saved name" 
 		if (!s.in_single_quote && !s.in_double_quote
 			&& (input[s.i] == ' ' || input[s.i] == '\t'))
 		{

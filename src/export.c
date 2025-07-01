@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 14:46:24 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/06/29 19:59:06 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/01 18:22:27 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,15 +134,85 @@ void	update_env_var(t_data *data, char *var, char *value)
 	}
 }
 
+int	count_quote(char *str)
+{
+	char	lock;
+	int		counter;
+	int		i;
+
+	i = 0;
+	counter = 0;
+	lock = '\0';
+	while(str[i])
+	{
+		if (lock == '\0' && (str[i] == '\"' || str[i] == '\''))
+			lock = str[i];
+		else if (lock != '\0' && str[i] == lock)
+		{
+			counter++;
+			lock = '\0';
+		}
+		if (str[i] == lock)
+			counter++;
+		i++;
+	}
+	return (counter);
+}
+
+char	*d_quotes(char	*str)
+{
+	char	*result;
+	int		num;
+	int		num_res;
+	char	lock;
+	int		count;
+	char	l;
+
+	num	= 0;
+	l = 0;
+	num_res	= 0;
+	count = (ft_strlen(str) - count_quote(str));
+	if (count <= 0 ||  count_quote(str) % 2 == 1)
+		return (NULL);
+	result = malloc(count + 1);
+	lock = '\0';
+	while(str[num])
+	{
+		if (lock == '\0' && (str[num] == '\"' || str[num] == '\''))
+			lock = str[num];
+		else if (lock != '\0' && str[num] == lock)
+		{
+			l = 1;
+			lock = '\0';
+		}
+		if (str[num] != lock && !l)
+		{
+			result[num_res] = str[num];
+			num_res++;
+		}
+		l = 0;
+		num++;
+	}
+	result[num_res] = '\0';
+	return (result);
+}
+
 int	handle_with_equal(char *arg, t_data *data, char *equal)
 {
 	int		var_len;
 	char	*var;
+	char	*var_value;
 	char	*value;
 
 	var_len = equal - arg;
-	var = ft_substr(arg, 0, var_len);
-	value = ft_strdup(equal + 1);
+	printf("the var:%s\n", arg);
+	var_value = ft_substr(arg, 0, var_len);
+	var = d_quotes(var_value);
+	free(var_value);
+	value = d_quotes(equal + 1);
+	if (!value)
+		return(-1);
+	printf("the out:%s\n", value);
 	if (!valid_identifier(var))
 	{
 		printf("export: %s: not a valid identifier", arg);
@@ -158,7 +228,17 @@ int	handle_with_equal(char *arg, t_data *data, char *equal)
 	free(value);
 	return (0);
 }
+void	printf_split(char *str, char **split)
+{
+	int	i;
 
+	i = 0;
+	while (split[i])
+	{
+		printf("%s%s\n", str, split[i]);
+		i++;
+	}
+}
 void	handle_export_command(char **args, t_data *data)
 {
 	int		i;
@@ -167,6 +247,7 @@ void	handle_export_command(char **args, t_data *data)
 
 	i = 1;
 	error = 0;
+	//printf_split("the output:", args);
 	if (!args[i])
 		print_exported_env(data->env);
 	while (args[i])
