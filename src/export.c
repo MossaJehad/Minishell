@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 14:46:24 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/07/01 20:11:26 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/01 22:23:10 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,9 @@ void	add_to_env(char *var, t_data *data)
 
 int	handle_without_equal(char *arg, t_data *data)
 {
-	char	*var = d_quotes(arg);
+	char	*var;
+
+	var = d_quotes(arg);
 	if (!valid_identifier(var))
 	{
 		printf("export: %s: not a valid identifier", var);
@@ -144,7 +146,7 @@ int	count_quote(char *str)
 	i = 0;
 	counter = 0;
 	lock = '\0';
-	while(str[i])
+	while (str[i])
 	{
 		if (lock == '\0' && (str[i] == '\"' || str[i] == '\''))
 			lock = str[i];
@@ -169,15 +171,15 @@ char	*d_quotes(char	*str)
 	int		count;
 	char	l;
 
-	num	= 0;
+	num = 0;
 	l = 0;
-	num_res	= 0;
+	num_res = 0;
 	count = (ft_strlen(str) - count_quote(str));
-	if (count <= 0 ||  count_quote(str) % 2 == 1)
+	if (count <= 0 || count_quote(str) % 2 == 1)
 		return (NULL);
 	result = malloc(count + 1);
 	lock = '\0';
-	while(str[num])
+	while (str[num])
 	{
 		if (lock == '\0' && (str[num] == '\"' || str[num] == '\''))
 			lock = str[num];
@@ -207,17 +209,14 @@ int	handle_with_equal(char *arg, t_data *data, char *equal)
 	char	*join;
 	char	*tmp;
 
-	write(2,"the out\n", 8);
+	write (2,"the out\n", 8);
 	var_len = equal - arg;
-	//printf("the arg:%s\n", arg);
 	var_value = ft_substr(arg, 0, var_len);
 	var = d_quotes(var_value);
 	free(var_value);
 	value = d_quotes(equal + 1);
 	if (!value)
-		return(-1);
-	//printf("the value:%s\n", value);
-	//printf("the var is:%s\n", var);
+		return (-1);
 	if (!valid_identifier(var))
 	{
 		printf("export: %s: not a valid identifier", arg);
@@ -242,14 +241,12 @@ int	handle_with_equal(char *arg, t_data *data, char *equal)
 			add_to_env(var, data);
 		}
 		printf("export fisrt enterd value\n");
-		// the issue that if you sent fisrt time 
-		// var it will add based on previuos 
-		// parsing is sented second will be correct  
 	}
 	free(var);
 	free(value);
 	return (0);
 }
+
 void	printf_split(char *str, char **split)
 {
 	int	i;
@@ -261,6 +258,7 @@ void	printf_split(char *str, char **split)
 		i++;
 	}
 }
+
 void	handle_export_command(char **args, t_data *data)
 {
 	int		i;
@@ -269,7 +267,6 @@ void	handle_export_command(char **args, t_data *data)
 
 	i = 1;
 	error = 0;
-	//printf_split("the output:", args);
 	if (!args[i])
 		print_exported_env(data->env);
 	while (args[i])
@@ -287,6 +284,5 @@ void	handle_export_command(char **args, t_data *data)
 		}
 		i++;
 	}
-	
 	data->last_status = error;
 }

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 14:45:04 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/07/01 20:14:30 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/01 22:22:22 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,13 @@ int	valid_identifier(char *str)
 	i = 0;
 	if (!str || !str[0])
 		return (0);
-	if ((!ft_isalpha(str[0]) && str[0] != '\'' && str[0] != '\"') && str[0] != '_')
+	if ((!ft_isalpha(str[0]) && str[0] != '\''
+			&& str[0] != '\"') && str[0] != '_')
 		return (0);
 	while (str[i])
 	{
-		if (!ft_isalnum(str[i]) && str[i] != '_' && str[i] != '\'' && str[i] != '\"')
+		if (!ft_isalnum(str[i]) && str[i] != '_'
+			&& str[i] != '\'' && str[i] != '\"')
 			return (0);
 		i++;
 	}

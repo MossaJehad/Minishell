@@ -6,13 +6,13 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:19:51 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/01 14:47:53 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/01 22:15:02 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void 	execute_builtin(char *input, char **args, int arg_count,
+void	execute_builtin(char *input, char **args, int arg_count,
 						t_token *token, t_data *data)
 {
 	char	cwd[1024];
@@ -42,8 +42,9 @@ void 	execute_builtin(char *input, char **args, int arg_count,
 void	execute_command(char *cmd, char **args, t_data *data)
 {
 	char	*full_path;
+	int		status;
 	pid_t	pid;
-	
+
 	full_path = found_commands(cmd);
 	pid = fork();
 	if (pid == 0)
@@ -54,7 +55,6 @@ void	execute_command(char *cmd, char **args, t_data *data)
 	}
 	else if (pid > 0)
 	{
-		int status;
 		waitpid(pid, &status, 0);
 		data->last_status = WEXITSTATUS(status);
 	}
@@ -73,7 +73,7 @@ void	handle_command(char *input, char **args, int arg_count,
 	char	*found;
 
 	cmd = args[0];
-	if (ft_strcmp(cmd, "exit") == 0 || ft_strcmp(cmd, "echo") == 0 
+	if (ft_strcmp(cmd, "exit") == 0 || ft_strcmp(cmd, "echo") == 0
 		|| ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "pwd") == 0
 		|| ft_strcmp(cmd, "export") == 0 || ft_strcmp(cmd, "unset") == 0
 		|| ft_strcmp(cmd, "env") == 0 || ft_strcmp(cmd, "type") == 0)
@@ -82,7 +82,7 @@ void	handle_command(char *input, char **args, int arg_count,
 		return ;
 	}
 	found = found_commands(cmd);
-	if(found)
+	if (found)
 	{
 		free(found);
 		execute_command(cmd, args, data);
@@ -109,8 +109,7 @@ char	*get_input(void)
 	return (line);
 }
 
-
-char*	search_commands(const char *input)
+char	*search_commands(const char *input)
 {
 	char	*path_env;
 	char	*dir;
@@ -138,7 +137,7 @@ char*	search_commands(const char *input)
 	return (NULL);
 }
 
-char*	found_commands(const char *input)
+char	*found_commands(const char *input)
 {
 	char	*arr;
 

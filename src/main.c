@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:20:35 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/01 19:57:47 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/01 22:20:24 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,9 +91,9 @@ void	nully(t_parse_state *s)
 char	**parse_arguments(const char *input, int *arg_count)
 {
 	t_parse_state	s;
+	char			next;
 	static char		*argv[MAX_ARGS];
 	char			buffer[BUFFER_SIZE];
-	char	next;
 
 	nully(&s);
 	while (input[s.i])
@@ -109,7 +109,7 @@ char	**parse_arguments(const char *input, int *arg_count)
 			s.in_double_quote = !s.in_double_quote;
 			buffer[s.j++] = input[s.i++];
 			continue ;
-		}// issue in " export "name" saved name" 
+		}
 		if (!s.in_single_quote && !s.in_double_quote
 			&& (input[s.i] == ' ' || input[s.i] == '\t'))
 		{
@@ -174,13 +174,11 @@ void	shell_loop(int arg_count, t_data *data)
 			continue ;
 		}
 		args = parse_arguments(input, &arg_count);
-		if(check_syntax_error(args, data))
+		if (check_syntax_error(args, data))
 		{
 			free(input);
-			continue;
+			continue ;
 		}
-	/*	printf_split("The zeft: ", args);
-		args = expand(args, data);*/
 		tokenize(args, &token);
 		handle_command(input, args, arg_count, token, data);
 		ft_free(args);
@@ -190,9 +188,10 @@ void	shell_loop(int arg_count, t_data *data)
 
 char	**copy_env(char **envp)
 {
-	int		i = 0;
+	int		i;
 	char	**new_env;
 
+	i = 0;
 	while (envp[i])
 		i++;
 	new_env = malloc(sizeof(char *) * (i + 1));
@@ -207,10 +206,11 @@ char	**copy_env(char **envp)
 	new_env[i] = NULL;
 	return (new_env);
 }
+
 int	main(int argc, char **argv, char **envp)
 {
-	t_data data;
-	
+	t_data	data;
+
 	(void)argc;
 	(void)argv;
 	data.env = copy_env(envp);
@@ -220,4 +220,3 @@ int	main(int argc, char **argv, char **envp)
 	rl_clear_history();
 	return (data.last_status);
 }
-

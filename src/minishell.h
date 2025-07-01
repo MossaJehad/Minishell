@@ -76,13 +76,11 @@ void	free_tokens(t_token *token);
 // ─────────────────────────────────────────────
 
 void	handle_command(char *input, char **args, int arg_count, t_token *token, t_data *data);
-
 void	handle_echo_command(t_token *token);
 void	handle_cd_command(char *path, int arg_count, t_data *data);
 void	handle_env_command(char **args, t_data *data);
 void	handle_unset_command(char **args, t_data *data);
 void	handle_export_command(char **args, t_data *data);
-
 void	handle_exit_command(char **args, t_data *data);
 void	handle_type_command(const char *input, t_data *data);
 int		is_shell_builtin(const char *cmd);
@@ -100,9 +98,9 @@ void	remove_env_var(t_data *data, char *str);
 int		handle_with_equal(char *arg, t_data *data, char *equal);
 int		handle_without_equal(char *arg, t_data *data);
 void	print_exported_env(char **env);
-
 char	*d_quotes(char	*str);
-int	count_quote(char *str);
+int		count_quote(char *str);
+
 // ─────────────────────────────────────────────
 // Expansion
 // ─────────────────────────────────────────────
@@ -125,12 +123,9 @@ char	*print_inside_quotes(const char *src);
 int		env_len(char **env);
 int		whileloopstring(int i, int j, int len, char *buffer,
 			const char *src, int bufsize, int string);
-
-
-void 	execute_builtin(char *input, char **args, int arg_count,
-						t_token *token, t_data *data);
-
-char*	search_commands(const char *input);
-char*	found_commands(const char *input);
+void	execute_builtin(char *input, char **args, int arg_count,
+			t_token *token, t_data *data);
+char	*search_commands(const char *input);
+char	*found_commands(const char *input);
 
 #endif
