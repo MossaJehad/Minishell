@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 14:46:24 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/07/01 18:22:27 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/01 18:58:32 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,7 +205,7 @@ int	handle_with_equal(char *arg, t_data *data, char *equal)
 	char	*value;
 
 	var_len = equal - arg;
-	printf("the var:%s\n", arg);
+	//printf("the var:%s\n", arg);
 	var_value = ft_substr(arg, 0, var_len);
 	var = d_quotes(var_value);
 	free(var_value);

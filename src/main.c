@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:20:35 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/01 18:26:06 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/01 18:57:34 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ char	**parse_arguments(const char *input, int *arg_count)
 		if (input[s.i] == '\'' && !s.in_double_quote)
 		{
 			s.in_single_quote = !s.in_single_quote;
-			buffer[s.j++] = input[s.i++];
+			
 			continue ;
 		}
 		if (input[s.i] == '"' && !s.in_single_quote)
@@ -179,7 +179,8 @@ void	shell_loop(int arg_count, t_data *data)
 			free(input);
 			continue;
 		}
-		args = expand(args, data);
+	/*	printf_split("The zeft: ", args);
+		args = expand(args, data);*/
 		tokenize(args, &token);
 		handle_command(input, args, arg_count, token, data);
 		ft_free(args);
