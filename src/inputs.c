@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   inputs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:19:51 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/06/29 19:27:12 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/01 14:32:43 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ void 	execute_builtin(char *input, char **args, int arg_count,
 	char	*cmd;
 
 	cmd = args[0];
-	if (ft_strcmp(cmd, "exit") == 0 && arg_count > 1)
-		exit(0);
+	if (ft_strcmp(cmd, "exit") == 0)
+		handle_exit_command(args, data);
 	else if (ft_strcmp(cmd, "echo") == 0)
 		handle_echo_command(token);
 	else if (ft_strcmp(cmd, "cd") == 0)
@@ -33,8 +33,6 @@ void 	execute_builtin(char *input, char **args, int arg_count,
 		handle_export_command(args, data);
 	else if (ft_strcmp(cmd, "type") == 0 && arg_count > 1)
 		handle_type_command(args[1], data);
-	else if (ft_strcmp(cmd, "exit") == 0)
-		handle_exit_command(args, data);
 	else if (ft_strcmp(cmd, "pwd") == 0)
 		printf("%s\n", getcwd(cwd, sizeof(cwd)));
 }
@@ -48,6 +46,7 @@ void	execute_command(char *cmd, char **args, t_data *data)
 	pid = fork();
 	if (pid == 0)
 	{
+		set_signals_noninteractive();
 		execve(full_path, args, data->env);
 		perror("execve");
 		exit(1);
@@ -98,15 +97,15 @@ void	handle_command(char *input, char **args, int arg_count,
 	}
 }
 
-char	*get_input(void)
+char	*get_input(t_data *data)
 {
 	char	*line;
 
 	line = readline("$ ");
 	if (line == NULL)
 	{
-		printf("\n");
-		return (NULL);
+		printf("exit\n");
+		exit(data->last_status);
 	}
 	if (line && *line)
 		add_history(line);

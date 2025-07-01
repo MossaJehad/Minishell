@@ -19,6 +19,7 @@
 # include <limits.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "libft/libft.h"
@@ -58,7 +59,7 @@ typedef struct s_data
 
 void	init_shell(void);
 void	shell_loop(int argc, t_data *data);
-char	*get_input(void);
+char	*get_input(t_data *data);
 
 // ─────────────────────────────────────────────
 // Argument Parsing & Tokens
@@ -120,7 +121,6 @@ char	*ft_strjoin_free(char *s1, char *s2);
 
 char	**copy_env(char **envp);
 void	free_env(char **env);
-char	*print_inside_quotes(const char *src);
 int		env_len(char **env);
 int		whileloopstring(int i, int j, int len, char *buffer,
 			const char *src, int bufsize, int string);
@@ -131,5 +131,8 @@ void 	execute_builtin(char *input, char **args, int arg_count,
 
 char*	search_commands(const char *input);
 char*	found_commands(const char *input);
-
+void	set_signals_interactive(void);
+void	set_signals_noninteractive(void);
+//void    set_signals_heredoc();
+void	fatal_error(char *msg, char *input, char **args, t_token *token, t_data *data);
 #endif

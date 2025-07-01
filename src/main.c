@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:20:35 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/06/29 19:30:18 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/01 16:41:41 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,27 +54,6 @@ int	whileloopstring(int i, int j, int len, char *buffer,
 	}
 	buffer[j] = '\0';
 	return (j);
-}
-
-char	*print_inside_quotes(const char *src)
-{
-	char	quote_char;
-	char	*string;
-	int		i;
-	int		j;
-
-	i = 1;
-	j = 0;
-	if (!src || (src[0] != '\'' && src[0] != '"'))
-		return (ft_strdup(src));
-	quote_char = src[0];
-	string = malloc(strlen(src));
-	if (!string)
-		return (NULL);
-	while (src[i] && src[i] != quote_char)
-		string[j++] = src[i++];
-	string[j] = '\0';
-	return (string);
 }
 
 void	nully(t_parse_state *s)
@@ -165,7 +144,8 @@ void	shell_loop(int arg_count, t_data *data)
 	while (1)
 	{
 		token = NULL;
-		input = get_input();
+		set_signals_interactive();
+		input = get_input(data);
 		if (input == NULL)
 			break ;
 		if (*input == '\0')

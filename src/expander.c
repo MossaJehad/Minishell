@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 14:43:37 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/06/29 20:00:51 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/01 16:58:24 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,13 +83,41 @@ char	*ft_strjoin_free(char *s1, char *s2)
 	free(s2);
 	return (joined);
 }
- 
-char	*join_expanded_part(const char *arg, int *j, int *start, char *new,
-		int last_status)
+
+static int	get_var_end(const char *arg, int start)
+{
+	if (arg[start] == '?')
+		return (start + 1);
+	if (ft_isdigit(arg[start]))
+		return (start + 1);
+	if (ft_isalnum(arg[start]) || arg[start] == '_')
+	{
+		while (ft_isalnum(arg[start]) || arg[start] == '_')
+			start++;
+		return (start);
+	}
+	return (start);
+}
+
+static char	*get_expanded_var(const char *arg, int var_start, int var_end, int last_status)
 {
 	char	*sub;
 	char	*exp;
-	int		k;
+
+	if (var_end > var_start)
+		sub = ft_substr(arg, var_start - 1, var_end - var_start + 1);
+	else
+		sub = ft_strdup("$");
+	exp = expand_dollar(sub, last_status);
+	free(sub);
+	return (exp);
+}
+
+char	*join_expanded_part(const char *arg, int *j, int *start, char *new, int last_status)
+{
+	char	*sub;
+	char	*exp;
+	int		end;
 
 	if (*j > *start)
 	{
@@ -97,20 +125,51 @@ char	*join_expanded_part(const char *arg, int *j, int *start, char *new,
 		new = ft_strjoin_free(new, sub);
 	}
 	(*j)++;
-	k = *j;
-	if (arg[k] == '?')
-		k++;
-	else
-		while (ft_isalnum(arg[k]) || arg[k] == '_')
-			k++;
-	sub = ft_substr(arg, *j - 1, k - *j + 1);
-	exp = expand_dollar(sub, last_status);
+	end = get_var_end(arg, *j);
+	exp = get_expanded_var(arg, *j, end, last_status);
 	new = ft_strjoin_free(new, exp);
-	free(sub);
-	*j = k;
-	*start = k;
+	*j = end;
+	*start = end;
 	return (new);
 }
+
+// char	*join_expanded_part(const char *arg, int *j, int *start, char *new,
+// 		int last_status)
+// {
+// 	char	*sub;
+// 	char	*exp;
+// 	int		k;
+
+// 	if (*j > *start)
+// 	{
+// 		sub = ft_substr(arg, *start, *j - *start);
+// 		new = ft_strjoin_free(new, sub);
+// 	}
+// 	(*j)++;
+// 	k = *j;
+// 	if (arg[k] == '?')
+// 		k++;
+// 	else if (ft_isdigit(arg[k]))
+// 		k++;
+// 	else if (ft_isalnum(arg[k]) || arg[k] == '_')
+// 	{
+// 		k++;
+// 		while (ft_isalnum(arg[k]) || arg[k] == '_')
+// 			k++;
+// 	}
+// 	else
+// 		k = *j;
+// 	if (k > *j)
+// 		sub = ft_substr(arg, *j - 1, k - *j + 1);
+// 	else
+// 		sub = ft_strdup("$");
+// 	exp = expand_dollar(sub, last_status);
+// 	new = ft_strjoin_free(new, exp);
+// 	free(sub);
+// 	*j = k;
+// 	*start = k;
+// 	return (new);
+// }
 
 char *expand_token(char *arg, t_data *data)
 {
@@ -154,7 +213,7 @@ char **expand(char **args, t_data *data)
 			exp = expand_token(args[i], data);
 			free(args[i]);
 			args[i] = exp;
-			free(exp);
+			//free(exp);
 		}
 		i++;
 	}

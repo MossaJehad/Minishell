@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhaddadi <jhaddadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:18:51 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/06/29 18:04:11 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/01 16:42:00 by jhaddadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	handle_echo_command(t_token *token)
 	while (token && (ft_strcmp(token->type, "word") == 0
 			|| ft_strcmp(token->type, "command") == 0))
 	{
-		printf("%s", print_inside_quotes(token->value));
+		printf("%s", token->value);
 		if (token->next && ft_strcmp(token->next->type, "word") == 0)
 			printf(" ");
 		token = token->next;
@@ -43,6 +43,7 @@ void	handle_cat_command(char **args, t_data *data)
 	pid = fork();
 	if (pid == 0)
 	{
+		set_signals_noninteractive();
 		execve("/usr/bin/cat", args, data->env);
 		perror("execve failed");
 		exit(1);
@@ -70,6 +71,7 @@ void	handle_ls_command(char **args, t_data *data)
 	pid = fork();
 	if (pid == 0)
 	{
+		set_signals_noninteractive();
 		execve("/bin/ls", args, data->env);
 		perror("execve failed");
 		exit(1);
