@@ -1,4 +1,5 @@
 #include "minishell.h"
+#include <string.h> // Ensure ft_strcmp is defined or replace with strcmp if appropriate
 
 int	is_shell_builtin(const char *cmd)
 {

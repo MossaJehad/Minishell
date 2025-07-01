@@ -1,28 +1,53 @@
 #include "minishell.h"
 
-char	*expand_dollar(char *arg)
+char *expand_dollar(char *arg) 
 {
-	char	*var_name;
-	char	*value;
-
-	var_name = arg + 1;
-	value = NULL;
-	if (ft_strcmp(arg, "$0") == 0)
-		return (ft_strdup("minishell"));
-	else if (ft_strcmp(arg, "$") == 0)
-		return (ft_strdup("$"));
-	else
-	{
-		value = getenv(var_name);
-		if (value)
-			return (ft_strdup(value));
-		return (ft_strdup(""));
-	}
+    char *var_name;
+    char *value;
+    
+    if (ft_strcmp(arg, "$") == 0)
+        return ft_strdup("$");
+    if (ft_strcmp(arg, "$$") == 0 || ft_strcmp(arg, "$?") == 0)
+        return ft_strdup(arg);
+    var_name = arg + 1;
+    value = getenv(var_name);
+    if(value)
+		return ft_strdup(value);
+	free(arg);
+	return ft_strdup("");
 }
-
-char	*expand_double_quote(char *arg)
+char *expand_double_quote(char *arg) 
 {
-	return (arg);
+    char buffer[BUFFER_SIZE];
+    int i; 
+    int j;
+    
+	i = 1;
+	j = 0;
+    while (arg[i] && arg[i] != '"') {
+        if (arg[i] == '$' && arg[i+1] != '"') {
+            // Extract variable name
+            int k = 0;
+            char var_name[256];
+            i++; // Skip $
+            
+            while (ft_isalnum(arg[i]) || arg[i] == '_')
+                var_name[k++] = arg[i++];
+            var_name[k] = '\0';
+            
+            // Get value
+            char *value = getenv(var_name);
+            if (value) {
+                strcpy(buffer + j, value);
+                j += strlen(value);
+            }
+        } else {
+            buffer[j++] = arg[i++];
+        }
+    }
+    buffer[j] = '\0';
+    free(arg);
+    return ft_strdup(buffer);
 }
 
 char	*expand_single_quote(char *arg)
