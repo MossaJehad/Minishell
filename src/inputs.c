@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:19:51 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/06/29 19:27:12 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/01 14:47:53 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,6 @@ void	handle_command(char *input, char **args, int arg_count,
 		free(found);
 		execute_command(cmd, args, data);
 	}
-	else if (ft_strcmp(cmd, "ls") == 0)
-		handle_ls_command(args, data);
-	else if (ft_strcmp(cmd, "cat") == 0)
-		handle_cat_command(args, data);
 	else
 	{
 		printf("%s: command not found\n", input);

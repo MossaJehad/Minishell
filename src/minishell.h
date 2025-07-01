@@ -83,8 +83,6 @@ void	handle_env_command(char **args, t_data *data);
 void	handle_unset_command(char **args, t_data *data);
 void	handle_export_command(char **args, t_data *data);
 
-void	handle_ls_command(char **args, t_data *data);
-void	handle_cat_command(char **args, t_data *data);
 void	handle_exit_command(char **args, t_data *data);
 void	handle_type_command(const char *input, t_data *data);
 int		is_shell_builtin(const char *cmd);

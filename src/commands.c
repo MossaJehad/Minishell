@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:18:51 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/06/29 18:04:11 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/01 14:48:01 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,60 +33,6 @@ void	handle_echo_command(t_token *token)
 	}
 	if (newline)
 		printf("\n");
-}
-
-void	handle_cat_command(char **args, t_data *data)
-{
-	pid_t	pid;
-	int		status;
-
-	pid = fork();
-	if (pid == 0)
-	{
-		execve("/usr/bin/cat", args, data->env);
-		perror("execve failed");
-		exit(1);
-	}
-	else if (pid > 0)
-	{
-		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			data->last_status = WEXITSTATUS(status);
-		else
-			data->last_status = 1;
-	}
-	else
-	{
-		perror("fork failed");
-		data->last_status = 1;
-	}
-}
-
-void	handle_ls_command(char **args, t_data *data)
-{
-	pid_t	pid;
-	int		status;
-
-	pid = fork();
-	if (pid == 0)
-	{
-		execve("/bin/ls", args, data->env);
-		perror("execve failed");
-		exit(1);
-	}
-	else if (pid > 0)
-	{
-		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			data->last_status = WEXITSTATUS(status);
-		else
-			data->last_status = 1;
-	}
-	else
-	{
-		perror("fork failed");
-		data->last_status = 1;
-	}
 }
 
 void	handle_type_command(const char *input, t_data *data)
