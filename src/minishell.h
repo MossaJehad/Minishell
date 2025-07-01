@@ -101,6 +101,8 @@ int		handle_with_equal(char *arg, t_data *data, char *equal);
 int		handle_without_equal(char *arg, t_data *data);
 void	print_exported_env(char **env);
 
+char	*d_quotes(char	*str);
+int	count_quote(char *str);
 // ─────────────────────────────────────────────
 // Expansion
 // ─────────────────────────────────────────────

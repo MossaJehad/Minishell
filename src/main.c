@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:20:35 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/01 18:57:34 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/01 19:57:47 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ char	**parse_arguments(const char *input, int *arg_count)
 		if (input[s.i] == '\'' && !s.in_double_quote)
 		{
 			s.in_single_quote = !s.in_single_quote;
-			
+			buffer[s.j++] = input[s.i++];
 			continue ;
 		}
 		if (input[s.i] == '"' && !s.in_single_quote)

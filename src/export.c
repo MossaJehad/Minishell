@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 14:46:24 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/07/01 19:00:52 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/01 20:11:26 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,15 +99,16 @@ void	add_to_env(char *var, t_data *data)
 
 int	handle_without_equal(char *arg, t_data *data)
 {
-	if (!valid_identifier(arg))
+	char	*var = d_quotes(arg);
+	if (!valid_identifier(var))
 	{
-		printf("export: %s: not a valid identifier", arg);
+		printf("export: %s: not a valid identifier", var);
 		return (1);
 	}
 	else
 	{
-		if (!var_exist(arg, data))
-			add_to_env(arg, data);
+		if (!var_exist(var, data))
+			add_to_env(var, data);
 	}
 	return (0);
 }
@@ -203,16 +204,20 @@ int	handle_with_equal(char *arg, t_data *data, char *equal)
 	char	*var;
 	char	*var_value;
 	char	*value;
+	char	*join;
+	char	*tmp;
 
+	write(2,"the out\n", 8);
 	var_len = equal - arg;
-	//printf("the var:%s\n", arg);
+	//printf("the arg:%s\n", arg);
 	var_value = ft_substr(arg, 0, var_len);
 	var = d_quotes(var_value);
 	free(var_value);
 	value = d_quotes(equal + 1);
 	if (!value)
 		return(-1);
-	printf("the out:%s\n", value);
+	//printf("the value:%s\n", value);
+	//printf("the var is:%s\n", var);
 	if (!valid_identifier(var))
 	{
 		printf("export: %s: not a valid identifier", arg);
@@ -223,7 +228,24 @@ int	handle_with_equal(char *arg, t_data *data, char *equal)
 	if (var_exist(var, data))
 		update_env_var(data, var, value);
 	else
-		add_to_env(arg, data);
+	{
+		if (value)
+		{
+			tmp = ft_strjoin(var, "=");
+			join = ft_strjoin(tmp, value);
+			free(tmp);
+			add_to_env(join, data);
+			free(join);
+		}
+		else
+		{
+			add_to_env(var, data);
+		}
+		printf("export fisrt enterd value\n");
+		// the issue that if you sent fisrt time 
+		// var it will add based on previuos 
+		// parsing is sented second will be correct  
+	}
 	free(var);
 	free(value);
 	return (0);
