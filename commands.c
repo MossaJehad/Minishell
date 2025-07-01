@@ -10,12 +10,10 @@ void handle_echo_command(t_token *token) {
         token = token->next;
     }
     while (token) {
-        // only print real arguments, skip redirects
         if (ft_strcmp(token->type, "word") == 0
          || ft_strcmp(token->type, "command") == 0) 
         {
             printf("%s", token->value);
-            // print space only if next real arg follows
             t_token *peek = token->next;
             while (peek && !(
                 ft_strcmp(peek->type, "word") == 0 ||
