@@ -175,7 +175,7 @@ void shell_loop(int arg_count, char ***envp)
             continue;
         }
         args = parse_arguments(input, &arg_count);
-        args = expand(args);
+        args = expand(args, *envp);
         tokenize(args, &token);
         handle_command(input,
                        args,
@@ -197,5 +197,6 @@ int	main(int argc, char **argv, char **envp)
 	env = envp;
 	shell_loop(argc, &env);
 	rl_clear_history();
+	free_env(env);
 	return (0);
 }

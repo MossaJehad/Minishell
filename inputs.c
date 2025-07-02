@@ -61,7 +61,7 @@ void	handle_command(char *input,
     int  ei = 0;
     t_token *cur = token;
     pid_t pid;
-    int i;
+    int i = 0;
 
     while (cur)
     {
@@ -73,21 +73,44 @@ void	handle_command(char *input,
         // }
         cur = cur->next;
     }
-    while ( i < arg_count)
+    while (i < arg_count)
     {
-         i = 0;
-        if (ft_strcmp(args[i], "<") == 0
-         || ft_strcmp(args[i], ">") == 0
-         || ft_strcmp(args[i], ">>") == 0
-         || ft_strcmp(args[i], "<<") == 0)
+        if (!ft_strcmp(args[i], "<")
+         || !ft_strcmp(args[i], ">")
+         || !ft_strcmp(args[i], ">>")
+         || !ft_strcmp(args[i], "<<"))
         {
-            i++; continue;
+            i += 2;
+            continue;
         }
-        exec_args[ei++] = args[i];
-        i++;
+        exec_args[ei++] = args[i++];
     }
     exec_args[ei] = NULL;
 
+    // ---- parent‐run builtins ----
+    if (exec_args[0] && should_run_in_parent(exec_args[0]))
+    {
+        if (!ft_strcmp(exec_args[0], "cd"))
+            handle_cd_command(exec_args[1], ei);
+        else if (!ft_strcmp(exec_args[0], "export"))
+            handle_export_command(envp, exec_args, ei);
+        else if (!ft_strcmp(exec_args[0], "unset"))
+            handle_unset_command(envp, exec_args, ei);
+        else if (!ft_strcmp(exec_args[0], "exit"))
+        {
+            /* restore and close before exiting */
+            dup2(saved_in, STDIN_FILENO);
+            dup2(saved_out, STDOUT_FILENO);
+            close(saved_in);
+            close(saved_out);
+            exit(0);
+        }
+        dup2(saved_in, STDIN_FILENO);
+        dup2(saved_out, STDOUT_FILENO);
+        close(saved_in);
+        close(saved_out);
+        return;
+    }
     pid = fork();
     if (pid == 0)
     {
@@ -112,12 +135,9 @@ void	handle_command(char *input,
             handle_export_command(envp, exec_args, ei);
         else if (exec_args[0] && ft_strcmp(exec_args[0], "type") == 0)
         {
-            while (i < ei)
-            {
-                i = 0;
-                handle_type_command(exec_args[i]);
-                i++;
-            }
+            int j = 0;
+            while (j < ei)
+                handle_type_command(exec_args[j++]);
         }
         else if (exec_args[0] && ft_strcmp(exec_args[0], "pwd") == 0)
         {
@@ -140,6 +160,8 @@ void	handle_command(char *input,
         waitpid(pid, NULL, 0);
         dup2(saved_in, STDIN_FILENO);
         dup2(saved_out, STDOUT_FILENO);
+        close(saved_in);
+        close(saved_out);
     }
     else
         perror("fork");

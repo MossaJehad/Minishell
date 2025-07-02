@@ -1,49 +1,57 @@
 #include "minishell.h"
 
-char *expand_dollar(char *arg) 
+static char *lookup_env(const char *name, char **envp)
 {
-    char *var_name;
-    char *value;
-    
-    if (ft_strcmp(arg, "$") == 0)
-        return ft_strdup("$");
-    if (ft_strcmp(arg, "$$") == 0 || ft_strcmp(arg, "$?") == 0)
-        return ft_strdup(arg);
-    var_name = arg + 1;
-    value = getenv(var_name);
-    if(value)
-		return ft_strdup(value);
-	free(arg);
-	return ft_strdup("");
+    size_t len = ft_strlen(name);
+    int    i = 0;
+    while (envp && envp[i])
+    {
+        if (!ft_strncmp(envp[i], name, len) && envp[i][len] == '=')
+            return (&envp[i][len + 1]);
+        i++;
+    }
+    return NULL;
 }
-char *expand_double_quote(char *arg) 
+
+char *expand_dollar(char *arg, char **envp) 
+{
+    char *var = arg + 1;
+    char *val;
+
+    if (!ft_strcmp(arg, "$"))
+        return ft_strdup("$");
+    if (!ft_strcmp(arg, "$$") || !ft_strcmp(arg, "$?"))
+        return ft_strdup(arg);
+    val = lookup_env(var, envp);
+    free(arg);
+    return ft_strdup(val ? val : "");
+}
+
+char *expand_double_quote(char *arg, char **envp) 
 {
     char buffer[BUFFER_SIZE];
-    int i; 
-    int j;
-    
-	i = 1;
-	j = 0;
-    while (arg[i] && arg[i] != '"') {
-        if (arg[i] == '$' && arg[i+1] != '"') {
-            // Extract variable name
-            int k = 0;
-            char var_name[256];
-            i++; // Skip $
-            
+    int  i = 1, j = 0;
+    char *val;
+
+    while (arg[i] && arg[i] != '"')
+    {
+        if (arg[i] == '$' && arg[i+1] != '"' && arg[i+1])
+        {
+            int  k = 0;
+            char var[256];
+            i++;
             while (ft_isalnum(arg[i]) || arg[i] == '_')
-                var_name[k++] = arg[i++];
-            var_name[k] = '\0';
-            
-            // Get value
-            char *value = getenv(var_name);
-            if (value) {
-                strcpy(buffer + j, value);
-                j += strlen(value);
+                var[k++] = arg[i++];
+            var[k] = '\0';
+            val = lookup_env(var, envp);
+            if (val)
+            {
+                ft_strlcpy(buffer + j, val, ft_strlen(val) + 1);
+                j += ft_strlen(val);
             }
-        } else {
-            buffer[j++] = arg[i++];
         }
+        else
+            buffer[j++] = arg[i++];
     }
     buffer[j] = '\0';
     free(arg);
@@ -77,26 +85,23 @@ char	*expand_single_quote(char *arg)
 	return (str);
 }
 
-char	**expand(char **args)
+char **expand(char **args, char **envp)
 {
-	int		i;
-	char	*new;
+    int  i = 0;
+    char *new;
 
-	i = 0;
-	new = NULL;
-	while (args[i])
-	{
-		if (args[i][0] == '$')
-		{
-			new = expand_dollar(args[i]);
-			free (args[i]);
-			args[i] = new;
-		}
-		else if (args[i][0] == '\'')
-			args[i] = expand_single_quote(args[i]);
-		else if (args[i][0] == '"')
-			args[i] = expand_double_quote(args[i]);
-		i++;
-	}
-	return (args);
+    while (args[i])
+    {
+        if (args[i][0] == '$')
+        {
+            new = expand_dollar(args[i], envp);
+            args[i] = new;
+        }
+        else if (args[i][0] == '\'')
+            args[i] = expand_single_quote(args[i]);
+        else if (args[i][0] == '"')
+            args[i] = expand_double_quote(args[i], envp);
+        i++;
+    }
+    return args;
 }

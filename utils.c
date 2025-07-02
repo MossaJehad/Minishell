@@ -14,6 +14,14 @@ int	is_shell_builtin(const char *cmd)
 	return (0);
 }
 
+int	should_run_in_parent(const char *cmd)
+{
+    return (!ft_strcmp(cmd, "cd")
+         || !ft_strcmp(cmd, "export")
+         || !ft_strcmp(cmd, "unset")
+         || !ft_strcmp(cmd, "exit"));
+}
+
 void	print_welcome_banner(void)
 {
 	printf("┏┓┳┏┓┳┳┓┏┓\n");
@@ -26,4 +34,14 @@ void	init_shell(char **envp)
 {
 	(void)envp;
 	print_welcome_banner();
+}
+
+void    free_env(char **envp)
+{
+    int i = 0;
+    if (!envp)
+        return;
+    while (envp[i])
+        free(envp[i++]);
+    free(envp);
 }

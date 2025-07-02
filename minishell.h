@@ -60,7 +60,8 @@ void	handle_type_command(const char *input);
 void	handle_cd_command(char *path, int arg_count);
 void	init_shell(char **envp);
 int		is_shell_builtin(const char *cmd);
-char	**expand(char **args);
+int		should_run_in_parent(const char *cmd);
+char	**expand(char **args, char **envp);
 char	*print_inside_quotes(const char *src);
 void	prompt(void);
 int has_unclosed_quotes(const char *input);
@@ -70,6 +71,7 @@ void handle_unset_command(char ***envp, char **args, int arg_count);
 void remove_env_var(char ***envp, const char *name);
 
 int setup_redirection(t_token *token);
+void    free_env(char **envp);
 
 
 #endif

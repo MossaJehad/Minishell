@@ -68,17 +68,23 @@ void	handle_type_command(const char *input)
 
 void	handle_cd_command(char *path, int arg_count)
 {
-	if (arg_count > 2)
-	{
-		printf("cd: too many arguments\n");
-		return ;
-	}
-	while (*path == ' ' || *path == '\t')
-		path++;
-	if (*path == '\0' || ft_strcmp(path, "~") == 0)
-		path = getenv("HOME");
-	if (chdir(path) != 0)
-		printf("cd: %s: No such file or directory\n", path);
+    if (arg_count > 2)
+    {
+        printf("cd: too many arguments\n");
+        return ;
+    }
+    if (!path || *path == '\0')
+    {
+        path = getenv("HOME");
+        if (!path)
+            return ;
+    }
+    while (*path == ' ' || *path == '\t')
+        path++;
+    if (*path == '\0' || ft_strcmp(path, "~") == 0)
+        path = getenv("HOME");
+    if (chdir(path) != 0)
+        printf("cd: %s: No such file or directory\n", path);
 }
 
 static int	find_env_index(char **env, const char *name)
