@@ -9,8 +9,8 @@ LIBFT       =   $(LIBFT_DIR)/libft.a
 LIBFT_INC   =   $(LIBFT_DIR)
 
 # Readline path (this assumes the default installation location)
-READLINE_INC =   -I/usr/include/readline
-READLINE_LIB =   -lreadline
+READLINE_INC =   -I/usr/local/opt/readline/include
+READLINE_LIB =   -L/usr/local/opt/readline/lib -lreadline -lhistory
 
 SRC         =   tokenize.c main.c utils.c inputs.c commands.c expander.c commands2.c export.c
 OBJS        =   $(SRC:.c=.o)

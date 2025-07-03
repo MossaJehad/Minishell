@@ -217,6 +217,6 @@ int	main(int argc, char **argv, char **envp)
 	data.last_status = 0;
 	init_shell();
 	shell_loop(argc, &data);
-	rl_clear_history();
+	clear_history();
 	return (data.last_status);
 }
