@@ -1,4 +1,16 @@
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenize.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/21 18:30:30 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/07/21 18:49:02 by mhasoneh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "include/minishell.h"
 
 void	create_token(t_token **token, char *value, char *type)
 {
@@ -48,7 +60,7 @@ int	check_syntax_error(char **array)
 		{
 			if (!array[++i])
 			{
-				printf ("syntax error\n");
+				printf("syntax error\n");
 				return (1);
 			}
 		}
@@ -82,7 +94,7 @@ void	tokenize(char **array, t_token **token)
 	}
 }
 
-void	free_tokens(t_token	*token)
+void	free_tokens(t_token *token)
 {
 	t_token	*temp;
 

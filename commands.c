@@ -1,39 +1,54 @@
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   commands.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/21 18:30:10 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/07/21 18:58:51 by mhasoneh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void handle_echo_command(t_token *token) {
-    int newline;
-    
+#include "include/minishell.h"
+
+void	handle_echo_command(t_token *token)
+{
+	int		newline;
+	t_token	*peek;
+
 	newline = 1;
-    token = token->next;
-    if (token && ft_strcmp(token->value, "-n") == 0) {
-        newline = 0;
-        token = token->next;
-    }
-    while (token) {
-        if (ft_strcmp(token->type, "word") == 0
-         || ft_strcmp(token->type, "command") == 0) 
-        {
-            printf("%s", token->value);
-            t_token *peek = token->next;
-            while (peek && !(
-                ft_strcmp(peek->type, "word") == 0 ||
-                ft_strcmp(peek->type, "command") == 0))
-                peek = peek->next;
-            if (peek)
-                printf(" ");
-        }
-        token = token->next;
-    }
-    if (newline)
-        printf("\n");
+	token = token->next;
+	if (token && ft_strcmp(token->value, "-n") == 0)
+	{
+		newline = 0;
+		token = token->next;
+	}
+	while (token)
+	{
+		if (ft_strcmp(token->type, "word") == 0 || ft_strcmp(token->type,
+				"command") == 0)
+		{
+			printf("%s", token->value);
+			peek = token->next;
+			while (peek && !(ft_strcmp(peek->type, "word") == 0
+					|| ft_strcmp(peek->type, "command") == 0))
+				peek = peek->next;
+			if (peek)
+				printf(" ");
+		}
+		token = token->next;
+	}
+	if (newline)
+		printf("\n");
 }
 
-void handle_env_command(char **env)
+void	handle_env_command(char **env)
 {
-    while (env && *env)
-    {
-        printf("%s\n", *env++);
-    }
+	while (env && *env)
+	{
+		printf("%s\n", *env++);
+	}
 }
 
 void	handle_type_command(const char *input)
@@ -68,175 +83,187 @@ void	handle_type_command(const char *input)
 
 void	handle_cd_command(char *path, int arg_count)
 {
-    if (arg_count > 2)
-    {
-        printf("cd: too many arguments\n");
-        return ;
-    }
-    if (!path || *path == '\0')
-    {
-        path = getenv("HOME");
-        if (!path)
-            return ;
-    }
-    while (*path == ' ' || *path == '\t')
-        path++;
-    if (*path == '\0' || ft_strcmp(path, "~") == 0)
-        path = getenv("HOME");
-    if (chdir(path) != 0)
-        printf("cd: %s: No such file or directory\n", path);
+	if (arg_count > 2)
+	{
+		printf("cd: too many arguments\n");
+		return ;
+	}
+	if (!path || *path == '\0')
+	{
+		path = getenv("HOME");
+		if (!path)
+			return ;
+	}
+	while (*path == ' ' || *path == '\t')
+		path++;
+	if (*path == '\0' || ft_strcmp(path, "~") == 0)
+		path = getenv("HOME");
+	if (chdir(path) != 0)
+		printf("cd: %s: No such file or directory\n", path);
 }
 
 static int	find_env_index(char **env, const char *name)
 {
-    size_t	n = ft_strlen(name);
-    int		i = 0;
+	size_t	n;
+	int		i;
 
-    while (env[i])
-    {
-        if (ft_strncmp(env[i], name, n) == 0 && env[i][n] == '=')
-            return (i);
-        i++;
-    }
-    return (-1);
+	n = ft_strlen(name);
+	i = 0;
+	while (env[i])
+	{
+		if (ft_strncmp(env[i], name, n) == 0 && env[i][n] == '=')
+			return (i);
+		i++;
+	}
+	return (-1);
 }
 
 static void	add_or_replace(char ***envp, const char *var)
 {
-    char   **env = *envp;
-    char    *eq = ft_strchr(var, '=');
-    size_t   keylen = eq ? (size_t)(eq - var) : ft_strlen(var);
-    char    *name = ft_strndup(var, keylen);
-    int      idx = find_env_index(env, name);
-    int      i;
+	char	**env;
+	char	*eq;
+	size_t	keylen;
+	char	*name;
+	int		idx;
+	int		i;
+	char	**newenv;
+	int		j;
 
-    free(name);
-    if (idx >= 0)
-    {
-        free(env[idx]);
-        env[idx] = ft_strdup(var);
-    }
-    else
-    {
-        i = 0;
-        while (env[i])
-            i++;
-        char **newenv = malloc(sizeof(char *) * (i + 2));
-        int j = 0;
-        while (j < i)
-        {
-            newenv[j] = env[j];
-            j++;
-        }
-        newenv[i]     = ft_strdup(var);
-        newenv[i + 1] = NULL;
-        *envp = newenv;
-    }
+	env = *envp;
+	eq = ft_strchr(var, '=');
+	keylen = eq ? (size_t)(eq - var) : ft_strlen(var);
+	name = ft_strndup(var, keylen);
+	idx = find_env_index(env, name);
+	free(name);
+	if (idx >= 0)
+	{
+		free(env[idx]);
+		env[idx] = ft_strdup(var);
+	}
+	else
+	{
+		i = 0;
+		while (env[i])
+			i++;
+		newenv = malloc(sizeof(char *) * (i + 2));
+		j = 0;
+		while (j < i)
+		{
+			newenv[j] = env[j];
+			j++;
+		}
+		newenv[i] = ft_strdup(var);
+		newenv[i + 1] = NULL;
+		*envp = newenv;
+		//free(newenv);
+	}
 }
 
 void	handle_export_command(char ***envp, char **args, int arg_count)
 {
-    char *buf;
-    char *name;
-    char *eq;
-    size_t keylen;
-    char *key;
-    int i;
+	char	*buf;
+	char	*name;
+	char	*eq;
+	size_t	keylen;
+	char	*key;
+	int		i;
+	char	**e;
 
-    if (arg_count == 1)
-    {
-        char **e = *envp;
-        while (e && *e)
-            printf("export %s\n", *e++);
-    }
-    else
-    {
-        i = 1;
-        while (i < arg_count)
-        {
-            name = args[i];
-            eq = ft_strchr(name, '=');
-            if (eq)
-            {
-                keylen = eq - name;
-                key = ft_strndup(name, keylen);
-                if (!is_valid_identifier(key))
-                    printf("export: `%s': not a valid identifier\n", name);
-                else
-                    add_or_replace(envp, name);
-                free(key);
-            }
-            else
-            {
-                if (!is_valid_identifier(name))
-                    printf("export: `%s': not a valid identifier\n", name);
-                else
-                {
-                    buf = ft_strjoin(name, "=");
-                    add_or_replace(envp, buf);
-                    free(buf);
-                }
-            }
-            i++;
-        }
-    }
+	if (arg_count == 1)
+	{
+		e = *envp;
+		while (e && *e)
+			printf("declare -x %s\n", *e++);
+	} // value printed should be inside a double quotes (even if he send multi quotes)
+	else
+	{
+		i = 1;
+		while (i < arg_count)
+		{
+			name = args[i];
+			eq = ft_strchr(name, '=');
+			if (eq)
+			{
+				keylen = eq - name;
+				key = ft_strndup(name, keylen);
+				if (!is_valid_identifier(key))
+					printf("export: `%s': not a valid identifier\n", name);
+				else
+					add_or_replace(envp, name);
+				free(key);
+			}
+			else
+			{
+				if (!is_valid_identifier(name))
+					printf("export: `%s': not a valid identifier\n", name);
+				else
+				{
+					buf = ft_strjoin(name, "=");
+					add_or_replace(envp, buf);
+					free(buf);
+				}
+			}
+			i++;
+		}
+	}
 }
 
 int	is_valid_identifier(const char *str)
 {
-    size_t i;
+	size_t	i;
 
-    if (!str || (!ft_isalpha(str[0]) && str[0] != '_'))
-        return (0);
-    i = 1;
-    while (str[i])
-    {
-        if (!ft_isalnum(str[i]) && str[i] != '_')
-            return (0);
-        i++;
-    }
-    return (1);
+	if (!str || (!ft_isalpha(str[0]) && str[0] != '_'))
+		return (0);
+	i = 1;
+	while (str[i])
+	{
+		if (!ft_isalnum(str[i]) && str[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 void	remove_env_var(char ***envp, const char *name)
 {
-    char **env = *envp;
-    size_t n;
-    int   i, cnt;
+	char	**env;
+	size_t	n;
+	int		i;
+	int		cnt;
 
-    cnt = 0;
-    n = ft_strlen(name);
-    while (env[cnt++])
-        ;
-    i = 0;
-    while ( env[i])
-    {
-        if (ft_strncmp(env[i], name, n) == 0 && env[i][n] == '=')
-        {
-            free(env[i]);
-            while (i < cnt - 1)
-            {
-                env[i] = env[i + 1];
-                i++;
-            }
-            env[i] = NULL;
-            break;
-        }
-        i++;
-    }
+	env = *envp;
+	cnt = 0;
+	n = ft_strlen(name);
+	while (env[cnt++])
+		;
+	i = -1;
+	while (env[i++])
+	{
+		if (ft_strncmp(env[i], name, n) == 0 && env[i][n] == '=')
+		{
+			free(env[i]);
+			while (i < cnt - 1)
+			{
+				env[i] = env[i + 1];
+				i++;
+			}
+			env[i] = NULL;
+			break ;
+		}
+	}
 }
 
 void	handle_unset_command(char ***envp, char **args, int arg_count)
 {
-    int i;
+	int	i;
 
-    i = 1;
-    while (i < arg_count)
-    {
-        if (!is_valid_identifier(args[i]))
-            printf("unset: '%s': not a valid identifier\n", args[i]);
-        else
-            remove_env_var(envp, args[i]);
-        i++;
-    }
+	i = 1;
+	while (i < arg_count)
+	{
+		if (!is_valid_identifier(args[i]))
+			printf("unset: '%s': not a valid identifier\n", args[i]);
+		else
+			remove_env_var(envp, args[i]);
+		i++;
+	}
 }

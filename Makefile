@@ -2,7 +2,7 @@ NAME	=	minishell
 CC		=	cc
 CFLAGS	=	-Wall -Wextra -Werror -g
 RM		=	rm -rf
-HEADERS	=	minishell.h
+HEADERS	=	include/minishell.h
 
 # Directories
 SRC_DIR	=	.

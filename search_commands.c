@@ -1,6 +1,18 @@
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   search_commands.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/21 18:30:28 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/07/21 18:49:39 by mhasoneh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-char*	search_commands(const char *input)
+#include "include/minishell.h"
+
+char	*search_commands(const char *input)
 {
 	char	*path_env;
 	char	*dir;

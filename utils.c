@@ -1,5 +1,16 @@
-#include "minishell.h"
-#include <string.h> // Ensure ft_strcmp is defined or replace with strcmp if appropriate
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/21 18:30:33 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/07/21 18:49:39 by mhasoneh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "include/minishell.h"
 
 int	is_shell_builtin(const char *cmd)
 {
@@ -16,10 +27,8 @@ int	is_shell_builtin(const char *cmd)
 
 int	should_run_in_parent(const char *cmd)
 {
-    return (!ft_strcmp(cmd, "cd")
-         || !ft_strcmp(cmd, "export")
-         || !ft_strcmp(cmd, "unset")
-         || !ft_strcmp(cmd, "exit"));
+	return (!ft_strcmp(cmd, "cd") || !ft_strcmp(cmd, "export")
+		|| !ft_strcmp(cmd, "unset") || !ft_strcmp(cmd, "exit"));
 }
 
 void	print_welcome_banner(void)
@@ -36,12 +45,14 @@ void	init_shell(char **envp)
 	print_welcome_banner();
 }
 
-void    free_env(char **envp)
+void	free_env(char **envp)
 {
-    int i = 0;
-    if (!envp)
-        return;
-    while (envp[i])
-        free(envp[i++]);
-    free(envp);
+	int	i;
+
+	i = 0;
+	if (!envp)
+		return ;
+	while (envp[i])
+		free(envp[i++]);
+	free(envp);
 }
