@@ -49,8 +49,6 @@ int		check_syntax_error(char **array);
 
 char	**parse_arguments(const char *input, int *arg_count);
 char	*unescape_string(const char *src);
-int		whileloopstring(int i, int j, int len, char *buffer,
-			const char *src, int bufsize, int string);
 
 void	shell_loop(int argc, char ***envp);
 void	handle_command(char *input,
@@ -73,8 +71,8 @@ void	init_shell(char **envp);
 int		is_shell_builtin(const char *cmd);
 int		should_run_in_parent(const char *cmd);
 char	**expand(char **args, char **envp);
-char	*print_inside_quotes(const char *src);
 void	prompt(void);
+void	nully(t_parse_state *s);
 int has_unclosed_quotes(const char *input);
 char	*ft_strndup(const char *s1, size_t n);
 int is_valid_identifier(const char *str);

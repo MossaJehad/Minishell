@@ -6,11 +6,11 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:15 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/21 18:49:39 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/21 19:15:57 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "include/minishell.h"
+#include "minishell.h"
 
 static char	*lookup_env(const char *name, char **envp)
 {

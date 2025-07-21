@@ -1,11 +1,11 @@
 NAME	=	minishell
 CC		=	cc
-CFLAGS	=	-Wall -Wextra -Werror -g
+CFLAGS	=	-Wall -Wextra -Werror -g -Iinclude
 RM		=	rm -rf
 HEADERS	=	include/minishell.h
 
 # Directories
-SRC_DIR	=	.
+SRC_DIR	=	./src
 OBJ_DIR	=	obj
 
 # Libft config
@@ -18,11 +18,11 @@ READLINE_INC	=	-I/usr/include/readline
 READLINE_LIB	=	-lreadline
 
 # Sources and Objects
-SRC		=	tokenize.c main.c utils.c inputs.c commands.c expander.c
+SRC		=	tokenize.c main.c utils.c inputs.c commands.c expander.c parsing.c
 OBJS	=	$(SRC:%.c=$(OBJ_DIR)/%.o)
 
 # Flags
-CFLAGS		+=	-I$(LIBFT_INC) $(READLINE_INC)
+CFLAGS		+=	-Iinclude -I$(LIBFT_INC) $(READLINE_INC)
 LDFLAGS		=	$(LIBFT) $(READLINE_LIB)
 
 # Targets

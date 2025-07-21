@@ -1,6 +1,7 @@
-quotes have issues when they are odd
-expander value with quotes
-signals implementation
-fix some leaks
-pipes
-.
+quotes have issues when they are odd	- Mosa
+here doc is reverted when exiting		- Zaid
+expander value with quotes				- Mosa
+signals implementation					- Mosa
+fix leaks and norm						- BOTH
+$SHLVL++								- Mosa
+pipes									- Zaid
