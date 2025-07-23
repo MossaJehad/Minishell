@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 12:12:41 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/05/26 14:23:40 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/22 18:06:43 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,3 @@ int	ft_atoi(const char *nptr)
 	}
 	return (num * sign);
 }
-
-/*int	main(void)
-{
-	char s[] = "     +1234abc";
-	printf("%d", ft_atoi(s));
-}*/

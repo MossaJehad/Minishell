@@ -5,3 +5,8 @@ signals implementation					- Mosa
 fix leaks and norm						- BOTH
 $SHLVL++								- Mosa
 pipes									- Zaid
+
+
+Don't forget to make sure that "../include/minishell.h" turn to "minishell.h"
+
+valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline_curses.supp ./minishell

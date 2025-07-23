@@ -6,11 +6,11 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/21 19:15:57 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/22 17:02:41 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/minishell.h"
 
 char	*search_commands(const char *input)
 {

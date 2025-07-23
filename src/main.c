@@ -6,11 +6,12 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:04 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/21 19:15:57 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/23 14:45:02 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/minishell.h"
+#include <stdlib.h>
 
 char	*ft_strndup(const char *s1, size_t n)
 {
@@ -55,7 +56,7 @@ void	nully(t_parse_state *s)
 	s->in_double_quote = 0;
 }
 
-void	shell_loop(int arg_count, char ***envp)
+void shell_loop(int arg_count, char ***envp)
 {
 	char	*input;
 	char	**args;
@@ -66,16 +67,28 @@ void	shell_loop(int arg_count, char ***envp)
 		token = NULL;
 		input = get_input();
 		if (input == NULL)
-			break ;
+			break;
 		if (*input == '\0')
 		{
 			free(input);
-			continue ;
+			continue;
 		}
 		args = parse_arguments(input, &arg_count);
+		if (!args)
+		{
+			free(input);
+			continue;
+		}
+		if (check_syntax_error(args))
+		{
+			ft_free(args);
+			free(input);
+			continue;
+		}
 		args = expand(args, *envp);
 		tokenize(args, &token);
 		handle_command(input, args, arg_count, token, envp);
+		//free(envp);
 		ft_free(args);
 		free_tokens(token);
 		free(input);
@@ -88,9 +101,11 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argv;
 	init_shell(envp);
-	env = envp;
+	env = copy_env(envp);
+	if (!env)
+		return (1);
 	shell_loop(argc, &env);
-	rl_clear_history();
 	free_env(env);
+	rl_clear_history();
 	return (0);
 }

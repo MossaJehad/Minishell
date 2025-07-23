@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 13:05:12 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/05/26 14:24:18 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/23 14:17:43 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,18 +25,3 @@ void	*ft_memset(void *s, int c, size_t n)
 	}
 	return (s);
 }
-
-/*int	main (void)
-{
-	char    arr[15];
-	int     i;
-
-	i = 0;
-	ft_memset(arr, 0, sizeof(arr));
-	while (i < 15)
-	{
-		printf("%d ", arr[i]);
-		i++;
-	}
-	return (0);
-}*/

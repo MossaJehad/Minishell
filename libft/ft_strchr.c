@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhaddadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 15:01:35 by jhaddadi          #+#    #+#             */
-/*   Updated: 2024/09/09 14:54:41 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/07/23 14:18:02 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,3 @@ char	*ft_strchr(const char *s, int c)
 		return ((char *) s);
 	return ((char *) NULL);
 }
-/*
-int	main(void)
-{
-	printf("%p", ft_strchr("string", '\0'));
-}*/

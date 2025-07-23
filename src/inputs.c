@@ -6,11 +6,11 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:18 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/21 19:15:57 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/23 14:25:25 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/minishell.h"
 
 
 int	setup_redirection(t_token *tok)
@@ -75,15 +75,7 @@ void	handle_command(char *input, char **args, int arg_count, t_token *token,
 	cur = token;
 	i = 0;
 	while (cur)
-	{
-		// if (ft_strcmp(cur->type, "redirect input") == 0
-		//  || ft_strcmp(cur->type, "redirect output") == 0
-		//  || ft_strcmp(cur->type, "append output") == 0)
-		// {
-		//     // mark but do not apply yet
-		// }
 		cur = cur->next;
-	}
 	while (i < arg_count)
 	{
 		if (!ft_strcmp(args[i], "<") || !ft_strcmp(args[i], ">")

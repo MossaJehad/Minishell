@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 10:55:50 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/05/26 17:28:00 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/23 14:17:29 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,3 @@ char	*ft_itoa(int n)
 		ft_free (&str);
 	return (ft_final(temp, str, i - 1));
 }
-
-/*int	main(void)
-{
-	printf("%s", ft_itoa(-34695));
-}*/

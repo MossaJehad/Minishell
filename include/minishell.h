@@ -51,6 +51,7 @@ char	**parse_arguments(const char *input, int *arg_count);
 char	*unescape_string(const char *src);
 
 void	shell_loop(int argc, char ***envp);
+char	**copy_env(char **envp);
 void	handle_command(char *input,
                         char **args,
                         int arg_count,

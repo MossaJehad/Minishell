@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 13:04:57 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/05/26 14:24:15 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/23 14:17:39 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,3 @@ void	*ft_memmove(void *dst, const void *src, size_t len)
 	}
 	return (dst);
 }
-
-/*int	main(void)
-{
-	char dst[] = "0123456789";
-	const char src[] = "hello world";
-	ft_memmove (dst, src, 5);
-	printf("%s", dst);
-	return (0);
-}*/

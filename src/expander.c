@@ -6,11 +6,11 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:15 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/21 19:15:57 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/22 18:08:03 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/minishell.h"
 
 static char	*lookup_env(const char *name, char **envp)
 {
@@ -83,21 +83,22 @@ char	*expand_single_quote(char *arg)
 	int		j;
 	int		len;
 
-	len = ft_strlen(arg);
 	i = 1;
 	j = 0;
+	len = ft_strlen(arg);
 	if (len < 2)
+	{
+		free(arg);
 		return (ft_strdup(""));
+	}
 	str = malloc(len - 1);
 	if (!str)
 	{
-		ft_free(&str);
+		free(arg);
 		return (NULL);
 	}
 	while (i < len - 1)
-	{
 		str[j++] = arg[i++];
-	}
 	str[j] = '\0';
 	free(arg);
 	return (str);

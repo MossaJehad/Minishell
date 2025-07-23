@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhaddadi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 10:46:31 by jhaddadi          #+#    #+#             */
-/*   Updated: 2024/09/08 10:58:48 by jhaddadi         ###   ########.fr       */
+/*   Updated: 2025/07/23 14:17:48 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,3 @@ void	ft_putnbr_fd(int n, int fd)
 	while (i > 0)
 		write(fd, &s[--i], 1);
 }
-
-/*int	main(void)
-{
-	int	n;
-
-	n = 21345;
-	ft_putnbr_fd(n, 1);
-}*/

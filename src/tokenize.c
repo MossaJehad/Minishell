@@ -6,11 +6,11 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:30 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/21 19:15:57 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/23 14:35:59 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/minishell.h"
 
 void	create_token(t_token **token, char *value, char *type)
 {
@@ -96,14 +96,14 @@ void	tokenize(char **array, t_token **token)
 
 void	free_tokens(t_token *token)
 {
-	t_token	*temp;
+	t_token	*tmp;
 
 	while (token)
 	{
-		temp = token;
-		token = token->next;
-		free(temp->value);
-		free(temp->type);
-		free(temp);
+		tmp = token->next;
+		free(token->value);
+		free(token->type);
+		free(token);
+		token = tmp;
 	}
 }

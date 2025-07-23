@@ -6,11 +6,11 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:10 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/21 19:38:03 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/22 18:06:32 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/minishell.h"
 
  // if the -n followed by n's keep counting tell you find another char
  // (if there is no another char than n then print it as if it 1n else print the whole thing)
@@ -120,7 +120,7 @@ static int	find_env_index(char **env, const char *name)
 	return (-1);
 }
 
-static void	add_or_replace(char ***envp, const char *var)
+static void add_or_replace(char ***envp, const char *var)
 {
 	char	**env;
 	char	*eq;
@@ -135,6 +135,8 @@ static void	add_or_replace(char ***envp, const char *var)
 	eq = ft_strchr(var, '=');
 	keylen = eq ? (size_t)(eq - var) : ft_strlen(var);
 	name = ft_strndup(var, keylen);
+	if (!name)
+		return;
 	idx = find_env_index(env, name);
 	free(name);
 	if (idx >= 0)
@@ -148,6 +150,8 @@ static void	add_or_replace(char ***envp, const char *var)
 		while (env[i])
 			i++;
 		newenv = malloc(sizeof(char *) * (i + 2));
+		if (!newenv)
+			return;
 		j = 0;
 		while (j < i)
 		{
@@ -156,8 +160,9 @@ static void	add_or_replace(char ***envp, const char *var)
 		}
 		newenv[i] = ft_strdup(var);
 		newenv[i + 1] = NULL;
+		if (env != *envp)
+			free(env);
 		*envp = newenv;
-		//free(newenv);
 	}
 }
 
@@ -176,7 +181,7 @@ void	handle_export_command(char ***envp, char **args, int arg_count)
 		e = *envp;
 		while (e && *e)
 			printf("declare -x %s\n", *e++);
-	} // value printed should be inside a double quotes (even if he send multi quotes)
+	}
 	else
 	{
 		i = 1;
@@ -201,8 +206,11 @@ void	handle_export_command(char ***envp, char **args, int arg_count)
 				else
 				{
 					buf = ft_strjoin(name, "=");
-					add_or_replace(envp, buf);
-					free(buf);
+					if (buf)
+					{
+						add_or_replace(envp, buf);
+						free(buf);
+					}
 				}
 			}
 			i++;
@@ -236,10 +244,10 @@ void	remove_env_var(char ***envp, const char *name)
 	env = *envp;
 	cnt = 0;
 	n = ft_strlen(name);
-	while (env[cnt++])
-		;
-	i = -1;
-	while (env[i++])
+	while (env[cnt])
+		cnt++;
+	i = 0;
+	while (i < cnt)
 	{
 		if (ft_strncmp(env[i], name, n) == 0 && env[i][n] == '=')
 		{
@@ -252,6 +260,7 @@ void	remove_env_var(char ***envp, const char *name)
 			env[i] = NULL;
 			break ;
 		}
+		i++;
 	}
 }
 

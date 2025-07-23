@@ -6,11 +6,11 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:33 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/21 19:15:57 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/23 14:43:00 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/minishell.h"
 
 int	is_shell_builtin(const char *cmd)
 {
@@ -53,6 +53,38 @@ void	free_env(char **envp)
 	if (!envp)
 		return ;
 	while (envp[i])
-		free(envp[i++]);
+	{
+		free(envp[i]);
+		i++;
+	}
 	free(envp);
+}
+
+char	**copy_env(char **envp)
+{
+	char	**new_env;
+	int		count;
+	int		i;
+
+	i = 0;
+	count = 0;
+	while (envp[count])
+		count++;
+	new_env = malloc(sizeof(char *) * (count + 1));
+	if (!new_env)
+		return (NULL);
+	while (i < count)
+	{
+		new_env[i] = ft_strdup(envp[i]);
+		if (!new_env[i])
+		{
+			while (--i >= 0)
+				free(new_env[i]);
+			free(new_env);
+			return (NULL);
+		}
+		i++;
+	}
+	new_env[count] = NULL;
+	return (new_env);
 }
