@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   inputs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: zal-qais <zal-qais@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:18 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/21 19:15:57 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/21 20:25:27 by zal-qais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 int	setup_redirection(t_token *tok)
 {
-		int pipefd[2];
-		char *line;
+	int pipefd[2];
+	char *line;
 	int	fd;
 
 	if (ft_strcmp(tok->type, "here-document") == 0)
@@ -28,7 +28,8 @@ int	setup_redirection(t_token *tok)
 			line = readline("> ");
 			if (!line || ft_strcmp(line, tok->value) == 0)
 			{
-				free(line);
+				if (line)
+					free(line);
 				break ;
 			}
 			write(pipefd[1], line, ft_strlen(line));
@@ -36,16 +37,16 @@ int	setup_redirection(t_token *tok)
 			free(line);
 		}
 		close(pipefd[1]);
-		dup2(pipefd[0], STDIN_FILENO);
-		close(pipefd[0]);
-		return (0);
+		return (pipefd[0]); // Return read end for later use
 	}
 	if (ft_strcmp(tok->type, "redirect input") == 0)
 		fd = open(tok->value, O_RDONLY);
 	else if (ft_strcmp(tok->type, "redirect output") == 0)
 		fd = open(tok->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	else
+	else if (ft_strcmp(tok->type, "append output") == 0)
 		fd = open(tok->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	else
+		return (-1);
 	if (fd < 0)
 		return (perror(tok->value), -1);
 	if (ft_strcmp(tok->type, "redirect input") == 0)
@@ -59,119 +60,208 @@ int	setup_redirection(t_token *tok)
 void	handle_command(char *input, char **args, int arg_count, t_token *token,
 		char ***envp)
 {
-	int		saved_in;
-	int		saved_out;
-	char	*exec_args[MAX_ARGS];
-	int		ei;
-	t_token	*cur;
-	pid_t	pid;
-	int		i;
-	int		j;
-			char cwd[1024];
+	int		num_cmds = 0;
+	t_token	*cur = token;
+	t_token	*cmd_starts[256];
+	int		heredoc_fds[256];
+	int		i = 0, j;
+	int		pipefd[256][2];
+	pid_t	pids[256];
+	int		status;
+	int		cmd_argc;
+	char	*cmd_argv[MAX_ARGS];
+	t_token	*seg;
+	int		k;
 
-	saved_in = dup(STDIN_FILENO);
-	saved_out = dup(STDOUT_FILENO);
-	ei = 0;
-	cur = token;
-	i = 0;
-	while (cur)
+	(void)input;
+	(void)args;
+	(void)arg_count;
+
+	// Initialize heredoc_fds
+	k = 0;
+	while (k < 256)
 	{
-		// if (ft_strcmp(cur->type, "redirect input") == 0
-		//  || ft_strcmp(cur->type, "redirect output") == 0
-		//  || ft_strcmp(cur->type, "append output") == 0)
-		// {
-		//     // mark but do not apply yet
-		// }
-		cur = cur->next;
+		heredoc_fds[k] = -1;
+		k++;
 	}
-	while (i < arg_count)
-	{
-		if (!ft_strcmp(args[i], "<") || !ft_strcmp(args[i], ">")
-			|| !ft_strcmp(args[i], ">>") || !ft_strcmp(args[i], "<<"))
-		{
-			i += 2;
-			continue ;
-		}
-		exec_args[ei++] = args[i++];
-	}
-	exec_args[ei] = NULL;
-	// ---- parent‐run builtins ----
-	if (exec_args[0] && should_run_in_parent(exec_args[0]))
-	{
-		if (!ft_strcmp(exec_args[0], "cd"))
-			handle_cd_command(exec_args[1], ei);
-		else if (!ft_strcmp(exec_args[0], "export"))
-			handle_export_command(envp, exec_args, ei);
-		else if (!ft_strcmp(exec_args[0], "unset"))
-			handle_unset_command(envp, exec_args, ei);
-		else if (!ft_strcmp(exec_args[0], "exit"))
-		{
-			/* restore and close before exiting */
-			dup2(saved_in, STDIN_FILENO);
-			dup2(saved_out, STDOUT_FILENO);
-			close(saved_in);
-			close(saved_out);
-			exit(0);
-		}
-		dup2(saved_in, STDIN_FILENO);
-		dup2(saved_out, STDOUT_FILENO);
-		close(saved_in);
-		close(saved_out);
-		return ;
-	}
-	pid = fork();
-	if (pid == 0)
-	{
-		cur = token;
-		while (cur)
-		{
-			if (ft_strcmp(cur->type, "redirect input") == 0
-				|| ft_strcmp(cur->type, "redirect output") == 0
-				|| ft_strcmp(cur->type, "append output") == 0
-				|| ft_strcmp(cur->type, "here-document") == 0)
-			{
-				if (setup_redirection(cur) == -1)
-					exit(1);
+
+	// 1. Find all command start tokens and process heredocs in order
+	while (cur) {
+		if (i == 0 || (cur && ft_strcmp(cur->type, "pipe") == 0 && cur->next)) {
+			cmd_starts[num_cmds] = (i == 0) ? cur : cur->next;
+			
+			// Process heredocs for this command
+			t_token *temp = cmd_starts[num_cmds];
+			while (temp && ft_strcmp(temp->type, "pipe") != 0) {
+				if (ft_strcmp(temp->type, "here-document") == 0) {
+					heredoc_fds[num_cmds] = setup_redirection(temp);
+					if (heredoc_fds[num_cmds] == -1) {
+						perror("heredoc failed");
+						return;
+					}
+				}
+				temp = temp->next;
 			}
-			cur = cur->next;
+			num_cmds++;
 		}
-		if (exec_args[0] && ft_strcmp(exec_args[0], "echo") == 0)
-			handle_echo_command(token);
-		else if (exec_args[0] && ft_strcmp(exec_args[0], "env") == 0)
-			handle_env_command(*envp);
-		else if (exec_args[0] && ft_strcmp(exec_args[0], "export") == 0)
-			handle_export_command(envp, exec_args, ei);
-		else if (exec_args[0] && ft_strcmp(exec_args[0], "type") == 0)
-		{
-			j = 0;
-			while (j < ei)
-				handle_type_command(exec_args[j++]);
-		}
-		else if (exec_args[0] && ft_strcmp(exec_args[0], "pwd") == 0)
-		{
-			printf("%s\n", getcwd(cwd, sizeof(cwd)));
-		}
-		else if (exec_args[0] && ft_strcmp(exec_args[0], "cd") == 0)
-			handle_cd_command(input + 2, ei);
-		else if (exec_args[0] && ft_strcmp(exec_args[0], "exit") == 0 && ei > 1
-			&& ft_strcmp(exec_args[1], "0") == 0)
-			exit(0);
-		else if (exec_args[0] && ft_strcmp(exec_args[0], "unset") == 0)
-			handle_unset_command(envp, exec_args, ei);
-		else
-			execvp(exec_args[0], exec_args), perror(exec_args[0]);
-		exit(0);
+		cur = cur->next;
+		i++;
 	}
-	else if (pid > 0)
+
+	// Special case: single built-in command without pipes
+	if (num_cmds == 1) {
+		seg = cmd_starts[0];
+		cmd_argc = 0;
+		
+		// Collect arguments for this command
+		while (seg && ft_strcmp(seg->type, "pipe") != 0) {
+			if (ft_strncmp(seg->type, "redirect", 8) == 0 || 
+				ft_strcmp(seg->type, "here-document") == 0 ||
+				ft_strcmp(seg->type, "append output") == 0) {
+				seg = seg->next;
+				continue;
+			}
+			cmd_argv[cmd_argc++] = seg->value;
+			seg = seg->next;
+		}
+		cmd_argv[cmd_argc] = NULL;
+
+		// Check if it's a built-in that should run in parent
+		if (is_shell_builtin(cmd_argv[0]) && should_run_in_parent(cmd_argv[0])) {
+			if (!ft_strcmp(cmd_argv[0], "export"))
+				handle_export_command(envp, cmd_argv, cmd_argc);
+			else if (!ft_strcmp(cmd_argv[0], "unset"))
+				handle_unset_command(envp, cmd_argv, cmd_argc);
+			else if (!ft_strcmp(cmd_argv[0], "cd"))
+				handle_cd_command(cmd_argv[1], cmd_argc);
+			else if (!ft_strcmp(cmd_argv[0], "exit"))
+				exit(0);
+			// Clean up heredoc fd
+			if (heredoc_fds[0] != -1)
+				close(heredoc_fds[0]);
+			return;
+		}
+	}
+
+	// 2. Create pipes for all but the last command
+	i = 0;
+	while (i < num_cmds - 1)
 	{
-		waitpid(pid, NULL, 0);
-		dup2(saved_in, STDIN_FILENO);
-		dup2(saved_out, STDOUT_FILENO);
-		close(saved_in);
-		close(saved_out);
+		if (pipe(pipefd[i]) < 0) {
+			perror("pipe");
+			return;
+		}
+		i++;
 	}
-	else
-		perror("fork");
+
+	// 3. Fork for each command segment
+	i = 0;
+	while (i < num_cmds)
+	{
+		pids[i] = fork();
+		if (pids[i] < 0) {
+			perror("fork");
+			return;
+		}
+		if (pids[i] == 0) {
+			// Child process
+			// a. Set up input from previous pipe if not first command
+			if (i > 0) {
+				dup2(pipefd[i-1][0], STDIN_FILENO);
+			}
+			// b. Set up output to next pipe if not last command
+			if (i < num_cmds - 1) {
+				dup2(pipefd[i][1], STDOUT_FILENO);
+			}
+			// c. Close all pipe fds in child
+			j = 0;
+			while (j < num_cmds - 1)
+			{
+				close(pipefd[j][0]);
+				close(pipefd[j][1]);
+				j++;
+			}
+			
+			// d. Use heredoc input if available
+			if (heredoc_fds[i] != -1) {
+				dup2(heredoc_fds[i], STDIN_FILENO);
+				close(heredoc_fds[i]);
+			}
+			
+			// e. Collect arguments and handle other redirections for this command
+			seg = cmd_starts[i];
+			cmd_argc = 0;
+			while (seg && ft_strcmp(seg->type, "pipe") != 0) {
+				if (ft_strncmp(seg->type, "redirect", 8) == 0 || 
+					ft_strcmp(seg->type, "append output") == 0) {
+					if (setup_redirection(seg) == -1)
+						exit(1);
+					seg = seg->next;
+					continue;
+				}
+				else if (ft_strcmp(seg->type, "here-document") == 0) {
+					// Skip heredoc tokens as they're already processed
+					seg = seg->next;
+					continue;
+				}
+				cmd_argv[cmd_argc++] = seg->value;
+				seg = seg->next;
+			}
+			cmd_argv[cmd_argc] = NULL;
+			
+			// f. Handle built-in commands in child process
+			if (is_shell_builtin(cmd_argv[0])) {
+				if (!ft_strcmp(cmd_argv[0], "echo")) {
+					// Create a temporary token list for this command segment
+					t_token *cmd_token = NULL;
+					create_token(&cmd_token, cmd_argv[0], "command");
+					k = 1;
+					while (k < cmd_argc)
+					{
+						create_token(&cmd_token, cmd_argv[k], "word");
+						k++;
+					}
+					handle_echo_command(cmd_token);
+					free_tokens(cmd_token);
+				}
+				else if (!ft_strcmp(cmd_argv[0], "env"))
+					handle_env_command(*envp);
+				else if (!ft_strcmp(cmd_argv[0], "pwd"))
+					printf("%s\n", getenv("PWD") ? getenv("PWD") : "");
+				exit(0);
+			}
+			
+			// g. Execute external command
+			execvp(cmd_argv[0], cmd_argv);
+			perror(cmd_argv[0]);
+			exit(1);
+		}
+		i++;
+	}
+
+	// 4. Parent closes all pipe fds and heredoc fds
+	i = 0;
+	while (i < num_cmds - 1)
+	{
+		close(pipefd[i][0]);
+		close(pipefd[i][1]);
+		i++;
+	}
+	i = 0;
+	while (i < num_cmds)
+	{
+		if (heredoc_fds[i] != -1)
+			close(heredoc_fds[i]);
+		i++;
+	}
+
+	// 5. Wait for all children
+	i = 0;
+	while (i < num_cmds)
+	{
+		waitpid(pids[i], &status, 0);
+		i++;
+	}
 }
 
 char	*get_input(void)
@@ -179,42 +269,48 @@ char	*get_input(void)
 	char	*line;
 	char	*new_part;
 	char	*combined;
-			char cwd[1024];
-			char *prompt;
+	char	cwd[1024];
+	char	*prompt;
 	char	*tmp;
 
-	line = NULL;
-	new_part = NULL;
-	combined = NULL;
 	while (1)
 	{
+		// Generate prompt
+		if (getcwd(cwd, sizeof(cwd)))
 		{
-			if (getcwd(cwd, sizeof(cwd)))
-			{
-				tmp = ft_strdup(cwd);
-				prompt = ft_strjoin(tmp, "$ ");
-				free(tmp);
-			}
-			else
-				prompt = ft_strdup("$ ");
-			line = readline(prompt);
-			free(prompt);
+			tmp = ft_strdup(cwd);
+			prompt = ft_strjoin(tmp, "$ ");
+			free(tmp);
 		}
+		else
+			prompt = ft_strdup("$ ");
+
+		// Read input
+		line = readline(prompt);
+		free(prompt);
+
+		// Handle EOF
 		if (!line)
 		{
 			printf("exit\n");
 			return (NULL);
 		}
+
+		// Handle empty input
 		if (*line == '\0')
 		{
 			free(line);
-			continue ;
+			continue;
 		}
+
+		// Check for unclosed quotes
 		if (!has_unclosed_quotes(line))
 		{
 			add_history(line);
 			return (line);
 		}
+
+		// Handle unclosed quotes
 		while (has_unclosed_quotes(line))
 		{
 			new_part = readline("> ");

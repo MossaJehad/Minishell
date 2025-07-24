@@ -163,50 +163,78 @@ static void	add_or_replace(char ***envp, const char *var)
 
 void	handle_export_command(char ***envp, char **args, int arg_count)
 {
-	char	*buf;
+	int		i;
 	char	*name;
 	char	*eq;
-	size_t	keylen;
 	char	*key;
-	int		i;
-	char	**e;
+	char	*value;
+	char	*temp_key;
+	char	*temp_value;
+	size_t	keylen;
+	int		j;
 
 	if (arg_count == 1)
 	{
-		e = *envp;
-		while (e && *e)
-			printf("declare -x %s\n", *e++);
-	} // value printed should be inside a double quotes (even if he send multi quotes)
-	else
-	{
-		i = 1;
-		while (i < arg_count)
+		// Print all environment variables in sorted order
+		char **e = *envp;
+		char **sorted_env = ft_strdup_array(e); // Duplicate the environment array
+		ft_sort_array(sorted_env); // Sort the array alphabetically
+		j = 0;
+		while (sorted_env[j])
 		{
-			name = args[i];
-			eq = ft_strchr(name, '=');
+			eq = ft_strchr(sorted_env[j], '=');
 			if (eq)
-			{
-				keylen = eq - name;
-				key = ft_strndup(name, keylen);
-				if (!is_valid_identifier(key))
-					printf("export: `%s': not a valid identifier\n", name);
-				else
-					add_or_replace(envp, name);
-				free(key);
-			}
+				printf("declare -x %.*s=\"%s\"\n", (int)(eq - sorted_env[j]), sorted_env[j], eq + 1);
+			else
+				printf("declare -x %s\n", sorted_env[j]);
+			j++;
+		}
+		ft_free_array(sorted_env); // Free the sorted array
+		return;
+	}
+	i = 1;
+	while (i < arg_count)
+	{
+		name = args[i];
+		eq = ft_strchr(name, '=');
+		if (eq)
+		{
+			// Handle variables with values (e.g., VAR=value)
+			keylen = eq - name;
+			temp_key = ft_strndup(name, keylen);
+			key = ft_strtrim(temp_key, "\"");
+			free(temp_key);
+			temp_value = ft_strdup(eq + 1);
+			value = ft_strtrim(temp_value, "\"");
+			free(temp_value);
+			if (!is_valid_identifier(key))
+				printf("export: `%s': not a valid identifier\n", name);
 			else
 			{
-				if (!is_valid_identifier(name))
-					printf("export: `%s': not a valid identifier\n", name);
-				else
-				{
-					buf = ft_strjoin(name, "=");
-					add_or_replace(envp, buf);
-					free(buf);
-				}
+				char *formatted_var = ft_strjoin(key, "=");
+				char *final_var = ft_strjoin(formatted_var, value);
+				add_or_replace(envp, final_var);
+				free(formatted_var);
+				free(final_var);
 			}
-			i++;
+			free(key);
+			free(value);
 		}
+		else
+		{
+			// Handle variables without values (e.g., VAR)
+			temp_key = ft_strtrim(name, "\"");
+			if (!is_valid_identifier(temp_key))
+				printf("export: `%s': not a valid identifier\n", name);
+			else
+			{
+				char *buf = ft_strjoin(temp_key, "=");
+				add_or_replace(envp, buf);
+				free(buf);
+			}
+			free(temp_key);
+		}
+		i++;
 	}
 }
 
@@ -269,3 +297,4 @@ void	handle_unset_command(char ***envp, char **args, int arg_count)
 		i++;
 	}
 }
+

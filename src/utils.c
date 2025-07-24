@@ -19,7 +19,6 @@ int	is_shell_builtin(const char *cmd)
 		|| ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "export") == 0
 		|| ft_strcmp(cmd, "env") == 0 || ft_strcmp(cmd, "unset") == 0)
 	{
-		printf("%s is a shell builtin\n", cmd);
 		return (1);
 	}
 	return (0);
@@ -56,3 +55,98 @@ void	free_env(char **envp)
 		free(envp[i++]);
 	free(envp);
 }
+
+char	*ft_strreplace(const char *str, const char *old, const char *new)
+{
+	const char	*pos;
+	char		*result;
+	size_t		old_len = ft_strlen(old);
+	size_t		new_len = ft_strlen(new);
+	size_t		count = 0;
+
+	// Count occurrences of 'old' in 'str'
+	pos = str;
+	while ((pos = ft_strnstr(pos, old, ft_strlen(pos))))
+	{
+		count++;
+		pos += old_len;
+	}
+
+	// Allocate memory for the new string
+	result = malloc(ft_strlen(str) + count * (new_len - old_len) + 1);
+	if (!result)
+		return (NULL);
+
+	// Replace occurrences of 'old' with 'new'
+	char *dest = result;
+	while ((pos = ft_strnstr(str, old, ft_strlen(str))))
+	{
+		ft_memcpy(dest, str, pos - str);
+		dest += pos - str;
+		ft_memcpy(dest, new, new_len);
+		dest += new_len;
+		str = pos + old_len;
+	}
+	ft_strlcpy(dest, str, ft_strlen(str) + 1);
+	return (result);
+}
+
+char	**ft_strdup_array(char **array)
+{
+	int		i;
+	int		count;
+	char	**dup;
+
+	count = 0;
+	while (array[count])
+		count++;
+	dup = malloc(sizeof(char *) * (count + 1));
+	if (!dup)
+		return (NULL);
+	i = 0;
+	while (i < count)
+	{
+		dup[i] = ft_strdup(array[i]);
+		i++;
+	}
+	dup[count] = NULL;
+	return (dup);
+}
+
+void	ft_sort_array(char **array)
+{
+	int		i;
+	int		j;
+	char	*temp;
+
+	i = 0;
+	while (array[i])
+	{
+		j = i + 1;
+		while (array[j])
+		{
+			if (ft_strcmp(array[i], array[j]) > 0)
+			{
+				temp = array[i];
+				array[i] = array[j];
+				array[j] = temp;
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
+void	ft_free_array(char **array)
+{
+	int	i;
+
+	i = 0;
+	while (array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
+}
+

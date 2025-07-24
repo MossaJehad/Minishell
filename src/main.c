@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: zal-qais <zal-qais@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:04 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/21 19:15:57 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/21 20:21:46 by zal-qais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,25 @@ void	shell_loop(int arg_count, char ***envp)
 int	main(int argc, char **argv, char **envp)
 {
 	char	**env;
+	int		i;
 
 	(void)argv;
-	init_shell(envp);
-	env = envp;
+	// Duplicate the environment variables to ensure proper management
+	i = 0;
+	while (envp[i])
+		i++;
+	env = malloc(sizeof(char *) * (i + 1));
+	if (!env)
+		return (1);
+	i = 0;
+	while (envp[i])
+	{
+		env[i] = ft_strdup(envp[i]);
+		i++;
+	}
+	env[i] = NULL;
+
+	init_shell(env);
 	shell_loop(argc, &env);
 	rl_clear_history();
 	free_env(env);
