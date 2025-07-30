@@ -6,11 +6,11 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:10 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/21 19:38:03 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/30 12:21:26 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/minishell.h"
 
  // if the -n followed by n's keep counting tell you find another char
  // (if there is no another char than n then print it as if it 1n else print the whole thing)

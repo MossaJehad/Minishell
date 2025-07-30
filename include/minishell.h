@@ -24,6 +24,7 @@
 # include <readline/readline.h>
 # include <readline/history.h> 
 #include <fcntl.h>
+#include <signal.h>
 
 typedef struct s_token
 {
@@ -40,6 +41,10 @@ typedef struct s_parse_state
 	int	in_single_quote;
 	int	in_double_quote;
 }	t_parse_state;
+typedef struct s_exit
+{
+	int last_status;
+}	t_exit;
 
 void	tokenize(char **array, t_token **token);
 void	create_token(t_token **token, char *value, char *type);
@@ -51,11 +56,8 @@ char	**parse_arguments(const char *input, int *arg_count);
 char	*unescape_string(const char *src);
 
 void	shell_loop(int argc, char ***envp);
-void	handle_command(char *input,
-                        char **args,
-                        int arg_count,
-                        t_token *token,
-                        char ***envp);
+void	handle_command(char *input, char **args, int arg_count, t_token *token,
+		char ***envp);
 char	*get_input(void);
 
 void	handle_echo_command(t_token *token);
@@ -81,6 +83,41 @@ void remove_env_var(char ***envp, const char *name);
 
 int setup_redirection(t_token *token);
 void    free_env(char **envp);
+
+/* Add these to your minishell.h file */
+
+// Signal handling includes
+#include <signal.h>
+#include <sys/wait.h>
+#include <limits.h>
+
+// Global exit status variable
+extern int g_exit_status;
+
+// Signal handling functions
+void	handle_sigint(int sig);
+void	handle_sigquit(int sig);
+void	setup_signal_handlers(void);
+void	setup_child_signals(void);
+void	ignore_signals(void);
+void	restore_signals(void);
+
+// Exit status functions
+int		get_exit_status(void);
+void	set_exit_status(int status);
+
+// Exit command functions
+void	handle_exit_command(char **args, int arg_count, char **envp);
+void	cleanup_and_exit(int exit_code, char **envp);
+
+// Additional utility functions you might need
+int		ft_isdigit(int c);
+long long ft_atoll(const char *str);
+int	check_overflow(const char *str);
+
+char	**ft_strdup_array(char **array);
+void	ft_sort_array(char **array);
+void	ft_free_array(char **array);
 
 
 #endif

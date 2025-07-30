@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   inputs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zal-qais <zal-qais@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:18 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/21 20:25:27 by zal-qais         ###   ########.fr       */
+/*   Updated: 2025/07/30 13:29:39 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/minishell.h"
 
 
 int	setup_redirection(t_token *tok)
@@ -57,6 +57,8 @@ int	setup_redirection(t_token *tok)
 	return (0);
 }
 
+/* Updated handle_command function in inputs.c with proper exit status handling */
+
 void	handle_command(char *input, char **args, int arg_count, t_token *token,
 		char ***envp)
 {
@@ -97,6 +99,7 @@ void	handle_command(char *input, char **args, int arg_count, t_token *token,
 					heredoc_fds[num_cmds] = setup_redirection(temp);
 					if (heredoc_fds[num_cmds] == -1) {
 						perror("heredoc failed");
+						set_exit_status(1);
 						return;
 					}
 				}
@@ -135,7 +138,7 @@ void	handle_command(char *input, char **args, int arg_count, t_token *token,
 			else if (!ft_strcmp(cmd_argv[0], "cd"))
 				handle_cd_command(cmd_argv[1], cmd_argc);
 			else if (!ft_strcmp(cmd_argv[0], "exit"))
-				exit(0);
+				handle_exit_command(cmd_argv, cmd_argc, *envp);
 			// Clean up heredoc fd
 			if (heredoc_fds[0] != -1)
 				close(heredoc_fds[0]);
@@ -143,12 +146,17 @@ void	handle_command(char *input, char **args, int arg_count, t_token *token,
 		}
 	}
 
+	// Ignore signals during command execution
+	ignore_signals();
+
 	// 2. Create pipes for all but the last command
 	i = 0;
 	while (i < num_cmds - 1)
 	{
 		if (pipe(pipefd[i]) < 0) {
 			perror("pipe");
+			set_exit_status(1);
+			restore_signals();
 			return;
 		}
 		i++;
@@ -161,10 +169,14 @@ void	handle_command(char *input, char **args, int arg_count, t_token *token,
 		pids[i] = fork();
 		if (pids[i] < 0) {
 			perror("fork");
+			set_exit_status(1);
+			restore_signals();
 			return;
 		}
 		if (pids[i] == 0) {
-			// Child process
+			// Child process - set up default signal handlers
+			setup_child_signals();
+			
 			// a. Set up input from previous pipe if not first command
 			if (i > 0) {
 				dup2(pipefd[i-1][0], STDIN_FILENO);
@@ -234,7 +246,7 @@ void	handle_command(char *input, char **args, int arg_count, t_token *token,
 			// g. Execute external command
 			execvp(cmd_argv[0], cmd_argv);
 			perror(cmd_argv[0]);
-			exit(1);
+			exit(127); // Command not found
 		}
 		i++;
 	}
@@ -255,13 +267,31 @@ void	handle_command(char *input, char **args, int arg_count, t_token *token,
 		i++;
 	}
 
-	// 5. Wait for all children
+	// 5. Wait for all children and get exit status
 	i = 0;
 	while (i < num_cmds)
 	{
 		waitpid(pids[i], &status, 0);
+		if (i == num_cmds - 1) // Only set exit status from last command
+		{
+			if (WIFEXITED(status))
+				set_exit_status(WEXITSTATUS(status));
+			else if (WIFSIGNALED(status))
+			{
+				int sig = WTERMSIG(status);
+				if (sig == SIGINT)
+					set_exit_status(130);
+				else if (sig == SIGQUIT)
+					set_exit_status(131);
+				else
+					set_exit_status(128 + sig);
+			}
+		}
 		i++;
 	}
+	
+	// Restore signal handlers
+	restore_signals();
 }
 
 char	*get_input(void)

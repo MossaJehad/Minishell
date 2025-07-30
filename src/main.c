@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zal-qais <zal-qais@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:04 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/21 20:21:46 by zal-qais         ###   ########.fr       */
+/*   Updated: 2025/07/30 13:29:01 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/minishell.h"
 
 char	*ft_strndup(const char *s1, size_t n)
 {
@@ -88,6 +88,10 @@ int	main(int argc, char **argv, char **envp)
 	int		i;
 
 	(void)argv;
+	
+	// Initialize signal handlers
+	setup_signal_handlers();
+	
 	// Duplicate the environment variables to ensure proper management
 	i = 0;
 	while (envp[i])
@@ -105,7 +109,6 @@ int	main(int argc, char **argv, char **envp)
 
 	init_shell(env);
 	shell_loop(argc, &env);
-	rl_clear_history();
-	free_env(env);
+	cleanup_and_exit(get_exit_status(), env);
 	return (0);
 }

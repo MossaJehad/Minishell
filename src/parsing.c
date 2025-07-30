@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 19:09:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/21 19:10:40 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/30 13:39:28 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 char	**parse_arguments(const char *input, int *arg_count)
 {
 	t_parse_state	s;
-	static char		*argv[MAX_ARGS];
+	char			**argv = ft_calloc(MAX_ARGS, sizeof(char *));
 	char			buffer[BUFFER_SIZE];
 	char			next;
 

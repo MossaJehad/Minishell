@@ -18,7 +18,17 @@ READLINE_INC	=	-I/usr/include/readline
 READLINE_LIB	=	-lreadline
 
 # Sources and Objects
-SRC		=	tokenize.c main.c utils.c inputs.c commands.c expander.c parsing.c
+SRC		=	main.c \
+			parsing.c \
+			tokenize.c \
+			commands.c \
+			inputs.c \
+			expander.c \
+			search_commands.c \
+			utils.c \
+			signals.c \
+			exit_utils.c
+
 OBJS	=	$(SRC:%.c=$(OBJ_DIR)/%.o)
 
 # Flags
