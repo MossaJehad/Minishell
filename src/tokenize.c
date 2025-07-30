@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:30 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/30 12:21:26 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/30 14:03:42 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,11 @@ void	create_token(t_token **token, char *value, char *type)
 	t_token	*new;
 	t_token	*temp;
 
+	if (!value || !type)
+	{
+		fprintf(stderr, "create_token error: NULL value/type\n");
+		return ;
+	}
 	new = malloc(sizeof(t_token));
 	if (!new)
 		return ;
@@ -87,7 +92,14 @@ void	tokenize(char **array, t_token **token)
 		else if (ft_strcmp(array[i], ">>") == 0)
 			create_token(token, array[++i], "append output");
 		else if (ft_strcmp(array[i], "<<") == 0)
+		{
+			if (array[i + 1] == NULL)
+			{
+				fprintf(stderr, "syntax error: unexpected end after `<<`\n");
+				return ;
+			}
 			create_token(token, array[++i], "here-document");
+		}
 		else
 			create_token(token, array[i], "word");
 		i++;

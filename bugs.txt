@@ -1,7 +1,8 @@
-quotes have issues when they are odd	- Mosa
-here doc is reverted when exiting		- Zaid
-expander value with quotes				- Mosa
-signals implementation					- Mosa
-fix leaks and norm						- BOTH
+Quotes have issues when they are odd	- Mosa
+Here doc is reverted when exiting		- Zaid
+Expander value with quotes				- Mosa
+Signals implementation					- Mosa -> DONE
+Pipes implementation		 			- Zaid -> DONE
+Fix leaks and norm						- BOTH
 $SHLVL++								- Mosa
-pipes									- Zaid
+Fix parser: cat |cat (no space) is interpreted as '|cat' arg instead of a pipe.
