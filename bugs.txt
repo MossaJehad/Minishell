@@ -6,3 +6,20 @@ Pipes implementation		 			- Zaid -> DONE
 Fix leaks and norm						- BOTH
 $SHLVL++								- Mosa
 Fix parser: cat |cat (no space) is interpreted as '|cat' arg instead of a pipe.
+
+
+-------------------------------------------------------------
+
+1. unset (with any args) (core dump)						- Zaid
+
+2. $(no args) expand space									- Zaid
+
+3. echo $?HELLO should print 0HELLO							- Mosa
+
+4. export any error change exit status						- Mosa
+
+5. unset any error change exit status and (core dump)		- Mosa
+
+6. cd $PWD hi too many argument								- Zaid
+
+7. We should print using perror instead of printf			- BOTH
