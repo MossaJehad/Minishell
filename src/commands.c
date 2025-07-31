@@ -6,14 +6,15 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:10 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/30 12:21:26 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/31 15:14:45 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
- // if the -n followed by n's keep counting tell you find another char
- // (if there is no another char than n then print it as if it 1n else print the whole thing)
+// if the -n followed by n's keep counting tell you find another char
+// (if there is no another char than n then 
+// print it as if it 1n else print the whole thing)
 void	handle_echo_command(t_token *token)
 {
 	int		newline;
@@ -133,7 +134,10 @@ static void	add_or_replace(char ***envp, const char *var)
 
 	env = *envp;
 	eq = ft_strchr(var, '=');
-	keylen = eq ? (size_t)(eq - var) : ft_strlen(var);
+	if (eq)
+		keylen = (size_t)(eq - var);
+	else
+		keylen = ft_strlen(var);
 	name = ft_strndup(var, keylen);
 	idx = find_env_index(env, name);
 	free(name);
@@ -157,7 +161,6 @@ static void	add_or_replace(char ***envp, const char *var)
 		newenv[i] = ft_strdup(var);
 		newenv[i + 1] = NULL;
 		*envp = newenv;
-		//free(newenv);
 	}
 }
 
@@ -172,25 +175,30 @@ void	handle_export_command(char ***envp, char **args, int arg_count)
 	char	*temp_value;
 	size_t	keylen;
 	int		j;
+	char	**e;
+	char	*formatted_var;
+	char	*final_var;
+	char	*buf;
+	char	**sorted_env;
 
+	e = *envp;
+	sorted_env = ft_strdup_array(e);
 	if (arg_count == 1)
 	{
-		// Print all environment variables in sorted order
-		char **e = *envp;
-		char **sorted_env = ft_strdup_array(e); // Duplicate the environment array
-		ft_sort_array(sorted_env); // Sort the array alphabetically
+		ft_sort_array(sorted_env);
 		j = 0;
 		while (sorted_env[j])
 		{
 			eq = ft_strchr(sorted_env[j], '=');
 			if (eq)
-				printf("declare -x %.*s=\"%s\"\n", (int)(eq - sorted_env[j]), sorted_env[j], eq + 1);
+				printf("declare -x %.*s=\"%s\"\n", (int)(eq - sorted_env[j]),
+					sorted_env[j], eq + 1);
 			else
 				printf("declare -x %s\n", sorted_env[j]);
 			j++;
 		}
-		ft_free_array(sorted_env); // Free the sorted array
-		return;
+		ft_free_array(sorted_env);
+		return ;
 	}
 	i = 1;
 	while (i < arg_count)
@@ -199,7 +207,6 @@ void	handle_export_command(char ***envp, char **args, int arg_count)
 		eq = ft_strchr(name, '=');
 		if (eq)
 		{
-			// Handle variables with values (e.g., VAR=value)
 			keylen = eq - name;
 			temp_key = ft_strndup(name, keylen);
 			key = ft_strtrim(temp_key, "\"");
@@ -211,8 +218,8 @@ void	handle_export_command(char ***envp, char **args, int arg_count)
 				printf("export: `%s': not a valid identifier\n", name);
 			else
 			{
-				char *formatted_var = ft_strjoin(key, "=");
-				char *final_var = ft_strjoin(formatted_var, value);
+				formatted_var = ft_strjoin(key, "=");
+				final_var = ft_strjoin(formatted_var, value);
 				add_or_replace(envp, final_var);
 				free(formatted_var);
 				free(final_var);
@@ -222,13 +229,12 @@ void	handle_export_command(char ***envp, char **args, int arg_count)
 		}
 		else
 		{
-			// Handle variables without values (e.g., VAR)
 			temp_key = ft_strtrim(name, "\"");
 			if (!is_valid_identifier(temp_key))
 				printf("export: `%s': not a valid identifier\n", name);
 			else
 			{
-				char *buf = ft_strjoin(temp_key, "=");
+				buf = ft_strjoin(temp_key, "=");
 				add_or_replace(envp, buf);
 				free(buf);
 			}
@@ -297,4 +303,3 @@ void	handle_unset_command(char ***envp, char **args, int arg_count)
 		i++;
 	}
 }
-

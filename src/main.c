@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:04 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/30 13:29:01 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/31 15:09:36 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	shell_loop(int arg_count, char ***envp)
 		args = parse_arguments(input, &arg_count);
 		args = expand(args, *envp);
 		tokenize(args, &token);
-		handle_command(input, args, arg_count, token, envp);
+		handle_command(token, envp);
 		ft_free(args);
 		free_tokens(token);
 		free(input);
@@ -88,11 +88,7 @@ int	main(int argc, char **argv, char **envp)
 	int		i;
 
 	(void)argv;
-	
-	// Initialize signal handlers
 	setup_signal_handlers();
-	
-	// Duplicate the environment variables to ensure proper management
 	i = 0;
 	while (envp[i])
 		i++;
@@ -106,7 +102,6 @@ int	main(int argc, char **argv, char **envp)
 		i++;
 	}
 	env[i] = NULL;
-
 	init_shell(env);
 	shell_loop(argc, &env);
 	cleanup_and_exit(get_exit_status(), env);

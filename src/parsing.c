@@ -15,10 +15,11 @@
 char	**parse_arguments(const char *input, int *arg_count)
 {
 	t_parse_state	s;
-	char			**argv = ft_calloc(MAX_ARGS, sizeof(char *));
+	char			**argv;
 	char			buffer[BUFFER_SIZE];
 	char			next;
 
+	argv = ft_calloc(MAX_ARGS, sizeof(char *));
 	nully(&s);
 	while (input[s.i])
 	{

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:15 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/30 13:48:14 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/31 15:10:07 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,14 @@ char	*expand_dollar(char *arg, char **envp)
 	char	*var;
 	char	*val;
 	char	*exit_status_str;
+	pid_t	pid;
 
 	var = arg + 1;
 	if (!ft_strcmp(arg, "$"))
 		return (ft_strdup("$"));
 	if (!ft_strcmp(arg, "$$"))
 	{
-		// Return process ID as string
-		pid_t pid = getpid();
+		pid = getpid();
 		exit_status_str = malloc(20);
 		sprintf(exit_status_str, "%d", pid);
 		free(arg);
@@ -48,7 +48,6 @@ char	*expand_dollar(char *arg, char **envp)
 	}
 	if (!ft_strcmp(arg, "$?"))
 	{
-		// Return exit status as string
 		exit_status_str = malloc(20);
 		sprintf(exit_status_str, "%d", get_exit_status());
 		free(arg);
@@ -56,43 +55,49 @@ char	*expand_dollar(char *arg, char **envp)
 	}
 	val = lookup_env(var, envp);
 	free(arg);
-	return (ft_strdup(val ? val : ""));
+	if (val)
+		return (ft_strdup(val));
+	else
+		return (ft_strdup(""));
 }
 
 char	*expand_double_quote(char *arg, char **envp)
 {
 	char	buffer[BUFFER_SIZE];
-	int		i = 1, j;
+	int		i;
+	int		j;
 	char	*val;
 	int		k;
 	char	var[256];
 	char	*exit_status_str;
+	pid_t	pid;
 
-	i = 1, j = 0;
+	i = 1;
+	j = 0;
 	while (arg[i] && arg[i] != '"')
 	{
 		if (arg[i] == '$' && arg[i + 1] != '"' && arg[i + 1])
 		{
 			if (arg[i + 1] == '?')
 			{
-				// Handle $? inside double quotes
 				exit_status_str = malloc(20);
 				sprintf(exit_status_str, "%d", get_exit_status());
-				ft_strlcpy(buffer + j, exit_status_str, ft_strlen(exit_status_str) + 1);
+				ft_strlcpy(buffer + j, exit_status_str,
+					ft_strlen(exit_status_str) + 1);
 				j += ft_strlen(exit_status_str);
 				free(exit_status_str);
-				i += 2; // Skip $?
+				i += 2;
 			}
 			else if (arg[i + 1] == '$')
 			{
-				// Handle $$ inside double quotes
-				pid_t pid = getpid();
+				pid = getpid();
 				exit_status_str = malloc(20);
 				sprintf(exit_status_str, "%d", pid);
-				ft_strlcpy(buffer + j, exit_status_str, ft_strlen(exit_status_str) + 1);
+				ft_strlcpy(buffer + j, exit_status_str,
+					ft_strlen(exit_status_str) + 1);
 				j += ft_strlen(exit_status_str);
 				free(exit_status_str);
-				i += 2; // Skip $$
+				i += 2;
 			}
 			else
 			{

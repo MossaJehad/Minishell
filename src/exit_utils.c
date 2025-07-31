@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:00:00 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/30 13:28:10 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/31 15:01:34 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ long long	ft_atoll(const char *str)
 	result = 0;
 	sign = 1;
 	i = 0;
-	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' ||
-		   str[i] == '\v' || str[i] == '\f' || str[i] == '\r')
+	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || str[i] == '\v'
+		|| str[i] == '\f' || str[i] == '\r')
 		i++;
 	if (str[i] == '-' || str[i] == '+')
 	{
@@ -73,17 +73,14 @@ void	handle_exit_command(char **args, int arg_count, char **envp)
 	int	exit_code;
 
 	printf("exit\n");
-	
 	if (arg_count == 1)
 	{
-		// No arguments, exit with last exit status
 		free_env(envp);
 		rl_clear_history();
 		exit(get_exit_status());
 	}
 	else if (arg_count == 2)
 	{
-		// One argument provided
 		if (!is_valid_number(args[1]))
 		{
 			printf("minishell: exit: %s: numeric argument required\n", args[1]);
@@ -105,10 +102,9 @@ void	handle_exit_command(char **args, int arg_count, char **envp)
 	}
 	else
 	{
-		// Too many arguments
 		printf("minishell: exit: too many arguments\n");
 		set_exit_status(1);
-		return; // Don't exit, just set error status
+		return ;
 	}
 }
 
