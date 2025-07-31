@@ -88,7 +88,7 @@ void	handle_cd_command(char *path, int arg_count)
 {
 	if (arg_count > 2)
 	{
-		printf("cd: too many arguments\n");
+		perror("cd: too many arguments");
 		return ;
 	}
 	if (!path || *path == '\0')
@@ -215,7 +215,7 @@ void	handle_export_command(char ***envp, char **args, int arg_count)
 			value = ft_strtrim(temp_value, "\"");
 			free(temp_value);
 			if (!is_valid_identifier(key))
-				printf("export: `%s': not a valid identifier\n", name);
+				perror("export: not a valid identifier");
 			else
 			{
 				formatted_var = ft_strjoin(key, "=");
@@ -231,7 +231,7 @@ void	handle_export_command(char ***envp, char **args, int arg_count)
 		{
 			temp_key = ft_strtrim(name, "\"");
 			if (!is_valid_identifier(temp_key))
-				printf("export: `%s': not a valid identifier\n", name);
+				perror("export: not a valid identifier");
 			else
 			{
 				buf = ft_strjoin(temp_key, "=");
@@ -298,7 +298,7 @@ void	handle_unset_command(char ***envp, char **args, int arg_count)
 	while (i < arg_count)
 	{
 		if (!is_valid_identifier(args[i]))
-			printf("unset: '%s': not a valid identifier\n", args[i]);
+			perror("unset: not a valid identifier");
 		else
 			remove_env_var(envp, args[i]);
 		i++;

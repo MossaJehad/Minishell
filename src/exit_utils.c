@@ -83,14 +83,14 @@ void	handle_exit_command(char **args, int arg_count, char **envp)
 	{
 		if (!is_valid_number(args[1]))
 		{
-			printf("minishell: exit: %s: numeric argument required\n", args[1]);
+			perror("minishell: exit: numeric argument required");
 			free_env(envp);
 			rl_clear_history();
 			exit(2);
 		}
 		if (check_overflow(args[1]))
 		{
-			printf("minishell: exit: %s: numeric argument required\n", args[1]);
+			perror("minishell: exit: numeric argument required");
 			free_env(envp);
 			rl_clear_history();
 			exit(2);
@@ -102,7 +102,7 @@ void	handle_exit_command(char **args, int arg_count, char **envp)
 	}
 	else
 	{
-		printf("minishell: exit: too many arguments\n");
+		perror("minishell: exit: too many arguments");
 		set_exit_status(1);
 		return ;
 	}
