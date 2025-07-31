@@ -90,7 +90,7 @@ char	*ft_itoa(int n)
 	temp[i] = '\0';
 	str = (char *)malloc(i + 1);
 	if (!str)
-		ft_free (&str);
+		ft_free(&str);
 	return (ft_final(temp, str, i - 1));
 }
 

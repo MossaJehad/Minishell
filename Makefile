@@ -24,10 +24,14 @@ SRC		=	main.c \
 			commands.c \
 			inputs.c \
 			expander.c \
-			search_commands.c \
 			utils.c \
 			signals.c \
-			exit_utils.c
+			exit_utils.c \
+			utils_utils.c \
+			signals_utils.c \
+			search_commands.c \
+			main_utils_plus.c
+
 
 OBJS	=	$(SRC:%.c=$(OBJ_DIR)/%.o)
 

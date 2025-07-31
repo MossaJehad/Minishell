@@ -6,14 +6,14 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:10 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/31 15:14:45 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/31 15:34:44 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
 // if the -n followed by n's keep counting tell you find another char
-// (if there is no another char than n then 
+// (if there is no another char than n then
 // print it as if it 1n else print the whole thing)
 void	handle_echo_command(t_token *token)
 {

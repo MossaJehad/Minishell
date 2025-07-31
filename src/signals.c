@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:00:00 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/31 15:05:00 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/07/31 15:41:41 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,6 @@ void	handle_sigint(int sig)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-}
-
-void	handle_sigquit(int sig)
-{
-	(void)sig;
 }
 
 void	setup_signal_handlers(void)
@@ -55,19 +50,4 @@ void	ignore_signals(void)
 {
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
-}
-
-void	restore_signals(void)
-{
-	setup_signal_handlers();
-}
-
-int	get_exit_status(void)
-{
-	return (g_exit_status);
-}
-
-void	set_exit_status(int status)
-{
-	g_exit_status = status;
 }
