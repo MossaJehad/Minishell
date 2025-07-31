@@ -11,7 +11,7 @@ Fix parser: cat |cat (no space) is interpreted as '|cat' arg instead of a pipe.
 -------------------------------------------------------------
 
 1. unset (with any args) (core dump)						- Zaid
-
+DONE
 2. $(no args) expand space									- Zaid
 
 3. echo $?HELLO should print 0HELLO							- Mosa

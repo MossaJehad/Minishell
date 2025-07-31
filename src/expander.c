@@ -76,7 +76,7 @@ char	*expand_double_quote(char *arg, char **envp)
 	j = 0;
 	while (arg[i] && arg[i] != '"')
 	{
-		if (arg[i] == '$' && arg[i + 1] != '"' && arg[i + 1])
+		if (arg[i] == '$' && arg[i + 1])
 		{
 			if (arg[i + 1] == '?')
 			{
@@ -99,7 +99,23 @@ char	*expand_double_quote(char *arg, char **envp)
 				free(exit_status_str);
 				i += 2;
 			}
-			else
+			else if (arg[i + 1] == '{')
+			{
+				k = 0;
+				i += 2;
+				while (arg[i] && arg[i] != '}')
+					var[k++] = arg[i++];
+				var[k] = '\0';
+				if (arg[i] == '}')
+					i++;
+				val = lookup_env(var, envp);
+				if (val)
+				{
+					ft_strlcpy(buffer + j, val, ft_strlen(val) + 1);
+					j += ft_strlen(val);
+				}
+			}
+			else if (ft_isalnum(arg[i + 1]) || arg[i + 1] == '_')
 			{
 				k = 0;
 				i++;
@@ -112,6 +128,10 @@ char	*expand_double_quote(char *arg, char **envp)
 					ft_strlcpy(buffer + j, val, ft_strlen(val) + 1);
 					j += ft_strlen(val);
 				}
+			}
+			else
+			{
+				buffer[j++] = arg[i++];
 			}
 		}
 		else
