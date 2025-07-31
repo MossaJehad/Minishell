@@ -270,10 +270,10 @@ void	remove_env_var(char ***envp, const char *name)
 	env = *envp;
 	cnt = 0;
 	n = ft_strlen(name);
-	while (env[cnt++])
-		;
-	i = -1;
-	while (env[i++])
+	while (env[cnt])
+		cnt++;
+	i = 0;
+	while (i < cnt)
 	{
 		if (ft_strncmp(env[i], name, n) == 0 && env[i][n] == '=')
 		{
@@ -286,6 +286,7 @@ void	remove_env_var(char ***envp, const char *name)
 			env[i] = NULL;
 			break ;
 		}
+		i++;
 	}
 }
 
