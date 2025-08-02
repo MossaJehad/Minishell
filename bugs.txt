@@ -1,26 +1,25 @@
-Quotes have issues when they are odd	- Mosa
-Here doc is reverted when exiting		- Zaid
-Expander value with quotes				- Mosa
+Quotes have issues when they are odd	- Mosa -> LIKE BASH
+Here doc is reverted when exiting		- Zaid -> DONE
+Expander value with quotes				- Mosa ->
 Signals implementation					- Mosa -> DONE
 Pipes implementation		 			- Zaid -> DONE
-Fix leaks and norm						- BOTH
-$SHLVL++								- Mosa
-Fix parser: cat |cat (no space) is interpreted as '|cat' arg instead of a pipe.
+Fix leaks and norm						- BOTH ->
+$SHLVL++								- Mosa ->
+Fix parser: cat |cat (no space)			- Mosa -> DONE
 
 
 -------------------------------------------------------------
 
-1. unset (with any args) (core dump)						- Zaid
-DONE
-2. $(no args) expand space									- Zaid
-Done
-3. echo $?HELLO should print 0HELLO							- Mosa
+1. unset (with any args) (core dump)					- Zaid -> DONE
 
-4. export any error change exit status						- Mosa
+2. $(no args) expand space								- Zaid -> DONE
 
-5. unset any error change exit status and (core dump)		- Mosa
+3. echo $?HELLO should print 0HELLO						- Mosa -> DONE
 
-6. cd $PWD hi too many argument								- Zaid
-this is how it work in the bash :-)
-7. We should print using perror instead of printf			- BOTH
-take a look on them please 
+4. export any error change exit status					- Mosa -> 
+
+5. unset any error change exit status and (core dump)	- Mosa -> DONE
+
+6. cd $PWD hi too many argument							- Zaid -> LIKE BASH
+
+7. We should print using perror instead of printf		- BOTH -> 

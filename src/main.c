@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:04 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/31 15:36:32 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/02 13:12:01 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,9 @@ int	main(int argc, char **argv, char **envp)
 		i++;
 	}
 	env[i] = NULL;
+	init_shlvl(&env);
 	init_shell(env);
 	shell_loop(argc, &env);
-	cleanup_and_exit(get_exit_status(), env);
+	cleanup_and_exit(get_shell_status(), env);
 	return (0);
 }

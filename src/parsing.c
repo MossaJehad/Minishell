@@ -6,11 +6,13 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 19:09:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/30 13:39:28 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/02 12:51:18 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+// Enhanced parsing function - replace your parse_arguments function
 
 char	**parse_arguments(const char *input, int *arg_count)
 {
@@ -23,6 +25,7 @@ char	**parse_arguments(const char *input, int *arg_count)
 	nully(&s);
 	while (input[s.i])
 	{
+		// Handle quotes
 		if (input[s.i] == '\'' && !s.in_double_quote)
 		{
 			s.in_single_quote = !s.in_single_quote;
@@ -35,6 +38,7 @@ char	**parse_arguments(const char *input, int *arg_count)
 			buffer[s.j++] = input[s.i++];
 			continue ;
 		}
+		// Handle whitespace (only when not in quotes)
 		if (!s.in_single_quote && !s.in_double_quote && (input[s.i] == ' '
 				|| input[s.i] == '\t'))
 		{
@@ -47,6 +51,52 @@ char	**parse_arguments(const char *input, int *arg_count)
 			s.i++;
 			continue ;
 		}
+		// NEW: Handle operators when not in quotes
+		if (!s.in_single_quote && !s.in_double_quote)
+		{
+			// Check for << (must come before single <)
+			if (input[s.i] == '<' && input[s.i + 1] == '<')
+			{
+				if (s.j > 0)
+				{
+					buffer[s.j] = '\0';
+					argv[s.k++] = ft_strdup(buffer);
+					s.j = 0;
+				}
+				argv[s.k++] = ft_strdup("<<");
+				s.i += 2;
+				continue ;
+			}
+			// Check for >> (must come before single >)
+			if (input[s.i] == '>' && input[s.i + 1] == '>')
+			{
+				if (s.j > 0)
+				{
+					buffer[s.j] = '\0';
+					argv[s.k++] = ft_strdup(buffer);
+					s.j = 0;
+				}
+				argv[s.k++] = ft_strdup(">>");
+				s.i += 2;
+				continue ;
+			}
+			// Check for single operators
+			if (input[s.i] == '|' || input[s.i] == '<' || input[s.i] == '>')
+			{
+				if (s.j > 0)
+				{
+					buffer[s.j] = '\0';
+					argv[s.k++] = ft_strdup(buffer);
+					s.j = 0;
+				}
+				buffer[0] = input[s.i];
+				buffer[1] = '\0';
+				argv[s.k++] = ft_strdup(buffer);
+				s.i++;
+				continue ;
+			}
+		}
+		// Handle escape sequences
 		if ((s.in_single_quote || s.in_double_quote) && (input[s.i] == '\\'
 				&& input[s.i + 1] == 'n'))
 		{
@@ -69,8 +119,10 @@ char	**parse_arguments(const char *input, int *arg_count)
 				continue ;
 			}
 		}
+		// Regular character
 		buffer[s.j++] = input[s.i++];
 	}
+	// Handle final token
 	if (s.j > 0)
 	{
 		buffer[s.j] = '\0';

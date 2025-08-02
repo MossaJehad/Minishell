@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:00:00 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/31 15:01:34 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/02 13:12:01 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	handle_exit_command(char **args, int arg_count, char **envp)
 	{
 		free_env(envp);
 		rl_clear_history();
-		exit(get_exit_status());
+		exit(get_shell_status());
 	}
 	else if (arg_count == 2)
 	{
@@ -103,7 +103,7 @@ void	handle_exit_command(char **args, int arg_count, char **envp)
 	else
 	{
 		perror("minishell: exit: too many arguments");
-		set_exit_status(1);
+		set_shell_status(1);
 		return ;
 	}
 }

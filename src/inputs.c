@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:18 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/02 12:42:12 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/02 13:58:04 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int	setup_redirection(t_token *tok)
 	{
 		if (pipe(pipefd) == -1)
 			return (perror("pipe"), -1);
-		
 		signal(SIGINT, SIG_DFL);
 		while (1)
 		{
@@ -52,8 +51,8 @@ int	setup_redirection(t_token *tok)
 				free(line);
 				break ;
 			}
-			if (write(pipefd[1], line, ft_strlen(line)) == -1 ||
-				write(pipefd[1], "\n", 1) == -1)
+			if (write(pipefd[1], line, ft_strlen(line)) == -1
+				|| write(pipefd[1], "\n", 1) == -1)
 			{
 				perror("write to heredoc pipe");
 				free(line);
@@ -102,6 +101,7 @@ void	handle_command(t_token *token, char ***envp)
 	int		k;
 	t_token	*temp;
 	t_token	*cmd_token;
+	t_shell	g_shell;
 	int		sig;
 	char	*pwd;
 
@@ -109,7 +109,7 @@ void	handle_command(t_token *token, char ***envp)
 	num_cmds = 0;
 	cur = token;
 	k = 0;
-	pwd = getenv("PWD");
+	pwd = g_shell.pwd;
 	while (k < 256)
 	{
 		heredoc_fds[k] = -1;
@@ -132,7 +132,7 @@ void	handle_command(t_token *token, char ***envp)
 					if (heredoc_fds[num_cmds] == -1)
 					{
 						perror("heredoc failed");
-						set_exit_status(1);
+						set_shell_status(1);
 						return ;
 					}
 				}
@@ -167,7 +167,7 @@ void	handle_command(t_token *token, char ***envp)
 			else if (!ft_strcmp(cmd_argv[0], "unset"))
 				handle_unset_command(envp, cmd_argv, cmd_argc);
 			else if (!ft_strcmp(cmd_argv[0], "cd"))
-				handle_cd_command(cmd_argv[1], cmd_argc);
+				handle_cd_command(cmd_argv[1], cmd_argc, envp);
 			else if (!ft_strcmp(cmd_argv[0], "exit"))
 				handle_exit_command(cmd_argv, cmd_argc, *envp);
 			if (heredoc_fds[0] != -1)
@@ -182,7 +182,7 @@ void	handle_command(t_token *token, char ***envp)
 		if (pipe(pipefd[i]) < 0)
 		{
 			perror("pipe");
-			set_exit_status(1);
+			set_shell_status(1);
 			restore_signals();
 			return ;
 		}
@@ -195,7 +195,7 @@ void	handle_command(t_token *token, char ***envp)
 		if (pids[i] < 0)
 		{
 			perror("fork");
-			set_exit_status(1);
+			set_shell_status(1);
 			restore_signals();
 			return ;
 		}
@@ -261,12 +261,7 @@ void	handle_command(t_token *token, char ***envp)
 				else if (!ft_strcmp(cmd_argv[0], "env"))
 					handle_env_command(*envp);
 				else if (!ft_strcmp(cmd_argv[0], "pwd"))
-				{
-					if (pwd)
-						printf("%s\n", pwd);
-					else
-						printf("\n");
-				}
+					handle_pwd_command(envp);
 				exit(0);
 			}
 			execvp(cmd_argv[0], cmd_argv);
@@ -296,16 +291,16 @@ void	handle_command(t_token *token, char ***envp)
 		if (i == num_cmds - 1)
 		{
 			if (WIFEXITED(status))
-				set_exit_status(WEXITSTATUS(status));
+				set_shell_status(WEXITSTATUS(status));
 			else if (WIFSIGNALED(status))
 			{
 				sig = WTERMSIG(status);
 				if (sig == SIGINT)
-					set_exit_status(130);
+					set_shell_status(130);
 				else if (sig == SIGQUIT)
-					set_exit_status(131);
+					set_shell_status(131);
 				else
-					set_exit_status(128 + sig);
+					set_shell_status(128 + sig);
 			}
 		}
 		i++;

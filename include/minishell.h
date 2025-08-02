@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/21 18:30:26 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/02 13:58:25 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,6 @@
 # include <sys/wait.h>
 # include <unistd.h>
 
-// Global exit status variable
-extern int			g_exit_status;
-
 typedef struct s_token
 {
 	char			*value;
@@ -44,10 +41,16 @@ typedef struct s_parse_state
 	int				in_single_quote;
 	int				in_double_quote;
 }					t_parse_state;
-typedef struct s_exit
+typedef struct s_shell
 {
+	char			*shlvl;
+	char			*pwd;
+	char			*oldpwd;
 	int				last_status;
-}					t_exit;
+}					t_shell;
+
+// Struct Global Variable
+extern t_shell g_shell;
 
 void				tokenize(char **array, t_token **token);
 void				create_token(t_token **token, char *value, char *type);
@@ -66,7 +69,10 @@ void				handle_export_command(char ***envp, char **args,
 void				handle_cat_command(char **args, char **envp);
 void				handle_ls_command(char **args, char **envp);
 void				handle_type_command(const char *input);
-void				handle_cd_command(char *path, int arg_count);
+void				handle_cd_command(char *path, int arg_count, char ***envp);
+void				update_pwd_oldpwd(char ***envp, const char *new_pwd, const char *old_pwd);
+char				*determine_cd_target(char *path, char **envp);
+void				handle_pwd_command(char ***envp);
 void				init_shell(char **envp);
 int					is_shell_builtin(const char *cmd);
 int					should_run_in_parent(const char *cmd);
@@ -83,6 +89,17 @@ int					setup_redirection(t_token *token);
 void				free_env(char **envp);
 void				print_welcome_banner(void);
 
+// SHLVL functions
+void	init_shlvl(char ***envp);
+char	*lookup_env_value(const char *name, char **envp);
+void	add_or_replace_env(char ***envp, const char *var);
+char	*ft_itoa(int n);
+
+// Enhanced expansion
+char	*expand_variables_in_string(char *str, char **envp);
+
+// You might also need this if you don't have it
+int		ft_atoi(const char *str);
 /* Add these to your minishell.h file */
 // Signal handling includes
 # include <limits.h>
@@ -97,8 +114,8 @@ void				setup_child_signals(void);
 void				ignore_signals(void);
 void				restore_signals(void);
 // Exit status functions
-int					get_exit_status(void);
-void				set_exit_status(int status);
+int					get_shell_status(void);
+void				set_shell_status(int status);
 // Exit command functions
 void				handle_exit_command(char **args, int arg_count,
 						char **envp);
@@ -110,5 +127,8 @@ int					check_overflow(const char *str);
 char				**ft_strdup_array(char **array);
 void				ft_sort_array(char **array);
 void				ft_free_array(char **array);
-
+void				init_pwd_vars(char ***envp);
+int					find_env_index(char **envp, const char *name);
+void				update_pwd_vars(char ***envp, const char *new_pwd);
+void				cleanup_shell(void);
 #endif

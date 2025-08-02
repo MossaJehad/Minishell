@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:10 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/31 15:34:44 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/02 14:01:51 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,28 +84,154 @@ void	handle_type_command(const char *input)
 	printf("%s: not found\n", input);
 }
 
-void	handle_cd_command(char *path, int arg_count)
+void	handle_cd_command(char *path, int arg_count, char ***envp)
 {
+	char	*target_dir;
+	char	*old_pwd;
+	char	cwd[PATH_MAX];
+	char	*lookup;
+
+	// Check for too many arguments
 	if (arg_count > 2)
 	{
-		perror("cd: too many arguments");
+		fprintf(stderr, "cd: too many arguments\n");
+		g_shell.last_status = 1;
 		return ;
 	}
-	if (!path || *path == '\0')
+	// Determine target directory
+	target_dir = determine_cd_target(path, *envp);
+	if (!target_dir)
 	{
-		path = getenv("HOME");
-		if (!path)
-			return ;
+		g_shell.last_status = 1;
+		return ;
 	}
-	while (*path == ' ' || *path == '\t')
-		path++;
-	if (*path == '\0' || ft_strcmp(path, "~") == 0)
-		path = getenv("HOME");
-	if (chdir(path) != 0)
-		printf("cd: %s: No such file or directory\n", path);
+	// Save current PWD as old PWD before changing
+	lookup = lookup_env_value("PWD", *envp);
+	old_pwd = lookup ? ft_strdup(lookup) : NULL;
+	// Change directory
+	if (chdir(target_dir) != 0)
+	{
+		printf("cd: %s: No such file or directory\n", target_dir);
+		g_shell.last_status = 1;
+		return ;
+	}
+	// Get the new current working directory
+	if (!getcwd(cwd, sizeof(cwd)))
+	{
+		perror("cd: getcwd failed");
+		g_shell.last_status = 1;
+		return ;
+	}
+	// Update PWD and OLDPWD environment variables
+	update_pwd_oldpwd(envp, cwd, old_pwd);
+	g_shell.last_status = 0;
 }
 
-static int	find_env_index(char **env, const char *name)
+char	*determine_cd_target(char *path, char **envp)
+{
+	char	*target;
+
+	// No path or empty path - go to HOME
+	if (!path || *path == '\0')
+	{
+		target = lookup_env_value("HOME", envp);
+		if (!target)
+		{
+			fprintf(stderr, "cd: HOME not set\n");
+			return (NULL);
+		}
+		return (target);
+	}
+	// Skip leading whitespace
+	while (*path == ' ' || *path == '\t')
+		path++;
+	// Empty after trimming or ~ - go to HOME
+	if (*path == '\0' || ft_strcmp(path, "~") == 0)
+	{
+		target = lookup_env_value("HOME", envp);
+		if (!target)
+		{
+			fprintf(stderr, "cd: HOME not set\n");
+			return (NULL);
+		}
+		return (target);
+	}
+	// cd - (go to previous directory)
+	if (ft_strcmp(path, "-") == 0)
+	{
+		target = lookup_env_value("OLDPWD", envp);
+		if (!target || *target == '\0')
+		{
+			fprintf(stderr, "cd: OLDPWD not set\n");
+			return (NULL);
+		}
+		printf("%s\n", target); // Print where we're going (bash behavior)
+		return (target);
+	}
+	// Regular path
+	return (path);
+}
+
+void	update_pwd_oldpwd(char ***envp, const char *new_pwd,
+		const char *old_pwd)
+{
+	char	*pwd_var;
+	char	*oldpwd_var;
+
+	// Update PWD
+	pwd_var = ft_strjoin("PWD=", new_pwd);
+	if (pwd_var)
+	{
+		add_or_replace_env(envp, pwd_var);
+		free(pwd_var);
+	}
+	// Update OLDPWD
+	if (old_pwd)
+		oldpwd_var = ft_strjoin("OLDPWD=", old_pwd);
+	else
+		oldpwd_var = ft_strdup("OLDPWD=");
+	if (oldpwd_var)
+	{
+		add_or_replace_env(envp, oldpwd_var);
+		free(oldpwd_var);
+	}
+	// Update global shell structure
+	if (g_shell.pwd)
+		free(g_shell.pwd);
+	if (g_shell.oldpwd)
+		free(g_shell.oldpwd);
+	g_shell.pwd = ft_strdup(new_pwd);
+	g_shell.oldpwd = old_pwd ? ft_strdup(old_pwd) : NULL;
+}
+
+// Simple pwd command implementation
+void	handle_pwd_command(char ***envp)
+{
+	char	*pwd;
+	char	cwd[PATH_MAX];
+
+	// Try to get PWD from environment first
+	pwd = lookup_env_value("PWD", *envp);
+	if (pwd && access(pwd, F_OK) == 0)
+	{
+		printf("%s\n", pwd);
+		g_shell.last_status = 0;
+		return ;
+	}
+	// Fallback to getcwd if PWD is not set or invalid
+	if (getcwd(cwd, sizeof(cwd)))
+	{
+		printf("%s\n", cwd);
+		// Update PWD in environment if it was wrong
+		update_pwd_oldpwd(envp, cwd, lookup_env_value("PWD", *envp));
+		g_shell.last_status = 0;
+		return ;
+	}
+	perror("pwd");
+	g_shell.last_status = 1;
+}
+
+int	find_env_index(char **env, const char *name)
 {
 	size_t	n;
 	int		i;

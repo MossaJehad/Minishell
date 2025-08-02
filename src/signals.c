@@ -6,19 +6,18 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:00:00 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/31 15:41:41 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/02 13:44:24 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-// Global variable to store the last exit status
-int		g_exit_status = 0;
-
 void	handle_sigint(int sig)
 {
+	t_shell	g_shell;
+
 	(void)sig;
-	g_exit_status = 130;
+	g_shell.last_status = 130;
 	printf("\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);
