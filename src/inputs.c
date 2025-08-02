@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:18 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/31 15:12:03 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/02 12:42:12 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,24 +18,53 @@ int	setup_redirection(t_token *tok)
 	char	*line;
 	int		fd;
 
+	if (!tok)
+	{
+		fprintf(stderr, "setup_redirection: null token\n");
+		return (-1);
+	}
+	if (!tok->type)
+	{
+		fprintf(stderr, "setup_redirection: token type is null\n");
+		return (-1);
+	}
+	if (ft_strcmp(tok->type, "here-document") == 0 && !tok->value)
+	{
+		fprintf(stderr, "heredoc: missing delimiter\n");
+		return (-1);
+	}
 	if (ft_strcmp(tok->type, "here-document") == 0)
 	{
 		if (pipe(pipefd) == -1)
 			return (perror("pipe"), -1);
+		
+		signal(SIGINT, SIG_DFL);
 		while (1)
 		{
 			line = readline("> ");
-			if (!line || ft_strcmp(line, tok->value) == 0)
+			if (!line)
 			{
-				if (line)
-					free(line);
+				printf("\n");
 				break ;
 			}
-			write(pipefd[1], line, ft_strlen(line));
-			write(pipefd[1], "\n", 1);
+			if (ft_strcmp(line, tok->value) == 0)
+			{
+				free(line);
+				break ;
+			}
+			if (write(pipefd[1], line, ft_strlen(line)) == -1 ||
+				write(pipefd[1], "\n", 1) == -1)
+			{
+				perror("write to heredoc pipe");
+				free(line);
+				close(pipefd[0]);
+				close(pipefd[1]);
+				return (-1);
+			}
 			free(line);
 		}
 		close(pipefd[1]);
+		setup_signal_handlers();
 		return (pipefd[0]);
 	}
 	if (ft_strcmp(tok->type, "redirect input") == 0)

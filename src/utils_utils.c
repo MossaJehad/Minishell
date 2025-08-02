@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 15:44:02 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/31 18:11:32 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/02 12:33:46 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 int	is_shell_builtin(const char *cmd)
 {
+	if (!cmd)
+        return 0;
 	if (ft_strcmp(cmd, "type") == 0 || ft_strcmp(cmd, "echo") == 0
 		|| ft_strcmp(cmd, "exit") == 0 || ft_strcmp(cmd, "pwd") == 0
 		|| ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "export") == 0
