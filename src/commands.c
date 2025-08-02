@@ -6,11 +6,12 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:10 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/02 14:01:51 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/02 14:44:15 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+extern t_shell g_shell;
 
 // if the -n followed by n's keep counting tell you find another char
 // (if there is no another char than n then
@@ -91,38 +92,32 @@ void	handle_cd_command(char *path, int arg_count, char ***envp)
 	char	cwd[PATH_MAX];
 	char	*lookup;
 
-	// Check for too many arguments
 	if (arg_count > 2)
 	{
 		fprintf(stderr, "cd: too many arguments\n");
 		g_shell.last_status = 1;
 		return ;
 	}
-	// Determine target directory
 	target_dir = determine_cd_target(path, *envp);
 	if (!target_dir)
 	{
 		g_shell.last_status = 1;
 		return ;
 	}
-	// Save current PWD as old PWD before changing
 	lookup = lookup_env_value("PWD", *envp);
 	old_pwd = lookup ? ft_strdup(lookup) : NULL;
-	// Change directory
 	if (chdir(target_dir) != 0)
 	{
 		printf("cd: %s: No such file or directory\n", target_dir);
 		g_shell.last_status = 1;
 		return ;
 	}
-	// Get the new current working directory
 	if (!getcwd(cwd, sizeof(cwd)))
 	{
 		perror("cd: getcwd failed");
 		g_shell.last_status = 1;
 		return ;
 	}
-	// Update PWD and OLDPWD environment variables
 	update_pwd_oldpwd(envp, cwd, old_pwd);
 	g_shell.last_status = 0;
 }

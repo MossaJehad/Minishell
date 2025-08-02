@@ -6,11 +6,12 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:04 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/02 13:12:01 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/02 14:39:49 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+extern t_shell g_shell;
 
 void	nully(t_parse_state *s)
 {

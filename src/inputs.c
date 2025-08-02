@@ -6,11 +6,12 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:18 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/02 13:58:04 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/02 14:40:17 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+extern t_shell g_shell;
 
 int	setup_redirection(t_token *tok)
 {
@@ -101,7 +102,6 @@ void	handle_command(t_token *token, char ***envp)
 	int		k;
 	t_token	*temp;
 	t_token	*cmd_token;
-	t_shell	g_shell;
 	int		sig;
 	char	*pwd;
 

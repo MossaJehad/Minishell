@@ -7,7 +7,8 @@ Fix leaks and norm						- BOTH ->
 $SHLVL++								- Mosa ->
 Fix parser: cat |cat (no space)			- Mosa -> DONE
 
-
+## IMPORTANT ##
+SIGSEGV (execvpe is trying to execute what inside the here-doc)
 -------------------------------------------------------------
 
 1. unset (with any args) (core dump)					- Zaid -> DONE
