@@ -236,6 +236,7 @@ void	handle_command(t_token *token, char ***envp)
 				}
 				else if (ft_strcmp(seg->type, "here-document") == 0)
 				{
+					// skip heredoc tokens in argv
 					seg = seg->next;
 					continue ;
 				}
@@ -243,6 +244,8 @@ void	handle_command(t_token *token, char ***envp)
 				seg = seg->next;
 			}
 			cmd_argv[cmd_argc] = NULL;
+			if (cmd_argc == 0 || cmd_argv[0] == NULL)
+				exit(0);
 			if (is_shell_builtin(cmd_argv[0]))
 			{
 				if (!ft_strcmp(cmd_argv[0], "echo"))
