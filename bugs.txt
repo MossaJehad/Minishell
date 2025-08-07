@@ -1,26 +1,6 @@
-Quotes have issues when they are odd	- Mosa -> LIKE BASH
-Here doc is reverted when exiting		- Zaid -> DONE
-Expander value with quotes				- Mosa ->
-Signals implementation					- Mosa -> DONE
-Pipes implementation		 			- Zaid -> DONE
-Fix leaks and norm						- BOTH ->
-$SHLVL++								- Mosa ->
-Fix parser: cat |cat (no space)			- Mosa -> DONE
-
-## IMPORTANT ##
-SIGSEGV (execvpe is trying to execute what inside the here-doc)
--------------------------------------------------------------
-
-1. unset (with any args) (core dump)					- Zaid -> DONE
-
-2. $(no args) expand space								- Zaid -> DONE
-
-3. echo $?HELLO should print 0HELLO						- Mosa -> DONE
-
-4. export any error change exit status					- Mosa -> 
-
-5. unset any error change exit status and (core dump)	- Mosa -> DONE
-
-6. cd $PWD hi too many argument							- Zaid -> LIKE BASH
-
-7. We should print using perror instead of printf		- BOTH -> 
+1. syntax errors like >>> should not create a new file called '>'
+2. Echo should be fixied when using ^C with it.
+3. Exit command with different arguments.
+4. Exit status should be fixed.
+5. Signals inside heredoc.
+6. Export with quotes.
