@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   inputs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:18 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/02 14:40:17 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/08 23:07:59 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,13 +103,11 @@ void	handle_command(t_token *token, char ***envp)
 	t_token	*temp;
 	t_token	*cmd_token;
 	int		sig;
-	char	*pwd;
 
 	i = 0;
 	num_cmds = 0;
 	cur = token;
 	k = 0;
-	pwd = g_shell.pwd;
 	while (k < 256)
 	{
 		heredoc_fds[k] = -1;
