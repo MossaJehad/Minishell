@@ -1,37 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memmove.c                                       :+:      :+:    :+:   */
+/*   ft_isspace.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/01 13:04:57 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 03:55:29 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/08/09 03:46:47 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 03:46:57 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memmove(void *dst, const void *src, size_t len)
+int	ft_isspace(char c)
 {
-	unsigned char	*c_src;
-	unsigned char	*c_dst;
-
-	if (!dst && !src)
-		return (dst);
-	c_src = (unsigned char *)src;
-	c_dst = (unsigned char *)dst;
-	if (c_dst > c_src)
-	{
-		c_dst += len;
-		c_src += len;
-		while (len-- > 0)
-			*--c_dst = *--c_src;
-	}
-	else
-	{
-		while (len-- > 0)
-			*c_dst++ = *c_src++;
-	}
-	return (dst);
+	if (c == 9 || c == 10 || c == 11 || c == 12 || c == 13 || c == 32)
+		return (1);
+	return (0);
 }

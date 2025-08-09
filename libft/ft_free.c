@@ -1,37 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memmove.c                                       :+:      :+:    :+:   */
+/*   ft_free.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/01 13:04:57 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 03:55:29 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/08/09 03:48:41 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 03:50:49 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memmove(void *dst, const void *src, size_t len)
+// Free a single pointer and set it to NULL
+void	ft_free(void **ptr)
 {
-	unsigned char	*c_src;
-	unsigned char	*c_dst;
-
-	if (!dst && !src)
-		return (dst);
-	c_src = (unsigned char *)src;
-	c_dst = (unsigned char *)dst;
-	if (c_dst > c_src)
+	if (ptr && *ptr)
 	{
-		c_dst += len;
-		c_src += len;
-		while (len-- > 0)
-			*--c_dst = *--c_src;
+		free(*ptr);
+		*ptr = NULL;
 	}
-	else
-	{
-		while (len-- > 0)
-			*c_dst++ = *c_src++;
-	}
-	return (dst);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/01 12:22:46 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/05/26 14:24:10 by mhasoneh         ###   ########.fr       */
+/*   Created: 2024/09/01 12:22:46 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 03:55:29 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,3 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 	}
 	return (dest);
 }
-
-/*int	main(void)
-{
-	char	dest[] = "0123456789";
-	const char	src[] = "hello world";
-	ft_memcpy(dest, src, 5);
-	printf("%s", dest);
-	return (0);
-}*/

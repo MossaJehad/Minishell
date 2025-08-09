@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/07 10:18:13 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/05/26 14:32:38 by mhasoneh         ###   ########.fr       */
+/*   Created: 2024/09/07 10:18:13 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 04:20:57 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static char	*final_str(char const *s1, int start, int end)
 	sub = (char *)malloc(end - start + 2);
 	if (!sub)
 	{
-		ft_free(&sub);
+		ft_free((void **)&sub);
 		return (NULL);
 	}
 	i = 0;
@@ -101,8 +101,3 @@ char	*ft_strtrim(char const *s1, char const *set)
 	end = end_index(s1, set, start);
 	return (final_str(s1, start, end));
 }
-
-/*int	main(void)
-{
-	printf("%s", ft_strtrim("ooeeohelloworldeeoe", "eo"));
-}*/

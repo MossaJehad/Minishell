@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/02 14:03:27 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/05/26 14:36:17 by mhasoneh         ###   ########.fr       */
+/*   Created: 2024/09/02 14:03:27 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 04:19:43 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	arr = (char *)malloc(total);
 	if (!arr)
 	{
-		ft_free(&arr);
+		ft_free((void **)&arr);
 		return (NULL);
 	}
 	while (i < total)
@@ -33,17 +33,3 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	}
 	return (arr);
 }
-
-/*int	main(void)
-{
-	int		i;
-	char	*arr;
-
-	i = 0;
-	arr = ft_calloc(4, 4);
-	while (i < 4 * 4)
-	{
-		printf("%d ", arr[i]);
-		i++;
-	}
-}*/

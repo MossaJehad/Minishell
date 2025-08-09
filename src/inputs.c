@@ -6,83 +6,121 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:18 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/08 23:07:59 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 12:25:25 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-extern t_shell g_shell;
+#include <stdio.h>
 
-int	setup_redirection(t_token *tok)
+int setup_redirection(t_token *tok)
 {
-	int		pipefd[2];
-	char	*line;
-	int		fd;
+    int fd;
 
-	if (!tok)
+    if (validate_token(tok) < 0)
+        return (-1);
+
+    if (ft_strcmp(tok->type, "here-document") == 0)
+        return (handle_heredoc(tok));
+
+    fd = handle_file_redirection(tok);
+    if (fd < 0)
+        return (-1);
+
+    if (ft_strcmp(tok->type, "redirect input") == 0)
+        dup2(fd, STDIN_FILENO);
+    else
+        dup2(fd, STDOUT_FILENO);
+
+    close(fd);
+    return (0);
+}
+
+int validate_token(t_token *tok)
+{
+    if (!tok)
+    {
+        fprintf(stderr, "setup_redirection: null token\n");
+        return (-1);
+    }
+    if (!tok->type)
+    {
+        fprintf(stderr, "setup_redirection: token type is null\n");
+        return (-1);
+    }
+    if (ft_strcmp(tok->type, "here-document") == 0 && !tok->value)
+    {
+        fprintf(stderr, "heredoc: missing delimiter\n");
+        return (-1);
+    }
+    return (0);
+}
+
+int	read_heredoc_lines(int write_fd, const char *delimiter)
+{
+	char	*line;
+
+	while (1)
 	{
-		fprintf(stderr, "setup_redirection: null token\n");
-		return (-1);
-	}
-	if (!tok->type)
-	{
-		fprintf(stderr, "setup_redirection: token type is null\n");
-		return (-1);
-	}
-	if (ft_strcmp(tok->type, "here-document") == 0 && !tok->value)
-	{
-		fprintf(stderr, "heredoc: missing delimiter\n");
-		return (-1);
-	}
-	if (ft_strcmp(tok->type, "here-document") == 0)
-	{
-		if (pipe(pipefd) == -1)
-			return (perror("pipe"), -1);
-		signal(SIGINT, SIG_DFL);
-		while (1)
+		line = readline("> ");
+		if (!line)
 		{
-			line = readline("> ");
-			if (!line)
-			{
-				printf("\n");
-				break ;
-			}
-			if (ft_strcmp(line, tok->value) == 0)
-			{
-				free(line);
-				break ;
-			}
-			if (write(pipefd[1], line, ft_strlen(line)) == -1
-				|| write(pipefd[1], "\n", 1) == -1)
-			{
-				perror("write to heredoc pipe");
-				free(line);
-				close(pipefd[0]);
-				close(pipefd[1]);
-				return (-1);
-			}
-			free(line);
+			printf("\n");
+			break;
 		}
-		close(pipefd[1]);
-		setup_signal_handlers();
-		return (pipefd[0]);
+		if (ft_strcmp(line, delimiter) == 0)
+		{
+			free(line);
+			break;
+		}
+		if (write(write_fd, line, ft_strlen(line)) == -1
+			|| write(write_fd, "\n", 1) == -1)
+		{
+			perror("write to heredoc pipe");
+			free(line);
+			return (-1);
+		}
+		free(line);
 	}
-	if (ft_strcmp(tok->type, "redirect input") == 0)
-		fd = open(tok->value, O_RDONLY);
-	else if (ft_strcmp(tok->type, "redirect output") == 0)
-		fd = open(tok->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	else if (ft_strcmp(tok->type, "append output") == 0)
-		fd = open(tok->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	else
-		return (-1);
-	if (fd < 0)
-		return (perror(tok->value), -1);
-	if (ft_strcmp(tok->type, "redirect input") == 0)
-		dup2(fd, STDIN_FILENO);
-	else
-		dup2(fd, STDOUT_FILENO);
-	close(fd);
 	return (0);
+}
+
+int	handle_heredoc(t_token *tok)
+{
+	int	pipefd[2];
+
+	if (pipe(pipefd) == -1)
+		return (perror("pipe"), -1);
+	signal(SIGINT, SIG_DFL);
+	if (read_heredoc_lines(pipefd[1], tok->value) == -1)
+	{
+		close(pipefd[0]);
+		close(pipefd[1]);
+		return (-1);
+	}
+	close(pipefd[1]);
+	setup_signal_handlers();
+	return (pipefd[0]);
+}
+
+
+int handle_file_redirection(t_token *tok)
+{
+    int fd = -1;
+
+    if (ft_strcmp(tok->type, "redirect input") == 0)
+        fd = open(tok->value, O_RDONLY);
+    else if (ft_strcmp(tok->type, "redirect output") == 0)
+        fd = open(tok->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    else if (ft_strcmp(tok->type, "append output") == 0)
+        fd = open(tok->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
+    else
+        return (-1);
+
+    if (fd < 0)
+        return (perror(tok->value), -1);
+
+    return fd;
 }
 
 void	handle_command(t_token *token, char ***envp)
@@ -234,7 +272,6 @@ void	handle_command(t_token *token, char ***envp)
 				}
 				else if (ft_strcmp(seg->type, "here-document") == 0)
 				{
-					// skip heredoc tokens in argv
 					seg = seg->next;
 					continue ;
 				}
@@ -309,57 +346,77 @@ void	handle_command(t_token *token, char ***envp)
 	restore_signals();
 }
 
-char	*get_input(void)
+
+char	*read_prompt_line(void)
 {
-	char	*line;
-	char	*new_part;
-	char	*combined;
 	char	cwd[1024];
 	char	*prompt;
 	char	*tmp;
-
-	while (1)
+	char	*line;
+	if (getcwd(cwd, sizeof(cwd)))
 	{
-		if (getcwd(cwd, sizeof(cwd)))
-		{
-			tmp = ft_strdup(cwd);
-			prompt = ft_strjoin(tmp, "$ ");
-			free(tmp);
-		}
-		else
-			prompt = ft_strdup("$ ");
-		line = readline(prompt);
-		free(prompt);
-		if (!line)
-		{
-			printf("exit\n");
-			return (NULL);
-		}
-		if (*line == '\0')
-		{
-			free(line);
-			continue ;
-		}
-		if (!has_unclosed_quotes(line))
-		{
-			add_history(line);
-			return (line);
-		}
-		while (has_unclosed_quotes(line))
-		{
-			new_part = readline("> ");
-			if (!new_part)
-			{
-				free(line);
-				return (NULL);
-			}
-			combined = ft_strjoin(line, "\n");
-			free(line);
-			line = ft_strjoin(combined, new_part);
-			free(combined);
-			free(new_part);
-		}
-		add_history(line);
-		return (line);
+		tmp = ft_strdup(cwd);
+		prompt = ft_strjoin(tmp, "$ ");
+		free(tmp);
 	}
+	else
+		prompt = ft_strdup("$ ");
+	line = readline(prompt);
+	free(prompt);
+	return (line);
+}
+
+char *append_until_quotes_closed(char *line)
+{
+	char *new_part;
+	char *combined;
+
+	while (has_unclosed_quotes(line))
+	{
+		new_part = readline(" ");
+		if (g_signal)
+		{
+			g_signal = 0;
+			if (new_part)
+				free(new_part);
+			free(line);
+			return NULL;
+		}
+		if (!new_part)
+		{
+			free(line);
+			return NULL;
+		}
+		combined = ft_strjoin(line, "\n");
+		free(line);
+		line = ft_strjoin(combined, new_part);
+		free(combined);
+		free(new_part);
+	}
+	return line;
+}
+
+char *get_input(void)
+{
+    char *line;
+
+    while (1)
+    {
+        line = read_prompt_line();
+        if (!line)
+        {
+            printf("exit\n");
+            return NULL;
+        }
+        if (*line == '\0')
+        {
+            free(line);
+            continue;
+        }
+        line = append_until_quotes_closed(line);
+        if (!line)
+            continue;
+        add_history(line);
+        return line;
+    }
 }

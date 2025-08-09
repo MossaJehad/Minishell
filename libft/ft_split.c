@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/08 12:08:29 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/05/26 14:36:21 by mhasoneh         ###   ########.fr       */
+/*   Created: 2024/09/08 12:08:29 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 04:21:42 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static char	*ft_word(char const *s, int start, int end)
 	word = (char *)malloc(end - start + 2);
 	if (!word)
 	{
-		ft_free(&word);
+		ft_free((void **)&word);
 		return (NULL);
 	}
 	while (start <= end)
@@ -107,7 +107,7 @@ char	**ft_split(char const *s, char c)
 	arr = (char **)malloc((count_word(s, c) + 1) * sizeof(char *));
 	if (!arr)
 	{
-		ft_free(arr);
+		ft_free((void **)&arr);
 		return (NULL);
 	}
 	while (s[j] == c && s[j])
@@ -115,63 +115,3 @@ char	**ft_split(char const *s, char c)
 	arr = ft_split_internal(s, c, arr, j);
 	return (arr);
 }
-/*
-char	**ft_split(char const *s, char c)
-{
-	char	**arr;
-	int		j;
-	int		i;
-	int		start;
-
-	j = 0;
-	i = 0;
-	if (!s)
-		return (NULL);
-	arr = (char **)malloc((count_word(s, c) + 1) * sizeof(char *));
-	if (!arr)
-		return (NULL);
-	while (s[j] == c && s[j])
-		j++;
-	start = j;
-	while (s[j])
-	{
-		if (s[j] != c && (s[j + 1] == c || s[j + 1] == '\0'))
-		{
-			arr[i] = ft_word(s, start, j);
-			if (!arr[i])
-			{
-				ft_free(arr, i);
-				return (NULL);
-			}
-			i++;
-		}
-		if (s[j] == c && s[j + 1] != c)
-			start = j + 1;
-		j++;
-	}
-	arr[i] = NULL;
-	return (arr);
-}
-*/
-/*int	main(void)
-{
-	char	**res;
-	int		i;
-	int		word_count;
-
-	res = ft_split("hello world", ' ');
-	if (!res)
-	{
-		printf("Memory allocation failed\n");
-		return (1);
-	}
-	i = 0;
-	while (res[i] != NULL)
-	{
-		printf("[%d]: \"%s\"\n", i, res[i]);
-		i++;
-	}
-	word_count = count_word("hello world", ' ');
-	ft_free(res, word_count);
-	return (0);
-}*/

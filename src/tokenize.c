@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:30 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/07/30 14:03:42 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 12:32:17 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,32 +74,69 @@ int	check_syntax_error(char **array)
 	return (0);
 }
 
-void	tokenize(char **array, t_token **token)
+int tokenize_append_and_heredoc(char **array, int *i, t_token **token)
 {
+	if (ft_strcmp(array[*i], ">>") == 0)
+	{
+		create_token(token, array[++(*i)], "append output");
+		(*i)++;
+		return 1;
+	}
+	else if (ft_strcmp(array[*i], "<<") == 0)
+	{
+		if (array[*i + 1] == NULL)
+		{
+			fprintf(stderr, "syntax error: unexpected end after `<<`\n");
+			return -1;
+		}
+		create_token(token, array[++(*i)], "here-document");
+		(*i)++;
+		return 1;
+	}
+	return 0;
+}
+
+int tokenize_pipe_and_redirects(char **array, int *i, t_token **token)
+{
+	if (ft_strcmp(array[*i], "|") == 0)
+	{
+		create_token(token, "|", "pipe");
+		(*i)++;
+		return 1;
+	}
+	else if (ft_strcmp(array[*i], "<") == 0)
+	{
+		create_token(token, array[++(*i)], "redirect input");
+		(*i)++;
+		return 1;
+	}
+	else if (ft_strcmp(array[*i], ">") == 0)
+	{
+		create_token(token, array[++(*i)], "redirect output");
+		(*i)++;
+		return 1;
+	}
+	return 0;
+}
+
+void tokenize(char **array, t_token **token)
+{
+	int	result;
 	int	i;
 
 	i = 0;
 	while (array[i])
 	{
+		result = tokenize_append_and_heredoc(array, &i, token);
+		if (result == -1) 
+			return;
+		if (result == 1)
+			continue;
+		result = tokenize_pipe_and_redirects(array, &i, token);
+		if (result == 1)
+			continue;
 		if (check_command(array[i]))
 			create_token(token, array[i], "command");
-		else if (ft_strcmp(array[i], "|") == 0)
-			create_token(token, "|", "pipe");
-		else if (ft_strcmp(array[i], "<") == 0)
-			create_token(token, array[++i], "redirect input");
-		else if (ft_strcmp(array[i], ">") == 0)
-			create_token(token, array[++i], "redirect output");
-		else if (ft_strcmp(array[i], ">>") == 0)
-			create_token(token, array[++i], "append output");
-		else if (ft_strcmp(array[i], "<<") == 0)
-		{
-			if (array[i + 1] == NULL)
-			{
-				fprintf(stderr, "syntax error: unexpected end after `<<`\n");
-				return ;
-			}
-			create_token(token, array[++i], "here-document");
-		}
 		else
 			create_token(token, array[i], "word");
 		i++;

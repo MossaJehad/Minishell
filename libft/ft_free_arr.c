@@ -1,37 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memmove.c                                       :+:      :+:    :+:   */
+/*   ft_free_arr.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/01 13:04:57 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 03:55:29 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/08/09 03:51:14 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 03:51:35 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memmove(void *dst, const void *src, size_t len)
+// Free a NULL-terminated array of pointers and set the array pointer to NULL
+void ft_free_arr(void ***arr)
 {
-	unsigned char	*c_src;
-	unsigned char	*c_dst;
+	int i;
 
-	if (!dst && !src)
-		return (dst);
-	c_src = (unsigned char *)src;
-	c_dst = (unsigned char *)dst;
-	if (c_dst > c_src)
+	if (!arr || !*arr)
+		return;
+
+	for (i = 0; (*arr)[i] != NULL; i++)
 	{
-		c_dst += len;
-		c_src += len;
-		while (len-- > 0)
-			*--c_dst = *--c_src;
+		free((*arr)[i]);
+		(*arr)[i] = NULL;
 	}
-	else
-	{
-		while (len-- > 0)
-			*c_dst++ = *c_src++;
-	}
-	return (dst);
+
+	free(*arr);
+	*arr = NULL;
 }

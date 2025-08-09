@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/02 13:58:25 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 12:42:27 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,13 @@ typedef struct s_parse_state
 }					t_parse_state;
 typedef struct s_shell
 {
+	char			*oldpwd;
 	char			*shlvl;
 	char			*pwd;
-	char			*oldpwd;
-	int				last_status;
 }					t_shell;
 
 // Struct Global Variable
-extern t_shell g_shell;
+extern volatile sig_atomic_t	g_signal;
 
 void				tokenize(char **array, t_token **token);
 void				create_token(t_token **token, char *value, char *type);
@@ -68,7 +67,6 @@ void				handle_export_command(char ***envp, char **args,
 						int arg_count);
 void				handle_cat_command(char **args, char **envp);
 void				handle_ls_command(char **args, char **envp);
-void				handle_type_command(const char *input);
 void				handle_cd_command(char *path, int arg_count, char ***envp);
 void				update_pwd_oldpwd(char ***envp, const char *new_pwd, const char *old_pwd);
 char				*determine_cd_target(char *path, char **envp);
@@ -78,7 +76,8 @@ int					is_shell_builtin(const char *cmd);
 int					should_run_in_parent(const char *cmd);
 char				**expand(char **args, char **envp);
 void				prompt(void);
-void				nully(t_parse_state *s);
+void				null_parse_state(t_parse_state *s);
+void				null_shell(t_shell *s);
 int					has_unclosed_quotes(const char *input);
 char				*ft_strndup(const char *s1, size_t n);
 int					is_valid_identifier(const char *str);
@@ -93,7 +92,6 @@ void				print_welcome_banner(void);
 void	init_shlvl(char ***envp);
 char	*lookup_env_value(const char *name, char **envp);
 void	add_or_replace_env(char ***envp, const char *var);
-char	*ft_itoa(int n);
 
 // Enhanced expansion
 char	*expand_variables_in_string(char *str, char **envp);
@@ -122,13 +120,16 @@ void				handle_exit_command(char **args, int arg_count,
 void				cleanup_and_exit(int exit_code, char **envp);
 // Additional utility functions you might need
 int					ft_isdigit(int c);
-long long			ft_atoll(const char *str);
 int					check_overflow(const char *str);
 char				**ft_strdup_array(char **array);
 void				ft_sort_array(char **array);
-void				ft_free_array(char **array);
 void				init_pwd_vars(char ***envp);
 int					find_env_index(char **envp, const char *name);
-void				update_pwd_vars(char ***envp, const char *new_pwd);
-void				cleanup_shell(void);
+int					is_all_n(const char *str);
+int					validate_token(t_token *tok);
+int					handle_file_redirection(t_token *tok);
+int					handle_heredoc(t_token *tok);
+void add_env_var(char ***envp, const char *var);
+int	replace_env_var(char **env, int idx, const char *var);
+
 #endif

@@ -1,37 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memmove.c                                       :+:      :+:    :+:   */
+/*   ft_atol.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/01 13:04:57 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 03:55:29 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/08/09 03:44:50 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 03:57:09 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memmove(void *dst, const void *src, size_t len)
+long long	ft_atol(const char *str)
 {
-	unsigned char	*c_src;
-	unsigned char	*c_dst;
+	long long	result;
+	int			sign;
+	int			i;
 
-	if (!dst && !src)
-		return (dst);
-	c_src = (unsigned char *)src;
-	c_dst = (unsigned char *)dst;
-	if (c_dst > c_src)
+	result = 0;
+	sign = 1;
+	i = 0;
+	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || str[i] == '\v'
+		|| str[i] == '\f' || str[i] == '\r')
+		i++;
+	if (str[i] == '-' || str[i] == '+')
 	{
-		c_dst += len;
-		c_src += len;
-		while (len-- > 0)
-			*--c_dst = *--c_src;
+		if (str[i] == '-')
+			sign = -1;
+		i++;
 	}
-	else
+	while (str[i] >= '0' && str[i] <= '9')
 	{
-		while (len-- > 0)
-			*c_dst++ = *c_src++;
+		result = result * 10 + (str[i] - '0');
+		i++;
 	}
-	return (dst);
+	return (result * sign);
 }

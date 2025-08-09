@@ -3,21 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/02 12:12:41 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/05/26 14:23:40 by mhasoneh         ###   ########.fr       */
+/*   Created: 2024/09/02 12:12:41 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 03:55:29 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
-static int	ft_isspace(char c)
-{
-	if (c == 9 || c == 10 || c == 11 || c == 12 || c == 13 || c == 32)
-		return (1);
-	return (0);
-}
 
 int	ft_atoi(const char *nptr)
 {
@@ -46,9 +39,3 @@ int	ft_atoi(const char *nptr)
 	}
 	return (num * sign);
 }
-
-/*int	main(void)
-{
-	char s[] = "     +1234abc";
-	printf("%d", ft_atoi(s));
-}*/

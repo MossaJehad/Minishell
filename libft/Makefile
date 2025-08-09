@@ -10,7 +10,8 @@ SOURCES = \
 	ft_strrchr.c ft_strncmp.c ft_memchr.c ft_memcmp.c ft_strnstr.c ft_atoi.c ft_itoa.c \
 	ft_calloc.c ft_strdup.c ft_substr.c ft_strjoin.c ft_strtrim.c ft_split.c \
 	ft_strmapi.c ft_striteri.c ft_putchar_fd.c ft_putstr_fd.c \
-	ft_putendl_fd.c ft_putnbr_fd.c ft_strtok.c
+	ft_putendl_fd.c ft_putnbr_fd.c ft_strtok.c ft_strcpy.c ft_strcat.c \
+	ft_atol.c ft_free.c ft_free_arr.c ft_isspace.c ft_strndup.c
 
 OBJECTS = $(SOURCES:%.c=$(OBJ_DIR)/%.o)
 

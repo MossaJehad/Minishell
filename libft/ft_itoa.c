@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/07 10:55:50 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/05/26 17:28:00 by mhasoneh         ###   ########.fr       */
+/*   Created: 2024/09/07 10:55:50 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 04:19:24 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static char	*ft_min(void)
 	str = (char *)malloc(12);
 	if (!str)
 	{
-		ft_free(&str);
+		ft_free((void **)&str);
 		return (NULL);
 	}
 	ft_strlcpy(str, "-2147483648", 12);
@@ -58,7 +58,7 @@ static char	*ft_zero_case(void)
 	str = (char *)malloc(2);
 	if (!str)
 	{
-		ft_free(&str);
+		ft_free((void **)&str);
 		return (NULL);
 	}
 	str[0] = '0';
@@ -90,11 +90,6 @@ char	*ft_itoa(int n)
 	temp[i] = '\0';
 	str = (char *)malloc(i + 1);
 	if (!str)
-		ft_free(&str);
+		ft_free((void **)&str);
 	return (ft_final(temp, str, i - 1));
 }
-
-/*int	main(void)
-{
-	printf("%s", ft_itoa(-34695));
-}*/

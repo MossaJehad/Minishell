@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/07 15:02:40 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/05/26 14:24:56 by mhasoneh         ###   ########.fr       */
+/*   Created: 2024/09/07 15:02:40 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 03:55:29 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,3 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)
 	}
 	return (NULL);
 }
-
-/*int	main(void)
-{
-	printf("%s", ft_strnstr("abcdefghijk", "cde", 7));
-	return (0);
-}*/

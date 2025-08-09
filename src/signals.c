@@ -3,20 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:00:00 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/02 15:53:55 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 11:31:41 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-extern t_shell g_shell;
 
 void	handle_sigint(int sig)
 {
 	(void)sig;
-	g_shell.last_status = 130;
+	g_signal = 1;
 	printf("\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);

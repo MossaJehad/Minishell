@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   commands.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:10 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/02 14:44:15 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 12:43:00 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-extern t_shell g_shell;
 
 // if the -n followed by n's keep counting tell you find another char
 // (if there is no another char than n then
@@ -55,36 +54,6 @@ void	handle_env_command(char **env)
 	}
 }
 
-void	handle_type_command(const char *input)
-{
-	char	*path_env;
-	char	*dir;
-	char	*full_path;
-
-	if (is_shell_builtin(input))
-		return ;
-	path_env = ft_strdup(getenv("PATH"));
-	if (path_env)
-	{
-		dir = ft_strtok(path_env, ":");
-		while (dir != NULL)
-		{
-			full_path = path_join(dir, input);
-			if (access(full_path, X_OK) == 0)
-			{
-				printf("%s is %s\n", input, full_path);
-				free(full_path);
-				free(path_env);
-				return ;
-			}
-			free(full_path);
-			dir = ft_strtok(NULL, ":");
-		}
-		free(path_env);
-	}
-	printf("%s: not found\n", input);
-}
-
 void	handle_cd_command(char *path, int arg_count, char ***envp)
 {
 	char	*target_dir;
@@ -95,13 +64,13 @@ void	handle_cd_command(char *path, int arg_count, char ***envp)
 	if (arg_count > 2)
 	{
 		fprintf(stderr, "cd: too many arguments\n");
-		g_shell.last_status = 1;
+		g_signal = 1;
 		return ;
 	}
 	target_dir = determine_cd_target(path, *envp);
 	if (!target_dir)
 	{
-		g_shell.last_status = 1;
+		g_signal = 1;
 		return ;
 	}
 	lookup = lookup_env_value("PWD", *envp);
@@ -109,24 +78,23 @@ void	handle_cd_command(char *path, int arg_count, char ***envp)
 	if (chdir(target_dir) != 0)
 	{
 		printf("cd: %s: No such file or directory\n", target_dir);
-		g_shell.last_status = 1;
+		g_signal = 1;
 		return ;
 	}
 	if (!getcwd(cwd, sizeof(cwd)))
 	{
 		perror("cd: getcwd failed");
-		g_shell.last_status = 1;
+		g_signal = 1;
 		return ;
 	}
 	update_pwd_oldpwd(envp, cwd, old_pwd);
-	g_shell.last_status = 0;
+	g_signal = 0;
 }
 
 char	*determine_cd_target(char *path, char **envp)
 {
 	char	*target;
 
-	// No path or empty path - go to HOME
 	if (!path || *path == '\0')
 	{
 		target = lookup_env_value("HOME", envp);
@@ -137,10 +105,8 @@ char	*determine_cd_target(char *path, char **envp)
 		}
 		return (target);
 	}
-	// Skip leading whitespace
 	while (*path == ' ' || *path == '\t')
 		path++;
-	// Empty after trimming or ~ - go to HOME
 	if (*path == '\0' || ft_strcmp(path, "~") == 0)
 	{
 		target = lookup_env_value("HOME", envp);
@@ -151,7 +117,6 @@ char	*determine_cd_target(char *path, char **envp)
 		}
 		return (target);
 	}
-	// cd - (go to previous directory)
 	if (ft_strcmp(path, "-") == 0)
 	{
 		target = lookup_env_value("OLDPWD", envp);
@@ -160,11 +125,60 @@ char	*determine_cd_target(char *path, char **envp)
 			fprintf(stderr, "cd: OLDPWD not set\n");
 			return (NULL);
 		}
-		printf("%s\n", target); // Print where we're going (bash behavior)
+		printf("%s\n", target);
 		return (target);
 	}
-	// Regular path
 	return (path);
+}
+
+void	add_or_replace_env(char ***envp, const char *var)
+{
+	char	**env;
+	char	*eq;
+	size_t	keylen;
+	char	*name;
+	int		idx;
+	int		i;
+	char	**newenv;
+	int		j;
+
+	if (!envp || !*envp || !var)
+		return ;
+	env = *envp;
+	eq = ft_strchr(var, '=');
+	if (eq)
+		keylen = (size_t)(eq - var);
+	else
+		keylen = ft_strlen(var);
+	name = ft_strndup(var, keylen);
+	if (!name)
+		return ;
+	idx = find_env_index(env, name);
+	free(name);
+	if (idx >= 0)
+	{
+		free(env[idx]);
+		env[idx] = ft_strdup(var);
+	}
+	else
+	{
+		i = 0;
+		while (env[i])
+			i++;
+		newenv = malloc(sizeof(char *) * (i + 2));
+		if (!newenv)
+			return ;
+		j = 0;
+		while (j < i)
+		{
+			newenv[j] = env[j];
+			j++;
+		}
+		newenv[i] = ft_strdup(var);
+		newenv[i + 1] = NULL;
+		free(env);
+		*envp = newenv;
+	}
 }
 
 void	update_pwd_oldpwd(char ***envp, const char *new_pwd,
@@ -173,14 +187,12 @@ void	update_pwd_oldpwd(char ***envp, const char *new_pwd,
 	char	*pwd_var;
 	char	*oldpwd_var;
 
-	// Update PWD
 	pwd_var = ft_strjoin("PWD=", new_pwd);
 	if (pwd_var)
 	{
 		add_or_replace_env(envp, pwd_var);
 		free(pwd_var);
 	}
-	// Update OLDPWD
 	if (old_pwd)
 		oldpwd_var = ft_strjoin("OLDPWD=", old_pwd);
 	else
@@ -190,40 +202,29 @@ void	update_pwd_oldpwd(char ***envp, const char *new_pwd,
 		add_or_replace_env(envp, oldpwd_var);
 		free(oldpwd_var);
 	}
-	// Update global shell structure
-	if (g_shell.pwd)
-		free(g_shell.pwd);
-	if (g_shell.oldpwd)
-		free(g_shell.oldpwd);
-	g_shell.pwd = ft_strdup(new_pwd);
-	g_shell.oldpwd = old_pwd ? ft_strdup(old_pwd) : NULL;
 }
 
-// Simple pwd command implementation
 void	handle_pwd_command(char ***envp)
 {
 	char	*pwd;
 	char	cwd[PATH_MAX];
 
-	// Try to get PWD from environment first
 	pwd = lookup_env_value("PWD", *envp);
 	if (pwd && access(pwd, F_OK) == 0)
 	{
 		printf("%s\n", pwd);
-		g_shell.last_status = 0;
+		g_signal = 0;
 		return ;
 	}
-	// Fallback to getcwd if PWD is not set or invalid
 	if (getcwd(cwd, sizeof(cwd)))
 	{
 		printf("%s\n", cwd);
-		// Update PWD in environment if it was wrong
 		update_pwd_oldpwd(envp, cwd, lookup_env_value("PWD", *envp));
-		g_shell.last_status = 0;
+		g_signal = 0;
 		return ;
 	}
 	perror("pwd");
-	g_shell.last_status = 1;
+	g_signal = 1;
 }
 
 int	find_env_index(char **env, const char *name)
@@ -318,7 +319,7 @@ void	handle_export_command(char ***envp, char **args, int arg_count)
 				printf("declare -x %s\n", sorted_env[j]);
 			j++;
 		}
-		ft_free_array(sorted_env);
+		ft_free_arr((void *) &sorted_env);
 		return ;
 	}
 	i = 1;

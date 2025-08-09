@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:04 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/02 14:39:49 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 12:34:52 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-extern t_shell g_shell;
+volatile sig_atomic_t	g_signal;
 
-void	nully(t_parse_state *s)
+void	null_parse_state(t_parse_state *s)
 {
 	s->i = 0;
 	s->j = 0;
@@ -30,6 +30,7 @@ void	shell_loop(int arg_count, char ***envp)
 
 	while (1)
 	{
+		g_signal = 0;
 		token = NULL;
 		input = get_input();
 		if (input == NULL)
@@ -41,9 +42,10 @@ void	shell_loop(int arg_count, char ***envp)
 		}
 		args = parse_arguments(input, &arg_count);
 		args = expand(args, *envp);
-		tokenize(args, &token);
+		if (!check_syntax_error(args))
+			tokenize(args, &token);
 		handle_command(token, envp);
-		ft_free(args);
+		ft_free((void **) &args);
 		free_tokens(token);
 		free(input);
 	}
@@ -69,7 +71,6 @@ int	main(int argc, char **argv, char **envp)
 		i++;
 	}
 	env[i] = NULL;
-	init_shlvl(&env);
 	init_shell(env);
 	shell_loop(argc, &env);
 	cleanup_and_exit(get_shell_status(), env);

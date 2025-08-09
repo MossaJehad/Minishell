@@ -1,37 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memmove.c                                       :+:      :+:    :+:   */
+/*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/01 13:04:57 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 03:55:29 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/08/09 12:25:54 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 12:26:38 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memmove(void *dst, const void *src, size_t len)
+char	*ft_strndup(const char *s1, size_t n)
 {
-	unsigned char	*c_src;
-	unsigned char	*c_dst;
+	char	*copy;
+	size_t	len;
 
-	if (!dst && !src)
-		return (dst);
-	c_src = (unsigned char *)src;
-	c_dst = (unsigned char *)dst;
-	if (c_dst > c_src)
-	{
-		c_dst += len;
-		c_src += len;
-		while (len-- > 0)
-			*--c_dst = *--c_src;
-	}
-	else
-	{
-		while (len-- > 0)
-			*c_dst++ = *c_src++;
-	}
-	return (dst);
+	len = ft_strlen(s1);
+	if (n < len)
+		len = n;
+	copy = malloc(len + 1);
+	if (!copy)
+		return (NULL);
+	ft_memcpy(copy, s1, len);
+	copy[len] = '\0';
+	return (copy);
 }

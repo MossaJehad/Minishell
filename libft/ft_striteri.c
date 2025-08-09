@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_striteri.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/07 13:30:30 by jhaddadi          #+#    #+#             */
-/*   Updated: 2025/05/26 14:24:36 by mhasoneh         ###   ########.fr       */
+/*   Created: 2024/09/07 13:30:30 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 03:55:29 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
