@@ -12,7 +12,7 @@ SOURCES = \
 	ft_strmapi.c ft_striteri.c ft_putchar_fd.c ft_putstr_fd.c \
 	ft_putendl_fd.c ft_putnbr_fd.c ft_strtok.c ft_strcpy.c ft_strcat.c \
 	ft_atol.c ft_free.c ft_free_arr.c ft_isspace.c ft_strndup.c \
-	ft_sort_array.c ft_strdup_array.c copy_char.c
+	ft_sort_array.c ft_strdup_array.c copy_char.c free_split.c
 
 OBJECTS = $(SOURCES:%.c=$(OBJ_DIR)/%.o)
 

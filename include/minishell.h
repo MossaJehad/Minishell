@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 18:05:02 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 18:49:54 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,15 +229,13 @@ void				handle_command(t_token *token, char ***envp);
 int					parse_commands(t_token *token, t_token *cmd_starts[MAX_COMMANDS], 
 								int heredoc_fds[MAX_COMMANDS]);
 int					handle_single_command(t_token *cmd_starts[MAX_COMMANDS], 
-									int heredoc_fds[MAX_COMMANDS], char ***envp);
-int					fork_processes(t_token *cmd_starts[MAX_COMMANDS], int num_cmds, 
-								int heredoc_fds[MAX_COMMANDS], int pipefd[MAX_COMMANDS][2], 
-								pid_t pids[MAX_COMMANDS]);
+								int heredoc_fds[MAX_COMMANDS], char ***envp);
+int					fork_processes(t_token *cmd_starts[256], int num_cmds, int heredoc_fds[256],
+								int pipefd[256][2], pid_t pids[256], char **envp);
 
 /* Process utilities */
-void				execute_child_process(t_token *cmd_starts[MAX_COMMANDS], int i, 
-									int heredoc_fds[MAX_COMMANDS], int pipefd[MAX_COMMANDS][2], 
-									int num_cmds);
+void				execute_child_process(t_token *cmd_starts[256], int i, int heredoc_fds[256], 
+							int pipefd[256][2], int num_cmds, char **envp);
 void				execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc);
 void				wait_for_processes(pid_t pids[MAX_COMMANDS], int num_cmds);
 

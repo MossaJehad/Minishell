@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:14:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 17:38:50 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 18:50:33 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int prepare_and_execute_commands(t_token *token, char ***envp, t_exec_ctx *ctx)
 	}
 	ignore_signals();
 	if (create_pipes(ctx->pipefd, ctx->num_cmds) == -1 ||
-		fork_processes(ctx->cmd_starts, ctx->num_cmds, ctx->heredoc_fds, ctx->pipefd, ctx->pids) == -1)
+		fork_processes(ctx->cmd_starts, ctx->num_cmds, ctx->heredoc_fds, ctx->pipefd, ctx->pids, *envp) == -1)
 	{
 		restore_signals();
 		return (-1);
