@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:51:06 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 17:45:58 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:53:26 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	remove_env_var(char ***envp, const char *name)
 		if (ft_strncmp(env[i], name, ft_strlen(name)) == 0 &&
 			env[i][ft_strlen(name)] == '=')
 		{
-			free(env[i]);
+			//free(env[i]);
 			while (i < cnt - 1)
 			{
 				env[i] = env[i + 1];

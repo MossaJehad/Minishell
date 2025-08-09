@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:04 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:36:20 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:53:42 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 volatile sig_atomic_t	g_signal;
 
-int	main(int argc, char **argv, char **envp)
+int main(int argc, char **argv, char **envp)
 {
-	char	**env;
-	int		i;
+	char    **env;
+	int     i;
 
 	(void)argv;
 	setup_signal_handlers();
@@ -36,9 +36,12 @@ int	main(int argc, char **argv, char **envp)
 	env[i] = NULL;
 	init_shell(env);
 	shell_loop(argc, &env);
-	ft_free_arr((void *)&env);
-	cleanup_and_exit(get_shell_status(), env);
-	return (0);
+	
+	// Fix: Proper cleanup before exit
+	// ft_free_arr((void *)&env);
+	rl_clear_history();
+	cleanup_and_exit(get_shell_status(), envp);
+	return (get_shell_status());
 }
 
 /*

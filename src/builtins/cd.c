@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:42:16 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 17:38:01 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:52:38 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,13 @@ int	change_directory(char *target_dir, char ***envp)
 	if (chdir(target_dir) != 0)
 	{
 		printf("cd: %s: No such file or directory\n", target_dir);
-		free(old_pwd);
+		//free(old_pwd);
 		return (1);
 	}
 	if (!getcwd(cwd, sizeof(cwd)))
 	{
 		perror("cd: getcwd failed");
-		free(old_pwd);
+		//free(old_pwd);
 		return (1);
 	}
 	update_pwd_oldpwd(envp, cwd, old_pwd);

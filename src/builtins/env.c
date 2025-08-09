@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:44:48 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 15:51:34 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:52:46 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	handle_env_command(char **env)
 
 void	replace_env_var(char **env, int idx, const char *var)
 {
-	free(env[idx]);
+	//free(env[idx]);
 	env[idx] = ft_strdup(var);
 }
 
@@ -46,7 +46,7 @@ void	append_env_var(char ***envp, const char *var)
 	}
 	newenv[i] = ft_strdup(var);
 	newenv[i + 1] = NULL;
-	free(env);
+	//free(env);
 	*envp = newenv;
 }
 
@@ -67,7 +67,7 @@ void	add_or_replace_env(char ***envp, const char *var)
 	if (!name)
 		return ;
 	idx = find_env_index(env, name);
-	free(name);
+	//free(name);
 	if (idx >= 0)
 		replace_env_var(env, idx, var);
 	else

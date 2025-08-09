@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:44:15 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 15:44:30 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:53:23 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	update_pwd_oldpwd(char ***envp, const char *new_pwd,
 	if (pwd_var)
 	{
 		add_or_replace_env(envp, pwd_var);
-		free(pwd_var);
+		//free(pwd_var);
 	}
 	if (old_pwd)
 		oldpwd_var = ft_strjoin("OLDPWD=", old_pwd);
@@ -31,7 +31,7 @@ void	update_pwd_oldpwd(char ***envp, const char *new_pwd,
 	if (oldpwd_var)
 	{
 		add_or_replace_env(envp, oldpwd_var);
-		free(oldpwd_var);
+		//free(oldpwd_var);
 	}
 }
 

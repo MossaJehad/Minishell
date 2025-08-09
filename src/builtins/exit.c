@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:00:00 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:32:21 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:55:11 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	process_exit_args(char **args, int arg_count)
 void	handle_exit_command(char **args, int arg_count, char **envp)
 {
 	int	exit_code;
-
+	(void)envp;
 	printf("\033[0;31mexit\n\033[0m");
 	exit_code = process_exit_args(args, arg_count);
 	if (exit_code == -1)
@@ -70,30 +70,23 @@ void	handle_exit_command(char **args, int arg_count, char **envp)
 	else if (exit_code == -2)
 	{
 		perror("minishell: exit: numeric argument required");
-		ft_free((void *) &envp);
+		//ft_free((void *) &envp);
 		rl_clear_history();
 		exit(2);
 	}
 	else
 	{
-		ft_free((void *) &envp);
+		//ft_free((void *) &envp);
 		rl_clear_history();
 		exit(exit_code);
 	}
 }
 
-void	cleanup_and_exit(int exit_code, char **envp)
+void cleanup_and_exit(int exit_code, char **envp)
 {
-	t_shell	shell;
-
-	null_shell(&shell);
-	if (shell.shlvl)
-		free(shell.shlvl);
-	if (shell.pwd)
-		free(shell.pwd);
-	if (shell.oldpwd)
-		free(shell.oldpwd);
-	ft_free_arr((void *)&envp);
+	(void)envp;
+	//if (envp)
+		//ft_free_arr((void *)&envp);
 	rl_clear_history();
 	exit(exit_code);
 }

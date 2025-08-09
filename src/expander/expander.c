@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:18:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 16:26:02 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:54:00 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	expand_exit_status(t_expand_ctx *ctx)
 		len = ft_strlen(exit_status_str);
 		ft_strcpy(ctx->buffer + ctx->j, exit_status_str);
 		ctx->j += len;
-		free(exit_status_str);
+		//free(exit_status_str);
 		ctx->i += 2;
 		return (ctx->j);
 	}
@@ -49,7 +49,7 @@ int	expand_pid(t_expand_ctx *ctx)
 		len = ft_strlen(pid_str);
 		ft_strcpy(ctx->buffer + ctx->j, pid_str);
 		ctx->j += len;
-		free(pid_str);
+		//free(pid_str);
 		ctx->i += 2;
 		return (ctx->j);
 	}
@@ -93,7 +93,7 @@ char	**expand(char **args, char **envp)
 		else if (ft_strchr(args[i], '$'))
 		{
 			new = expand_variables_in_string(args[i], envp);
-			free(args[i]);
+		//	free(args[i]);
 			args[i] = new;
 		}
 		i++;

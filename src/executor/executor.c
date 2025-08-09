@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:11:46 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 18:49:33 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:53:49 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc)
 			k++;
 		}
 		handle_echo_command(cmd_token);
-		free_tokens(cmd_token);
+		//free_tokens(cmd_token);
 	}
 }
 
@@ -93,14 +93,14 @@ char *find_executable(char *cmd, char **envp)
 
 		if (access(full_path, X_OK) == 0)
 		{
-			free_split(paths);
+			//free_split(paths);
 			return full_path;
 		}
-		free(full_path);
+		//free(full_path);
 		full_path = NULL;
 		i++;
 	}
-	free_split(paths);
+	//free_split(paths);
 	return NULL;
 }
 
@@ -138,7 +138,7 @@ void	execute_child_process(t_token *cmd_starts[256], int i, int heredoc_fds[256]
 	}
 	execve(full_path, cmd_argv, envp);
 	perror(full_path);
-	free(full_path);
+	//free(full_path);
 	exit(127);
 }
 

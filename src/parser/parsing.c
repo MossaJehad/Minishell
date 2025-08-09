@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 19:09:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 17:39:44 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:54:20 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,19 +30,33 @@ void run_parsing_loop(const char *input, t_parse_state *s, char **argv, char *bu
 	}
 }
 
-char	**parse_arguments(const char *input, int *arg_count)
+char **parse_arguments(const char *input, int *arg_count)
 {
-	t_parse_state	s;
-	char			**argv;
-	char			buffer[BUFFER_SIZE];
+	t_parse_state   s;
+	char            **argv;
+	char            buffer[BUFFER_SIZE];
 
+	if (!input)
+		return (NULL);
+		
 	argv = ft_calloc(MAX_ARGS, sizeof(char *));
+	if (!argv)
+		return (NULL);
+		
 	null_parse_state(&s);
 	run_parsing_loop(input, &s, argv, buffer);
+	
 	if (s.j > 0)
 	{
 		buffer[s.j] = '\0';
-		argv[s.k++] = ft_strdup(buffer);
+		argv[s.k] = ft_strdup(buffer);
+		if (!argv[s.k])
+		{
+			// Fix: Free allocated memory on failure
+		//  ft_free_arr((void *)&argv);
+			return (NULL);
+		}
+		s.k++;
 	}
 	argv[s.k] = NULL;
 	*arg_count = s.k;
