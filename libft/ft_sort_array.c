@@ -1,31 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main_utils_plus.c                                  :+:      :+:    :+:   */
+/*   ft_sort_array.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/31 15:36:49 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 12:47:56 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/08/09 12:52:53 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 12:53:09 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "libft.h"
 
-int	has_unclosed_quotes(const char *input)
+void	ft_sort_array(char **array)
 {
-	int in_single;
-	int in_double;
+	int		i;
+	int		j;
+	char	*temp;
 
-	in_double = 0;
-	in_single = 0;
-	while (*input)
+	i = 0;
+	while (array[i])
 	{
-		if (*input == '\'' && !in_double)
-			in_single = !in_single;
-		else if (*input == '"' && !in_single)
-			in_double = !in_double;
-		input++;
+		j = i + 1;
+		while (array[j])
+		{
+			if (ft_strcmp(array[i], array[j]) > 0)
+			{
+				temp = array[i];
+				array[i] = array[j];
+				array[j] = temp;
+			}
+			j++;
+		}
+		i++;
 	}
-	return (in_single || in_double);
 }

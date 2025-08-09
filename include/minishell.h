@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 12:42:27 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 12:51:01 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ void				handle_unset_command(char ***envp, char **args,
 						int arg_count);
 void				remove_env_var(char ***envp, const char *name);
 int					setup_redirection(t_token *token);
-void				free_env(char **envp);
 void				print_welcome_banner(void);
 
 // SHLVL functions

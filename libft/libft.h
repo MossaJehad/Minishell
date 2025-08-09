@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:01:12 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 12:26:29 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 12:53:24 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,8 @@ int			ft_isspace(char c);
 void		ft_free(void **ptr);
 void		ft_free_arr(void ***arr);
 char		*ft_strndup(const char *s1, size_t n);
+int			copy_char(const char *arg, int *i, char *buffer, int j);
+char		**ft_strdup_array(char **array);
+void		ft_sort_array(char **array);
 long long	ft_atol(const char *str);
 #endif

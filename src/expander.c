@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:15 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 12:44:09 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 12:47:31 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ static char	*lookup_env(const char *name, char **envp)
 	}
 	return (NULL);
 }
+
 // return allocated string or NULL if no special case
 char *expand_special_dollar(char *arg)
 {
@@ -148,12 +149,6 @@ static int expand_simple_var(const char *arg, int *i, char *buffer, int j, char 
 		strcpy(buffer + j, val);
 		j += strlen(val);
 	}
-	return (j);
-}
-
-int	copy_char(const char *arg, int *i, char *buffer, int j)
-{
-	buffer[j++] = arg[(*i)++];
 	return (j);
 }
 

@@ -1,31 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main_utils_plus.c                                  :+:      :+:    :+:   */
+/*   copy_char.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/31 15:36:49 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 12:47:56 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/08/09 12:46:44 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 12:47:24 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "libft.h"
 
-int	has_unclosed_quotes(const char *input)
+int	copy_char(const char *arg, int *i, char *buffer, int j)
 {
-	int in_single;
-	int in_double;
-
-	in_double = 0;
-	in_single = 0;
-	while (*input)
-	{
-		if (*input == '\'' && !in_double)
-			in_single = !in_single;
-		else if (*input == '"' && !in_single)
-			in_double = !in_double;
-		input++;
-	}
-	return (in_single || in_double);
+	buffer[j++] = arg[(*i)++];
+	return (j);
 }

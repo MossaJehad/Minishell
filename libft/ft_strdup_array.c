@@ -1,31 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main_utils_plus.c                                  :+:      :+:    :+:   */
+/*   ft_strdup_array.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/31 15:36:49 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 12:47:56 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/08/09 12:51:43 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 12:52:01 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "libft.h"
 
-int	has_unclosed_quotes(const char *input)
+char	**ft_strdup_array(char **array)
 {
-	int in_single;
-	int in_double;
+	int		i;
+	int		count;
+	char	**dup;
 
-	in_double = 0;
-	in_single = 0;
-	while (*input)
+	count = 0;
+	while (array[count])
+		count++;
+	dup = malloc(sizeof(char *) * (count + 1));
+	if (!dup)
+		return (NULL);
+	i = 0;
+	while (i < count)
 	{
-		if (*input == '\'' && !in_double)
-			in_single = !in_single;
-		else if (*input == '"' && !in_single)
-			in_double = !in_double;
-		input++;
+		dup[i] = ft_strdup(array[i]);
+		i++;
 	}
-	return (in_single || in_double);
+	dup[count] = NULL;
+	return (dup);
 }

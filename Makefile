@@ -24,7 +24,6 @@ SRC		=	main.c \
 			commands.c \
 			inputs.c \
 			expander.c \
-			utils.c \
 			signals.c \
 			exit_utils.c \
 			utils_utils.c \

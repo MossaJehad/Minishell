@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 13:49:25 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 12:35:34 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 12:50:58 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,18 +88,6 @@ void	init_pwd_vars(char ***envp)
 	free(cwd);
 	free(pwd_var);
 	free(oldpwd_var);
-}
-
-void	free_env(char **envp)
-{
-	int	i;
-
-	i = 0;
-	if (!envp)
-		return ;
-	while (envp[i])
-		free(envp[i++]);
-	free(envp);
 }
 
 void	init_shlvl(char ***envp)
