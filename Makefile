@@ -156,7 +156,7 @@ endef
 # Main targets
 all:
 	@echo "$(GREEN)╔══════════════════════════════════════════════╗$(RESET)"
-	@echo "$(GREEN)║				MINISHELL BUILD				  ║$(RESET)"
+	@echo "$(GREEN)║                MINISHELL BUILD               ║$(RESET)"
 	@echo "$(GREEN)╚══════════════════════════════════════════════╝$(RESET)"
 	@$(MAKE) --no-print-directory $(NAME) || { echo "$(RED)[MINISHELL] ❌ Build failed$(RESET)"; exit 1; }
 
@@ -166,7 +166,7 @@ $(NAME):	$(OBJS) $(LIBFT)
 	$(call check_error)
 	@echo "$(GREEN)✅ Build complete! Executable: $(NAME)$(RESET)"
 	@echo "$(GREEN)╔══════════════════════════════════════════════╗$(RESET)"
-	@echo "$(GREEN)║				BUILD SUCCESS				  ║$(RESET)"
+	@echo "$(GREEN)║                 BUILD SUCCESS                ║$(RESET)"
 	@echo "$(GREEN)╚══════════════════════════════════════════════╝$(RESET)"
 
 # Core module compilation

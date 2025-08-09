@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:30:47 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 17:38:44 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 18:30:00 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ char *get_input(void)
 		line = read_prompt_line();
 		if (!line)
 		{
-			printf("exit\n");
+			printf("\033[0;31mexit\n\033[0m");
 			return (NULL);
 		}
 		if (*line == '\0')
@@ -66,18 +66,21 @@ char *get_input(void)
 	}
 }
 
-char	*read_prompt_line(void)
+char *read_prompt_line(void)
 {
-	char	cwd[1024];
-	char	*prompt;
-	char	*tmp;
-	char	*line;
+	char cwd[1024];
+	char *prompt;
+	char *tmp1;
+	char *tmp2;
+	char *line;
 
 	if (getcwd(cwd, sizeof(cwd)))
 	{
-		tmp = ft_strdup(cwd);
-		prompt = ft_strjoin(tmp, "$ ");
-		free(tmp);
+		tmp1 = ft_strjoin("\033[1;94m", cwd);
+		tmp2 = ft_strjoin(tmp1, "\033[0;37m");
+		free(tmp1);
+		prompt = ft_strjoin(tmp2, "$ ");
+		free(tmp2);
 	}
 	else
 		prompt = ft_strdup("$ ");

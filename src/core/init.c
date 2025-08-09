@@ -6,18 +6,26 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:29:53 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 15:38:04 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 18:31:14 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	print_welcome_banner(void)
+void print_welcome_banner(void)
 {
-	printf("┏┓┳┏┓┳┳┓┏┓\n");
-	printf("┗┓┃┃┓┃┃┃┣┫\n");
-	printf("┗┛┻┗┛┛ ┗┛┗ .\n");
-	printf("			\n");
+    printf("\033[1;97m");
+    printf("┏┓┳┏┓┳┳┓┏┓\n");
+
+    printf("\033[1;97m");
+    printf("┗┓┃┃┓┃┃┃┣┫\n");
+
+    printf("\033[1;97m");
+    printf("┗┛┻┗┛┛ ┗┛┗ .\n");
+
+    printf("\033[0;37m");
+
+    printf("\n");
 }
 
 void	init_shell(char **envp)

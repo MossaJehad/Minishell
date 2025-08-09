@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 17:46:26 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 18:05:02 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,13 +97,18 @@ typedef struct s_expand_ctx
 	char		**envp;		/* Environment variables array */
 }	t_expand_ctx;
 
+/*
+** EXECUTION CONTEXT
+** Maintains the state needed to manage command execution, including pipes,
+** heredoc file descriptors, process IDs, command count, and command start tokens.
+*/
 typedef struct s_exec_ctx
 {
-    int     pipefd[256][2];
-    int     heredoc_fds[256];
-    pid_t   pids[256];
-    int     num_cmds;
-    t_token *cmd_starts[256];
+	int     pipefd[256][2];		/* File descriptors for pipes between commands */
+	int     heredoc_fds[256];	/* File descriptors for heredoc inputs */
+	pid_t   pids[256];			/* Process IDs of forked child processes */
+	int     num_cmds;			/* Number of parsed commands to execute */
+	t_token *cmd_starts[256];	/* Array of pointers to the start tokens of each command */
 }   t_exec_ctx;
 
 
