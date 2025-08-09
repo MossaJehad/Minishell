@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:29:53 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 18:31:14 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:33:35 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,20 +30,8 @@ void print_welcome_banner(void)
 
 void	init_shell(char **envp)
 {
-	t_shell	shell;
-
-	null_shell(&shell);
 	init_shlvl(&envp);
 	init_pwd_vars(&envp);
-	if (shell.shlvl)
-		free(shell.shlvl);
-	if (shell.pwd)
-		free(shell.pwd);
-	if (shell.oldpwd)
-		free(shell.oldpwd);
-	shell.shlvl = ft_strdup(lookup_env_value("SHLVL", envp));
-	shell.pwd = ft_strdup(lookup_env_value("PWD", envp));
-	shell.oldpwd = ft_strdup(lookup_env_value("OLDPWD", envp));
 	g_signal = 0;
 	print_welcome_banner();
 }
@@ -54,21 +42,24 @@ void	init_pwd_vars(char ***envp)
 	char	*pwd_var;
 	char	*oldpwd_var;
 	char	*current_pwd;
+	char	*current_pwd_copy;
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 		return ;
 	current_pwd = lookup_env_value("PWD", *envp);
+	current_pwd_copy = current_pwd ? ft_strdup(current_pwd) : NULL;
 	pwd_var = ft_strjoin("PWD=", cwd);
 	add_or_replace_env(envp, pwd_var);
-	if (current_pwd)
-		oldpwd_var = ft_strjoin("OLDPWD=", current_pwd);
+	if (current_pwd_copy)
+		oldpwd_var = ft_strjoin("OLDPWD=", current_pwd_copy);
 	else
 		oldpwd_var = ft_strdup("OLDPWD=");
 	add_or_replace_env(envp, oldpwd_var);
 	free(cwd);
 	free(pwd_var);
 	free(oldpwd_var);
+	free(current_pwd_copy);
 }
 
 void	init_shlvl(char ***envp)

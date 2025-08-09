@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:57:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 16:22:40 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:16:09 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,23 +62,26 @@ char	*expand_double_quote(char *arg, char **envp)
 char	*expand_single_quote(char *arg)
 {
 	char	*str;
+	int		len;
 	int		i;
 	int		j;
 
-	i = 1;
-	j = 0;
-	if (ft_strlen(arg) < 2)
+	if (!arg || ft_strlen(arg) < 2)
+	{
+		free(arg);
 		return (ft_strdup(""));
-	str = malloc(ft_strlen(arg) - 1);
+	}
+	len = ft_strlen(arg);
+	str = malloc(len - 1);
 	if (!str)
 	{
-		ft_free((void **)&str);
+		free(arg);
 		return (NULL);
 	}
-	while (i < (int)ft_strlen(arg) - 1)
-	{
+	i = 1;
+	j = 0;
+	while (i < len - 1)
 		str[j++] = arg[i++];
-	}
 	str[j] = '\0';
 	free(arg);
 	return (str);

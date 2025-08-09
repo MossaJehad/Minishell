@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 12:46:44 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 16:08:26 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:16:38 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 int	copy_char(const char *arg, int *i, char *buffer, int j)
 {
-	buffer[j++] = arg[(*i)++];
-	return (j);
+	if (arg && buffer)
+		buffer[j] = arg[*i];
+	(*i)++;
+	return (j + 1);
 }

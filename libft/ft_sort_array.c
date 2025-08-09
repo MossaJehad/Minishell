@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 12:52:53 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 12:53:09 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:18:17 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,21 @@
 
 void	ft_sort_array(char **array)
 {
+	char	*temp;
+	int		len;
 	int		i;
 	int		j;
-	char	*temp;
 
+	if (!array)
+		return;
+	len = 0;
+	while (array[len])
+		len++;
 	i = 0;
-	while (array[i])
+	while (i < len - 1)
 	{
 		j = i + 1;
-		while (array[j])
+		while (j < len)
 		{
 			if (ft_strcmp(array[i], array[j]) > 0)
 			{

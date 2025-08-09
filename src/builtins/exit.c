@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:00:00 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 18:30:06 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:32:21 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,16 @@ void	handle_exit_command(char **args, int arg_count, char **envp)
 
 void	cleanup_and_exit(int exit_code, char **envp)
 {
-	ft_free((void *) &envp);
+	t_shell	shell;
+
+	null_shell(&shell);
+	if (shell.shlvl)
+		free(shell.shlvl);
+	if (shell.pwd)
+		free(shell.pwd);
+	if (shell.oldpwd)
+		free(shell.oldpwd);
+	ft_free_arr((void *)&envp);
 	rl_clear_history();
 	exit(exit_code);
 }

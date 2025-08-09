@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 12:51:43 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 12:52:01 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:17:36 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,29 @@
 
 char	**ft_strdup_array(char **array)
 {
-	int		i;
+	char	**new_array;
 	int		count;
-	char	**dup;
+	int		i;
 
+	if (!array)
+		return (NULL);
 	count = 0;
 	while (array[count])
 		count++;
-	dup = malloc(sizeof(char *) * (count + 1));
-	if (!dup)
+	new_array = malloc(sizeof(char *) * (count + 1));
+	if (!new_array)
 		return (NULL);
 	i = 0;
 	while (i < count)
 	{
-		dup[i] = ft_strdup(array[i]);
+		new_array[i] = ft_strdup(array[i]);
+		if (!new_array[i])
+		{
+			ft_free_arr((void *)&new_array);
+			return (NULL);
+		}
 		i++;
 	}
-	dup[count] = NULL;
-	return (dup);
+	new_array[i] = NULL;
+	return (new_array);
 }

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 18:49:54 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:18:54 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,6 @@ int					has_unclosed_quotes(const char *input);
 /* Parser utilities */
 void				null_parse_state(t_parse_state *s);
 char				*unescape_string(const char *src);
-char				*ft_strndup(const char *s1, size_t n);
 int					handle_double_char_operators(const char *input,
 						t_parse_state *s, char **argv, char *buffer);
 int					handle_single_char_operators(const char *input, t_parse_state *s,
