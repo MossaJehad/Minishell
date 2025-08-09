@@ -1,19 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   copy_char.c                                        :+:      :+:    :+:   */
+/*   signal_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/09 12:46:44 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 16:08:26 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/07/31 15:41:17 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 16:40:13 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../include/minishell.h"
 
-int	copy_char(const char *arg, int *i, char *buffer, int j)
+void	handle_sigquit(int sig)
 {
-	buffer[j++] = arg[(*i)++];
-	return (j);
+	(void)sig;
+}
+
+void	restore_signals(void)
+{
+	setup_signal_handlers();
+}
+
+int	get_shell_status(void)
+{
+	return (g_signal);
+}
+
+void	set_shell_status(int status)
+{
+	g_signal = status;
 }

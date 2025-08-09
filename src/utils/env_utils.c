@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main_utils_plus.c                                  :+:      :+:    :+:   */
+/*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/31 15:36:49 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 12:47:56 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/08/09 17:28:05 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 17:28:21 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
-int	has_unclosed_quotes(const char *input)
+char	*lookup_env_value(const char *name, char **envp)
 {
-	int in_single;
-	int in_double;
+	size_t	len;
+	int		i;
 
-	in_double = 0;
-	in_single = 0;
-	while (*input)
+	if (!name || !envp)
+		return (NULL);
+	len = ft_strlen(name);
+	i = 0;
+	while (envp[i])
 	{
-		if (*input == '\'' && !in_double)
-			in_single = !in_single;
-		else if (*input == '"' && !in_single)
-			in_double = !in_double;
-		input++;
+		if (!ft_strncmp(envp[i], name, len) && envp[i][len] == '=')
+			return (&envp[i][len + 1]);
+		i++;
 	}
-	return (in_single || in_double);
+	return (NULL);
 }

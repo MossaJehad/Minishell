@@ -6,13 +6,13 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 10:55:50 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 04:19:24 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 15:51:34 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static char	*ft_min(void)
+char	*ft_min(void)
 {
 	char	*str;
 
@@ -26,7 +26,7 @@ static char	*ft_min(void)
 	return (str);
 }
 
-static char	*ft_final(char *temp, char *str, int i)
+char	*ft_final(char *temp, char *str, int i)
 {
 	int	j;
 	int	w;
@@ -51,7 +51,7 @@ static char	*ft_final(char *temp, char *str, int i)
 	return (str);
 }
 
-static char	*ft_zero_case(void)
+char	*ft_zero_case(void)
 {
 	char	*str;
 

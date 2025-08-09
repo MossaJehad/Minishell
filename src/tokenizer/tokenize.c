@@ -6,11 +6,11 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:30 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 12:32:17 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 17:40:55 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 void	create_token(t_token **token, char *value, char *type)
 {
@@ -37,19 +37,6 @@ void	create_token(t_token **token, char *value, char *type)
 			temp = temp->next;
 		temp->next = new;
 	}
-}
-
-int	check_command(char *word)
-{
-	if (ft_strcmp(word, "echo") == 0 || ft_strcmp(word, "cd") == 0
-		|| ft_strcmp(word, "pwd") == 0 || ft_strcmp(word, "export") == 0
-		|| ft_strcmp(word, "unset") == 0 || ft_strcmp(word, "env") == 0
-		|| ft_strcmp(word, "exit") == 0)
-		return (1);
-	else if (ft_strcmp(word, "type") == 0 || ft_strcmp(word, "cat") == 0
-		|| ft_strcmp(word, "ls") == 0 || ft_strcmp(word, "clear") == 0)
-		return (1);
-	return (0);
 }
 
 int	check_syntax_error(char **array)
@@ -80,20 +67,20 @@ int tokenize_append_and_heredoc(char **array, int *i, t_token **token)
 	{
 		create_token(token, array[++(*i)], "append output");
 		(*i)++;
-		return 1;
+		return (1);
 	}
 	else if (ft_strcmp(array[*i], "<<") == 0)
 	{
 		if (array[*i + 1] == NULL)
 		{
 			fprintf(stderr, "syntax error: unexpected end after `<<`\n");
-			return -1;
+			return (-1);
 		}
 		create_token(token, array[++(*i)], "here-document");
 		(*i)++;
-		return 1;
+		return (1);
 	}
-	return 0;
+	return (0);
 }
 
 int tokenize_pipe_and_redirects(char **array, int *i, t_token **token)
@@ -102,21 +89,21 @@ int tokenize_pipe_and_redirects(char **array, int *i, t_token **token)
 	{
 		create_token(token, "|", "pipe");
 		(*i)++;
-		return 1;
+		return (1);
 	}
 	else if (ft_strcmp(array[*i], "<") == 0)
 	{
 		create_token(token, array[++(*i)], "redirect input");
 		(*i)++;
-		return 1;
+		return (1);
 	}
 	else if (ft_strcmp(array[*i], ">") == 0)
 	{
 		create_token(token, array[++(*i)], "redirect output");
 		(*i)++;
-		return 1;
+		return (1);
 	}
-	return 0;
+	return (0);
 }
 
 void tokenize(char **array, t_token **token)
@@ -129,7 +116,7 @@ void tokenize(char **array, t_token **token)
 	{
 		result = tokenize_append_and_heredoc(array, &i, token);
 		if (result == -1) 
-			return;
+			return ;
 		if (result == 1)
 			continue;
 		result = tokenize_pipe_and_redirects(array, &i, token);
@@ -140,19 +127,5 @@ void tokenize(char **array, t_token **token)
 		else
 			create_token(token, array[i], "word");
 		i++;
-	}
-}
-
-void	free_tokens(t_token *token)
-{
-	t_token	*temp;
-
-	while (token)
-	{
-		temp = token;
-		token = token->next;
-		free(temp->value);
-		free(temp->type);
-		free(temp);
 	}
 }

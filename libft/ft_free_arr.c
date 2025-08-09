@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 03:51:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 03:51:35 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 17:36:59 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void ft_free_arr(void ***arr)
 	int i;
 
 	if (!arr || !*arr)
-		return;
+		return ;
 
 	for (i = 0; (*arr)[i] != NULL; i++)
 	{

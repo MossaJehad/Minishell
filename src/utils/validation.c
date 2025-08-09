@@ -1,19 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   copy_char.c                                        :+:      :+:    :+:   */
+/*   validation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/09 12:46:44 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 16:08:26 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/08/09 17:28:48 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 17:28:54 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../include/minishell.h"
 
-int	copy_char(const char *arg, int *i, char *buffer, int j)
+int	is_valid_identifier(const char *str)
 {
-	buffer[j++] = arg[(*i)++];
-	return (j);
+	size_t	i;
+
+	if (!str || (!ft_isalpha(str[0]) && str[0] != '_'))
+		return (0);
+	i = 1;
+	while (str[i])
+	{
+		if (!ft_isalnum(str[i]) && str[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
 }

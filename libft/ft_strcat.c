@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 01:47:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 01:50:37 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 17:37:14 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,5 +28,5 @@ char	*ft_strcat(char *dest, const char *src)
 		j++;
 	}
 	dest[i] = '\0';
-	return dest;
+	return (dest);
 }

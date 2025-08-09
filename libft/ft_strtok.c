@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtok.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:30:50 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/05/26 17:30:50 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 15:51:34 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 char	*ft_strtok(char *str, const char *delim)
 {
-	static char	*save;
+	char	*save;
 	char		*token;
 	int			i;
 

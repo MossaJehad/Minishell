@@ -6,13 +6,13 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 10:18:13 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 04:20:57 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/09 15:51:34 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	start_index(char const *s1, char const *set)
+int	start_index(char const *s1, char const *set)
 {
 	int	i;
 	int	j;
@@ -39,7 +39,7 @@ static int	start_index(char const *s1, char const *set)
 	return (start);
 }
 
-static int	end_index(char const *s1, char const *set, int start)
+int	end_index(char const *s1, char const *set, int start)
 {
 	int	i;
 	int	j;
@@ -66,7 +66,7 @@ static int	end_index(char const *s1, char const *set, int start)
 	return (end);
 }
 
-static char	*final_str(char const *s1, int start, int end)
+char	*final_str(char const *s1, int start, int end)
 {
 	char	*sub;
 	int		i;

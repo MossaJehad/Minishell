@@ -1,43 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_utils.c                                      :+:      :+:    :+:   */
+/*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/02 13:49:25 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 12:50:58 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/08/09 15:29:53 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/09 15:38:04 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
-
-int	is_shell_builtin(const char *cmd)
-{
-	if (!cmd)
-		return (0);
-	if (ft_strcmp(cmd, "type") == 0 || ft_strcmp(cmd, "echo") == 0
-		|| ft_strcmp(cmd, "exit") == 0 || ft_strcmp(cmd, "pwd") == 0
-		|| ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "export") == 0
-		|| ft_strcmp(cmd, "env") == 0 || ft_strcmp(cmd, "unset") == 0)
-	{
-		return (1);
-	}
-	return (0);
-}
-
-void	null_shell(t_shell *shl)
-{
-	shl->oldpwd = NULL;
-	shl->shlvl = NULL;
-	shl->pwd = NULL;
-}
-
-int	should_run_in_parent(const char *cmd)
-{
-	return (!ft_strcmp(cmd, "cd") || !ft_strcmp(cmd, "export")
-		|| !ft_strcmp(cmd, "unset") || !ft_strcmp(cmd, "exit"));
-}
+#include "../../include/minishell.h"
 
 void	print_welcome_banner(void)
 {
@@ -108,22 +81,4 @@ void	init_shlvl(char ***envp)
 	add_or_replace_env(envp, shlvl_var);
 	free(new_shlvl);
 	free(shlvl_var);
-}
-
-char	*lookup_env_value(const char *name, char **envp)
-{
-	size_t	len;
-	int		i;
-
-	if (!name || !envp)
-		return (NULL);
-	len = ft_strlen(name);
-	i = 0;
-	while (envp[i])
-	{
-		if (!ft_strncmp(envp[i], name, len) && envp[i][len] == '=')
-			return (&envp[i][len + 1]);
-		i++;
-	}
-	return (NULL);
 }
