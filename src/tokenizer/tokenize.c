@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:30 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 11:09:54 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 16:39:11 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	create_token(t_token **token, char *value, char *type)
 
 	if (!value || !type)
 	{
-		fprintf(stderr, "create_token error: NULL value/type\n");
+		printf("create_token error: NULL value/type\n");
 		return ;
 	}
 	new = malloc(sizeof(t_token));
@@ -80,7 +80,7 @@ int	tokenize_append_and_heredoc(char **array, int *i, t_token **token)
 	{
 		if (array[*i + 1] == NULL)
 		{
-			fprintf(stderr, "syntax error: unexpected end after `<<`\n");
+			printf("syntax error: unexpected end after `<<`\n");
 			return (-1);
 		}
 		create_token(token, array[++(*i)], "here-document");

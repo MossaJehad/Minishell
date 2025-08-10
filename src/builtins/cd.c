@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:42:16 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 10:58:54 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 16:39:11 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	handle_cd_command(char *path, int arg_count, char ***envp)
 
 	if (arg_count > 2)
 	{
-		fprintf(stderr, "cd: too many arguments\n");
+		printf("cd: too many arguments\n");
 		g_signal = 1;
 		return ;
 	}
@@ -76,9 +76,9 @@ char	*determine_cd_target(char *path, char **envp)
 	if (!target || *target == '\0')
 	{
 		if (!path || *path == '\0' || ft_strcmp(path, "~") == 0)
-			fprintf(stderr, "cd: HOME not set\n");
+			printf("cd: HOME not set\n");
 		else if (ft_strcmp(path, "-") == 0)
-			fprintf(stderr, "cd: OLDPWD not set\n");
+			printf("cd: OLDPWD not set\n");
 		return (NULL);
 	}
 	if (ft_strcmp(path, "-") == 0)

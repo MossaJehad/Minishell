@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input_handler.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:32:55 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 11:01:17 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 16:39:11 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,17 @@ int	validate_token(t_token *tok)
 {
 	if (!tok)
 	{
-		fprintf(stderr, "setup_redirection: null token\n");
+		printf("setup_redirection: null token\n");
 		return (-1);
 	}
 	if (!tok->type)
 	{
-		fprintf(stderr, "setup_redirection: token type is null\n");
+		printf("setup_redirection: token type is null\n");
 		return (-1);
 	}
 	if (ft_strcmp(tok->type, "here-document") == 0 && !tok->value)
 	{
-		fprintf(stderr, "heredoc: missing delimiter\n");
+		printf("heredoc: missing delimiter\n");
 		return (-1);
 	}
 	return (0);
