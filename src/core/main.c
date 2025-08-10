@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:04 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:53:42 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 11:00:16 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,7 @@ int main(int argc, char **argv, char **envp)
 	init_shell(env);
 	shell_loop(argc, &env);
 	
-	// Fix: Proper cleanup before exit
-	// ft_free_arr((void *)&env);
+	ft_free_arr((void *)&env);
 	rl_clear_history();
 	cleanup_and_exit(get_shell_status(), envp);
 	return (get_shell_status());

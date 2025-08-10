@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:30 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:54:35 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 11:01:43 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,15 @@ void create_token(t_token **token, char *value, char *type)
 	new = malloc(sizeof(t_token));
 	if (!new)
 		return ;
-		
 	new->value = ft_strdup(value);
 	new->type = ft_strdup(type);
-	
-	// Fix: Check for allocation failures
 	if (!new->value || !new->type)
 	{
-	// free(new->value);
-	// free(new->type);
-	// free(new);
+		free(new->value);
+		free(new->type);
+		free(new);
 		return ;
 	}
-	
 	new->next = NULL;
 	if (!*token)
 		*token = new;

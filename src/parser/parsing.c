@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 19:09:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:54:20 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 11:01:25 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,7 @@ char **parse_arguments(const char *input, int *arg_count)
 		argv[s.k] = ft_strdup(buffer);
 		if (!argv[s.k])
 		{
-			// Fix: Free allocated memory on failure
-		//  ft_free_arr((void *)&argv);
+			ft_free_arr((void *)&argv);
 			return (NULL);
 		}
 		s.k++;

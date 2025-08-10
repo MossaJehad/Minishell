@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:47:13 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:53:19 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 10:59:19 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	export_no_args(char **env)
 			printf("declare -x %s\n", sorted_env[j]);
 		j++;
 	}
-	//ft_free_arr((void *)&sorted_env);
+	ft_free_arr((void *)&sorted_env);
 }
 
 void	add_or_replace(char ***envp, const char *var)
@@ -48,7 +48,7 @@ void	add_or_replace(char ***envp, const char *var)
 	if (!name)
 		return ;
 	idx = find_env_index(env, name);
-	//free(name);
+	free(name);
 
 	if (idx >= 0)
 		replace_env_var(env, idx, var);
@@ -71,11 +71,11 @@ void	process_export_assignment(char ***envp, char *arg)
 	keylen = eq - arg;
 	temp_key = ft_strndup(arg, keylen);
 	key = ft_strtrim(temp_key, "\"");
-	//free(temp_key);
+	free(temp_key);
 
 	temp_value = ft_strdup(eq + 1);
 	value = ft_strtrim(temp_value, "\"");
-	//free(temp_value);
+	free(temp_value);
 
 	if (!is_valid_identifier(key))
 		perror("export: not a valid identifier");
@@ -84,11 +84,11 @@ void	process_export_assignment(char ***envp, char *arg)
 		formatted_var = ft_strjoin(key, "=");
 		final_var = ft_strjoin(formatted_var, value);
 		add_or_replace(envp, final_var);
-		//free(formatted_var);
-		//free(final_var);
+		free(formatted_var);
+		free(final_var);
 	}
-	//free(key);
-	//free(value);
+	free(key);
+	free(value);
 }
 
 void	process_export_variable(char ***envp, char *arg)
@@ -103,9 +103,9 @@ void	process_export_variable(char ***envp, char *arg)
 	{
 		buf = ft_strjoin(temp_key, "=");
 		add_or_replace(envp, buf);
-		//free(buf);
+		free(buf);
 	}
-	//free(temp_key);
+	free(temp_key);
 }
 
 void	handle_export_command(char ***envp, char **args, int arg_count)

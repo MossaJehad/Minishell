@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:57:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:54:03 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 11:00:44 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ char	*expand_double_quote(char *arg, char **envp)
 	char	*result;
 
 	result = expand_double_quote_loop(arg, envp);
-	//free(arg);
+	free(arg);
 	return (result);
 }
 
@@ -68,14 +68,14 @@ char	*expand_single_quote(char *arg)
 
 	if (!arg || ft_strlen(arg) < 2)
 	{
-	//	free(arg);
+		free(arg);
 		return (ft_strdup(""));
 	}
 	len = ft_strlen(arg);
 	str = malloc(len - 1);
 	if (!str)
 	{
-	//	free(arg);
+		free(arg);
 		return (NULL);
 	}
 	i = 1;
@@ -83,6 +83,6 @@ char	*expand_single_quote(char *arg)
 	while (i < len - 1)
 		str[j++] = arg[i++];
 	str[j] = '\0';
-	//free(arg);
+	free(arg);
 	return (str);
 }

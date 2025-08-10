@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:16:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:54:07 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 11:01:03 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	expand_simple_var(t_expand_ctx *ctx)
 	int		len;
 
 	k = 0;
-	ctx->i++; // skip $
+	ctx->i++;
 	while (ctx->arg[ctx->i] && (ft_isalnum(ctx->arg[ctx->i]) || ctx->arg[ctx->i] == '_') && k < 255)
 		var[k++] = ctx->arg[ctx->i++];
 	var[k] = '\0';
@@ -42,7 +42,7 @@ int	expand_braced_var(t_expand_ctx *ctx)
 	int		len;
 
 	k = 0;
-	ctx->i += 2; // skip ${
+	ctx->i += 2;
 	while (ctx->arg[ctx->i] && ctx->arg[ctx->i] != '}' && k < 255)
 		var[k++] = ctx->arg[ctx->i++];
 	var[k] = '\0';

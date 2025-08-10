@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:32:55 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:54:10 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 11:00:55 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,17 +44,17 @@ int	read_heredoc_lines(int write_fd, const char *delimiter)
 		}
 		if (ft_strcmp(line, delimiter) == 0)
 		{
-		//	free(line);
+			free(line);
 			break;
 		}
 		if (write(write_fd, line, ft_strlen(line)) == -1
 			|| write(write_fd, "\n", 1) == -1)
 		{
 			perror("write to heredoc pipe");
-		//	free(line);
+			free(line);
 			return (-1);
 		}
-	//	free(line);
+		free(line);
 	}
 	return (0);
 }

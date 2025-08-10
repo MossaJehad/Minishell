@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:32:55 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:54:17 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 11:01:17 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,20 +44,20 @@ char	*append_until_quotes_closed(char *line)
 		{
 			g_signal = 0;
 			if (new_part)
-			//	free(new_part);
-			//free(line);
+				free(new_part);
+			free(line);
 			return (NULL);
 		}
 		if (!new_part)
 		{
-		//	free(line);
+			free(line);
 			return (NULL);
 		}
 		combined = ft_strjoin(line, "\n");
-	//	free(line);
+		free(line);
 		line = ft_strjoin(combined, new_part);
-	//	free(combined);
-		//free(new_part);
+		free(combined);
+		free(new_part);
 	}
 	return (line);
 }
