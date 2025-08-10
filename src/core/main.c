@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:04 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 14:25:01 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 14:39:10 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	main(int argc, char **argv, char **envp)
 	init_shell(env);
 	shell_loop(argc, &env);
 	rl_clear_history();
-	cleanup_and_exit(get_shell_status(), envp);
+	ft_free_arr((void *)&env);
 	return (get_shell_status());
 }
 

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:00:00 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 14:24:06 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 14:38:46 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,11 +81,4 @@ void	handle_exit_command(char **args, int arg_count, char **envp)
 		rl_clear_history();
 		exit(exit_code);
 	}
-}
-
-void	cleanup_and_exit(int exit_code, char **envp)
-{
-	(void)(envp);
-	rl_clear_history();
-	exit(exit_code);
 }
