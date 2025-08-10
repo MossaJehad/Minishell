@@ -1,6 +1,6 @@
 NAME	=	minishell
 CC		=	cc
-CFLAGS	=	-Wall -Wextra -Werror -g -Iinclude
+CFLAGS	=	-Wall -Wextra -Werror -g -Iinclude -g3
 RM		=	rm -rf
 HEADERS	=	include/minishell.h
 
