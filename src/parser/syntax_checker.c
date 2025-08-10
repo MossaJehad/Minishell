@@ -12,10 +12,11 @@
 
 #include "../../include/minishell.h"
 
-int handle_double_less(const char *input, t_parse_state *s, char **argv, char *buffer)
+int	handle_double_less(const char *input, t_parse_state *s, char **argv,
+		char *buffer)
 {
-	if (!s->in_single_quote && !s->in_double_quote &&
-		input[s->i] == '<' && input[s->i + 1] == '<')
+	if (!s->in_single_quote && !s->in_double_quote && input[s->i] == '<'
+		&& input[s->i + 1] == '<')
 	{
 		if (s->j > 0)
 		{
@@ -30,10 +31,11 @@ int handle_double_less(const char *input, t_parse_state *s, char **argv, char *b
 	return (0);
 }
 
-int handle_double_greater(const char *input, t_parse_state *s, char **argv, char *buffer)
+int	handle_double_greater(const char *input, t_parse_state *s, char **argv,
+		char *buffer)
 {
-	if (!s->in_single_quote && !s->in_double_quote &&
-		input[s->i] == '>' && input[s->i + 1] == '>')
+	if (!s->in_single_quote && !s->in_double_quote && input[s->i] == '>'
+		&& input[s->i + 1] == '>')
 	{
 		if (s->j > 0)
 		{
@@ -48,7 +50,8 @@ int handle_double_greater(const char *input, t_parse_state *s, char **argv, char
 	return (0);
 }
 
-int handle_double_char_operators(const char *input, t_parse_state *s, char **argv, char *buffer)
+int	handle_double_char_operators(const char *input, t_parse_state *s,
+		char **argv, char *buffer)
 {
 	if (handle_double_less(input, s, argv, buffer))
 		return (1);
@@ -57,8 +60,8 @@ int handle_double_char_operators(const char *input, t_parse_state *s, char **arg
 	return (0);
 }
 
-
-int handle_single_char_operators(const char *input, t_parse_state *s, char **argv, char *buffer)
+int	handle_single_char_operators(const char *input, t_parse_state *s,
+		char **argv, char *buffer)
 {
 	if (!s->in_single_quote && !s->in_double_quote)
 	{
@@ -80,16 +83,19 @@ int handle_single_char_operators(const char *input, t_parse_state *s, char **arg
 	return (0);
 }
 
-int handle_escape_sequences(const char *input, t_parse_state *s, char *buffer)
+int	handle_escape_sequences(const char *input, t_parse_state *s, char *buffer)
 {
-	if ((s->in_single_quote || s->in_double_quote) && (input[s->i] == '\\' && input[s->i + 1] == 'n'))
+	char	next;
+
+	if ((s->in_single_quote || s->in_double_quote) && (input[s->i] == '\\'
+			&& input[s->i + 1] == 'n'))
 	{
 		buffer[s->j++] = input[s->i++];
 		return (1);
 	}
 	if (input[s->i] == '\\' && input[s->i + 1])
 	{
-		char next = input[s->i + 1];
+		next = input[s->i + 1];
 		if (!s->in_single_quote && !s->in_double_quote)
 		{
 			buffer[s->j++] = next;

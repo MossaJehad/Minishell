@@ -14,10 +14,10 @@
 
 volatile sig_atomic_t	g_signal;
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
-	char    **env;
-	int     i;
+	char	**env;
+	int		i;
 
 	(void)argv;
 	setup_signal_handlers();

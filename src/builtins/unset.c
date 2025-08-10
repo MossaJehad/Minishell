@@ -25,8 +25,8 @@ void	remove_env_var(char ***envp, const char *name)
 	i = 0;
 	while (i < cnt)
 	{
-		if (ft_strncmp(env[i], name, ft_strlen(name)) == 0 &&
-			env[i][ft_strlen(name)] == '=')
+		if (ft_strncmp(env[i], name, ft_strlen(name)) == 0
+			&& env[i][ft_strlen(name)] == '=')
 		{
 			free(env[i]);
 			while (i < cnt - 1)

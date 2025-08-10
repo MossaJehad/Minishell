@@ -59,23 +59,20 @@ char	*resolve_cd_target(char *path, char **envp)
 {
 	if (!path || *path == '\0')
 		return (lookup_env_value("HOME", envp));
-
 	while (*path == ' ' || *path == '\t')
 		path++;
-
 	if (*path == '\0' || ft_strcmp(path, "~") == 0)
 		return (lookup_env_value("HOME", envp));
-
 	if (ft_strcmp(path, "-") == 0)
 		return (lookup_env_value("OLDPWD", envp));
-
 	return (path);
 }
 
 char	*determine_cd_target(char *path, char **envp)
 {
-	char *target = resolve_cd_target(path, envp);
+	char	*target;
 
+	target = resolve_cd_target(path, envp);
 	if (!target || *target == '\0')
 	{
 		if (!path || *path == '\0' || ft_strcmp(path, "~") == 0)

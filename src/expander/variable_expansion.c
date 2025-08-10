@@ -21,7 +21,8 @@ int	expand_simple_var(t_expand_ctx *ctx)
 
 	k = 0;
 	ctx->i++;
-	while (ctx->arg[ctx->i] && (ft_isalnum(ctx->arg[ctx->i]) || ctx->arg[ctx->i] == '_') && k < 255)
+	while (ctx->arg[ctx->i] && (ft_isalnum(ctx->arg[ctx->i])
+			|| ctx->arg[ctx->i] == '_') && k < 255)
 		var[k++] = ctx->arg[ctx->i++];
 	var[k] = '\0';
 	val = lookup_env(var, ctx->envp);
@@ -91,7 +92,6 @@ char	*expand_variables_in_string(char *str, char **envp)
 	ctx.arg = str;
 	ctx.buffer = buffer;
 	ctx.envp = envp;
-	
 	while (ctx.arg[ctx.i])
 		ctx.j = process_variable_expansion(&ctx);
 	ctx.buffer[ctx.j] = '\0';

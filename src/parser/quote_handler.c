@@ -12,9 +12,11 @@
 
 #include "../../include/minishell.h"
 
-int handle_whitespace(const char *input, t_parse_state *s, char **argv, char *buffer)
+int	handle_whitespace(const char *input, t_parse_state *s, char **argv,
+		char *buffer)
 {
-	if (!s->in_single_quote && !s->in_double_quote && (input[s->i] == ' ' || input[s->i] == '\t'))
+	if (!s->in_single_quote && !s->in_double_quote && (input[s->i] == ' '
+			|| input[s->i] == '\t'))
 	{
 		if (s->j > 0)
 		{
@@ -28,7 +30,7 @@ int handle_whitespace(const char *input, t_parse_state *s, char **argv, char *bu
 	return (0);
 }
 
-int handle_quotes(const char *input, t_parse_state *s, char *buffer)
+int	handle_quotes(const char *input, t_parse_state *s, char *buffer)
 {
 	if (input[s->i] == '\'' && !s->in_double_quote)
 	{

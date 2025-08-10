@@ -40,15 +40,15 @@ int	read_heredoc_lines(int write_fd, const char *delimiter)
 		if (!line)
 		{
 			printf("\n");
-			break;
+			break ;
 		}
 		if (ft_strcmp(line, delimiter) == 0)
 		{
 			free(line);
-			break;
+			break ;
 		}
-		if (write(write_fd, line, ft_strlen(line)) == -1
-			|| write(write_fd, "\n", 1) == -1)
+		if (write(write_fd, line, ft_strlen(line)) == -1 || write(write_fd,
+				"\n", 1) == -1)
 		{
 			perror("write to heredoc pipe");
 			free(line);

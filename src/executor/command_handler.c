@@ -12,7 +12,7 @@
 
 #include "../../include/minishell.h"
 
-int prepare_and_execute_commands(t_token *token, char ***envp, t_exec_ctx *ctx)
+int	prepare_and_execute_commands(t_token *token, char ***envp, t_exec_ctx *ctx)
 {
 	ctx->num_cmds = parse_commands(token, ctx->cmd_starts, ctx->heredoc_fds);
 	if (ctx->num_cmds == -1)
@@ -23,8 +23,9 @@ int prepare_and_execute_commands(t_token *token, char ***envp, t_exec_ctx *ctx)
 			return (0);
 	}
 	ignore_signals();
-	if (create_pipes(ctx->pipefd, ctx->num_cmds) == -1 ||
-		fork_processes(ctx->cmd_starts, ctx->num_cmds, ctx->heredoc_fds, ctx->pipefd, ctx->pids, *envp) == -1)
+	if (create_pipes(ctx->pipefd, ctx->num_cmds) == -1
+		|| fork_processes(ctx->cmd_starts, ctx->num_cmds, ctx->heredoc_fds,
+			ctx->pipefd, ctx->pids, *envp) == -1)
 	{
 		restore_signals();
 		return (-1);
@@ -32,7 +33,7 @@ int prepare_and_execute_commands(t_token *token, char ***envp, t_exec_ctx *ctx)
 	return (0);
 }
 
-void finalize_command_execution(t_exec_ctx *ctx)
+void	finalize_command_execution(t_exec_ctx *ctx)
 {
 	close_all_pipes(ctx->pipefd, ctx->num_cmds);
 	close_heredoc_fds(ctx->heredoc_fds, ctx->num_cmds);
@@ -40,7 +41,7 @@ void finalize_command_execution(t_exec_ctx *ctx)
 	restore_signals();
 }
 
-void handle_command(t_token *token, char ***envp)
+void	handle_command(t_token *token, char ***envp)
 {
 	t_exec_ctx	ctx;
 
@@ -57,9 +58,9 @@ int	build_cmd_args(t_token *seg, char *cmd_argv[MAX_ARGS])
 	cmd_argc = 0;
 	while (seg && ft_strcmp(seg->type, "pipe") != 0)
 	{
-		if (ft_strncmp(seg->type, "redirect", 8) == 0
-			|| ft_strcmp(seg->type, "here-document") == 0
-			|| ft_strcmp(seg->type, "append output") == 0)
+		if (ft_strncmp(seg->type, "redirect", 8) == 0 || ft_strcmp(seg->type,
+				"here-document") == 0 || ft_strcmp(seg->type,
+				"append output") == 0)
 		{
 			seg = seg->next;
 			continue ;

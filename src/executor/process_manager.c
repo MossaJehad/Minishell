@@ -12,7 +12,8 @@
 
 #include "../../include/minishell.h"
 
-void	handle_single_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc, char ***envp)
+void	handle_single_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc,
+		char ***envp)
 {
 	if (!ft_strcmp(cmd_argv[0], "export"))
 		handle_export_command(envp, cmd_argv, cmd_argc);
@@ -36,7 +37,8 @@ void	init_heredoc_fds(int heredoc_fds[256])
 	}
 }
 
-int	setup_heredocs_for_cmd(t_token *cmd_start, int cmd_index, int heredoc_fds[256])
+int	setup_heredocs_for_cmd(t_token *cmd_start, int cmd_index,
+		int heredoc_fds[256])
 {
 	t_token	*temp;
 
@@ -87,7 +89,8 @@ void	wait_for_processes(pid_t pids[256], int num_cmds)
 	}
 }
 
-int	parse_commands(t_token *token, t_token *cmd_starts[256], int heredoc_fds[256])
+int	parse_commands(t_token *token, t_token *cmd_starts[256],
+		int heredoc_fds[256])
 {
 	int		num_cmds;
 	t_token	*cur;
@@ -105,7 +108,8 @@ int	parse_commands(t_token *token, t_token *cmd_starts[256], int heredoc_fds[256
 				cmd_starts[num_cmds] = cur;
 			else
 				cmd_starts[num_cmds] = cur->next;
-			if (setup_heredocs_for_cmd(cmd_starts[num_cmds], num_cmds, heredoc_fds) == -1)
+			if (setup_heredocs_for_cmd(cmd_starts[num_cmds], num_cmds,
+					heredoc_fds) == -1)
 				return (-1);
 			num_cmds++;
 		}

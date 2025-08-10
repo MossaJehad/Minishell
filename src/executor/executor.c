@@ -32,14 +32,15 @@ void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc)
 	}
 }
 
-int prepare_child_command(t_token *seg, char *cmd_argv[MAX_ARGS])
+int	prepare_child_command(t_token *seg, char *cmd_argv[MAX_ARGS])
 {
-	int cmd_argc = 0;
+	int	cmd_argc;
 
+	cmd_argc = 0;
 	while (seg && ft_strcmp(seg->type, "pipe") != 0)
 	{
-		if (ft_strncmp(seg->type, "redirect", 8) == 0
-			|| ft_strcmp(seg->type, "append output") == 0)
+		if (ft_strncmp(seg->type, "redirect", 8) == 0 || ft_strcmp(seg->type,
+				"append output") == 0)
 		{
 			if (setup_redirection(seg) == -1)
 				return (-1);
@@ -58,61 +59,64 @@ int prepare_child_command(t_token *seg, char *cmd_argv[MAX_ARGS])
 	return (cmd_argc);
 }
 
-char *find_executable(char *cmd, char **envp)
+char	*find_executable(char *cmd, char **envp)
 {
-	char *path_env = NULL;
-	char **paths = NULL;
-	char *full_path = NULL;
-	int i = 0;
-	size_t len;
+	char	*path_env;
+	char	**paths;
+	char	*full_path;
+	int		i;
+	size_t	len;
+
+	path_env = NULL;
+	paths = NULL;
+	full_path = NULL;
+	i = 0;
 	while (envp && envp[i])
 	{
 		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
 		{
 			path_env = envp[i] + 5;
-			break;
+			break ;
 		}
 		i++;
 	}
 	if (!path_env)
-		return NULL;
+		return (NULL);
 	paths = ft_split(path_env, ':');
 	if (!paths)
-		return NULL;
-
+		return (NULL);
 	i = 0;
 	while (paths[i])
 	{
 		len = ft_strlen(paths[i]) + 1 + ft_strlen(cmd) + 1;
 		full_path = malloc(len);
 		if (!full_path)
-			break;
+			break ;
 		ft_strcpy(full_path, paths[i]);
 		ft_strcat(full_path, "/");
 		ft_strcat(full_path, cmd);
-
 		if (access(full_path, X_OK) == 0)
 		{
 			free_split(paths);
-			return full_path;
+			return (full_path);
 		}
 		free(full_path);
 		full_path = NULL;
 		i++;
 	}
 	free_split(paths);
-	return NULL;
+	return (NULL);
 }
 
-
-void	execute_child_process(t_token *cmd_starts[256], int i, int heredoc_fds[256], 
-							int pipefd[256][2], int num_cmds, char **envp)
+void	execute_child_process(t_token *cmd_starts[256], int i,
+		int heredoc_fds[256], int pipefd[256][2], int num_cmds, char **envp)
 {
-	t_token *seg = cmd_starts[i];
-	char *cmd_argv[MAX_ARGS];
-	int cmd_argc;
-	char *full_path;
+	t_token	*seg;
+	char	*cmd_argv[MAX_ARGS];
+	int		cmd_argc;
+	char	*full_path;
 
+	seg = cmd_starts[i];
 	setup_child_signals();
 	setup_child_pipes(pipefd, i, num_cmds);
 	setup_child_heredoc(heredoc_fds, i);
@@ -121,7 +125,6 @@ void	execute_child_process(t_token *cmd_starts[256], int i, int heredoc_fds[256]
 		exit(1);
 	if (cmd_argc == 0 || cmd_argv[0] == NULL)
 		exit(0);
-
 	if (is_shell_builtin(cmd_argv[0]))
 	{
 		execute_child_builtin(cmd_argv, cmd_argc);
@@ -143,10 +146,11 @@ void	execute_child_process(t_token *cmd_starts[256], int i, int heredoc_fds[256]
 }
 
 int	fork_processes(t_token *cmd_starts[256], int num_cmds, int heredoc_fds[256],
-				int pipefd[256][2], pid_t pids[256], char **envp)
+		int pipefd[256][2], pid_t pids[256], char **envp)
 {
-	int i = 0;
+	int	i;
 
+	i = 0;
 	while (i < num_cmds)
 	{
 		pids[i] = fork();
@@ -158,7 +162,8 @@ int	fork_processes(t_token *cmd_starts[256], int num_cmds, int heredoc_fds[256],
 		}
 		if (pids[i] == 0)
 		{
-			execute_child_process(cmd_starts, i, heredoc_fds, pipefd, num_cmds, envp);
+			execute_child_process(cmd_starts, i, heredoc_fds, pipefd, num_cmds,
+				envp);
 		}
 		i++;
 	}

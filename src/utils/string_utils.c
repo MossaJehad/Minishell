@@ -14,8 +14,8 @@
 
 int	has_unclosed_quotes(const char *input)
 {
-	int in_single;
-	int in_double;
+	int	in_single;
+	int	in_double;
 
 	in_double = 0;
 	in_single = 0;

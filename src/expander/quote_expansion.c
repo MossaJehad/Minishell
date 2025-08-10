@@ -32,22 +32,22 @@ char	*expand_double_quote_loop(char *arg, char **envp)
 {
 	char			buffer[BUFFER_SIZE];
 	t_expand_ctx	ctx;
+	int				result;
 
 	ctx.i = 1;
 	ctx.j = 0;
 	ctx.arg = arg;
 	ctx.buffer = buffer;
 	ctx.envp = envp;
-	
 	while (ctx.arg[ctx.i] && ctx.arg[ctx.i] != '"')
 	{
-		int result = handle_dollar_expansion(&ctx);
+		result = handle_dollar_expansion(&ctx);
 		if (result != 0)
-			continue;
+			continue ;
 		ctx.j = copy_char(ctx.arg, &ctx.i, ctx.buffer, ctx.j);
 	}
 	ctx.buffer[ctx.j] = '\0';
-	return ft_strdup(ctx.buffer);
+	return (ft_strdup(ctx.buffer));
 }
 
 char	*expand_double_quote(char *arg, char **envp)

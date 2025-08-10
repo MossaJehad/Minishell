@@ -58,6 +58,7 @@ int	process_exit_args(char **args, int arg_count)
 void	handle_exit_command(char **args, int arg_count, char **envp)
 {
 	int	exit_code;
+
 	(void)envp;
 	printf("\033[0;31mexit\n\033[0m");
 	exit_code = process_exit_args(args, arg_count);
@@ -82,7 +83,7 @@ void	handle_exit_command(char **args, int arg_count, char **envp)
 	}
 }
 
-void cleanup_and_exit(int exit_code, char **envp)
+void	cleanup_and_exit(int exit_code, char **envp)
 {
 	if (envp)
 		ft_free_arr((void ***)&envp);

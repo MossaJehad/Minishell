@@ -12,19 +12,15 @@
 
 #include "../../include/minishell.h"
 
-void print_welcome_banner(void)
+void	print_welcome_banner(void)
 {
 	printf("\033[1;97m");
 	printf("┏┓┳┏┓┳┳┓┏┓\n");
-
 	printf("\033[1;97m");
 	printf("┗┓┃┃┓┃┃┃┣┫\n");
-
 	printf("\033[1;97m");
 	printf("┗┛┻┗┛┛ ┗┛┗ .\n");
-
 	printf("\033[0;37m");
-
 	printf("\n");
 }
 

@@ -12,7 +12,8 @@
 
 #include "../../include/minishell.h"
 
-int	handle_single_command(t_token *cmd_starts[256], int heredoc_fds[256], char ***envp)
+int	handle_single_command(t_token *cmd_starts[256], int heredoc_fds[256],
+		char ***envp)
 {
 	t_token	*seg;
 	int		cmd_argc;

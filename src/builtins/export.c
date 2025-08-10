@@ -36,12 +36,13 @@ void	export_no_args(char **env)
 
 void	add_or_replace(char ***envp, const char *var)
 {
-	char	**env = *envp;
+	char	**env;
 	char	*eq;
 	size_t	keylen;
 	char	*name;
 	int		idx;
 
+	env = *envp;
 	eq = ft_strchr(var, '=');
 	keylen = eq ? (size_t)(eq - var) : ft_strlen(var);
 	name = ft_strndup(var, keylen);
@@ -49,7 +50,6 @@ void	add_or_replace(char ***envp, const char *var)
 		return ;
 	idx = find_env_index(env, name);
 	free(name);
-
 	if (idx >= 0)
 		replace_env_var(env, idx, var);
 	else
@@ -72,11 +72,9 @@ void	process_export_assignment(char ***envp, char *arg)
 	temp_key = ft_strndup(arg, keylen);
 	key = ft_strtrim(temp_key, "\"");
 	free(temp_key);
-
 	temp_value = ft_strdup(eq + 1);
 	value = ft_strtrim(temp_value, "\"");
 	free(temp_value);
-
 	if (!is_valid_identifier(key))
 		perror("export: not a valid identifier");
 	else
@@ -115,7 +113,7 @@ void	handle_export_command(char ***envp, char **args, int arg_count)
 	if (arg_count == 1)
 	{
 		export_no_args(*envp);
-		return;
+		return ;
 	}
 	i = 1;
 	while (i < arg_count)

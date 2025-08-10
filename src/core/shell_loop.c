@@ -35,7 +35,7 @@ void	shell_loop(int arg_count, char ***envp)
 		if (!args)
 		{
 			free(input);
-			continue;
+			continue ;
 		}
 		args = expand(args, *envp);
 		if (!check_syntax_error(args))
@@ -48,9 +48,9 @@ void	shell_loop(int arg_count, char ***envp)
 	}
 }
 
-char *get_input(void)
+char	*get_input(void)
 {
-	char *line;
+	char	*line;
 
 	while (1)
 	{
@@ -63,23 +63,23 @@ char *get_input(void)
 		if (*line == '\0')
 		{
 			free(line);
-			continue;
+			continue ;
 		}
 		line = append_until_quotes_closed(line);
 		if (!line)
-			continue;
+			continue ;
 		add_history(line);
 		return (line);
 	}
 }
 
-char *read_prompt_line(void)
+char	*read_prompt_line(void)
 {
-	char cwd[1024];
-	char *prompt;
-	char *tmp1;
-	char *tmp2;
-	char *line;
+	char	cwd[1024];
+	char	*prompt;
+	char	*tmp1;
+	char	*tmp2;
+	char	*line;
 
 	if (getcwd(cwd, sizeof(cwd)))
 	{

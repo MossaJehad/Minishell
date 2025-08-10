@@ -12,9 +12,9 @@
 
 #include "../../include/minishell.h"
 
-int setup_redirection(t_token *tok)
+int	setup_redirection(t_token *tok)
 {
-	int fd;
+	int	fd;
 
 	if (validate_token(tok) < 0)
 		return (-1);
@@ -31,7 +31,7 @@ int setup_redirection(t_token *tok)
 	return (0);
 }
 
-int handle_file_redirection(t_token *tok)
+int	handle_file_redirection(t_token *tok)
 {
 	int	fd;
 

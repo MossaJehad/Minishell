@@ -28,11 +28,13 @@ void	replace_env_var(char **env, int idx, const char *var)
 
 void	append_env_var(char ***envp, const char *var)
 {
-	char	**env = *envp;
-	int		i = 0;
+	char	**env;
+	int		i;
 	int		j;
 	char	**newenv;
 
+	env = *envp;
+	i = 0;
 	while (env[i])
 		i++;
 	newenv = malloc(sizeof(char *) * (i + 2));
@@ -73,7 +75,6 @@ void	add_or_replace_env(char ***envp, const char *var)
 	else
 		append_env_var(envp, var);
 }
-
 
 int	find_env_index(char **env, const char *name)
 {

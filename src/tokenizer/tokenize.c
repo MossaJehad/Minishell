@@ -68,7 +68,7 @@ int	check_syntax_error(char **array)
 	return (0);
 }
 
-int tokenize_append_and_heredoc(char **array, int *i, t_token **token)
+int	tokenize_append_and_heredoc(char **array, int *i, t_token **token)
 {
 	if (ft_strcmp(array[*i], ">>") == 0)
 	{
@@ -90,7 +90,7 @@ int tokenize_append_and_heredoc(char **array, int *i, t_token **token)
 	return (0);
 }
 
-int tokenize_pipe_and_redirects(char **array, int *i, t_token **token)
+int	tokenize_pipe_and_redirects(char **array, int *i, t_token **token)
 {
 	if (ft_strcmp(array[*i], "|") == 0)
 	{
@@ -113,7 +113,7 @@ int tokenize_pipe_and_redirects(char **array, int *i, t_token **token)
 	return (0);
 }
 
-void tokenize(char **array, t_token **token)
+void	tokenize(char **array, t_token **token)
 {
 	int	result;
 	int	i;
@@ -122,13 +122,13 @@ void tokenize(char **array, t_token **token)
 	while (array[i])
 	{
 		result = tokenize_append_and_heredoc(array, &i, token);
-		if (result == -1) 
+		if (result == -1)
 			return ;
 		if (result == 1)
-			continue;
+			continue ;
 		result = tokenize_pipe_and_redirects(array, &i, token);
 		if (result == 1)
-			continue;
+			continue ;
 		if (check_command(array[i]))
 			create_token(token, array[i], "command");
 		else
