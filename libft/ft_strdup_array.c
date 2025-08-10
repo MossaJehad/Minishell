@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 12:51:43 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:17:36 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 11:21:50 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ char	**ft_strdup_array(char **array)
 		new_array[i] = ft_strdup(array[i]);
 		if (!new_array[i])
 		{
-			ft_free_arr((void *)&new_array);
+			ft_free_arr((void ***)&new_array);
 			return (NULL);
 		}
 		i++;

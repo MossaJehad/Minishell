@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 19:09:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 11:01:25 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 11:20:48 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,11 @@ void run_parsing_loop(const char *input, t_parse_state *s, char **argv, char *bu
 	}
 }
 
-char **parse_arguments(const char *input, int *arg_count)
+char	**parse_arguments(const char *input, int *arg_count)
 {
-	t_parse_state   s;
-	char            **argv;
-	char            buffer[BUFFER_SIZE];
+	t_parse_state	s;
+	char			**argv;
+	char			buffer[BUFFER_SIZE];
 
 	if (!input)
 		return (NULL);

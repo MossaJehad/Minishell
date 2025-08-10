@@ -6,17 +6,17 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:30:47 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 11:00:29 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 11:12:44 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void shell_loop(int arg_count, char ***envp)
+void	shell_loop(int arg_count, char ***envp)
 {
-	char    *input;
-	char    **args;
-	t_token *token;
+	char	*input;
+	char	**args;
+	t_token	*token;
 
 	while (1)
 	{
@@ -28,7 +28,7 @@ void shell_loop(int arg_count, char ***envp)
 			break ;
 		if (*input == '\0')
 		{
-		free(input);
+			free(input);
 			continue ;
 		}
 		args = parse_arguments(input, &arg_count);
@@ -41,7 +41,6 @@ void shell_loop(int arg_count, char ***envp)
 		if (!check_syntax_error(args))
 			tokenize(args, &token);
 		handle_command(token, envp);
-		
 		if (args)
 			ft_free_arr((void *)&args);
 		free_tokens(token);

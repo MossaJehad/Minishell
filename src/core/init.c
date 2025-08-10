@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:29:53 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 10:59:40 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 11:05:56 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,28 +36,25 @@ void	init_shell(char **envp)
 	print_welcome_banner();
 }
 
-void init_pwd_vars(char ***envp)
+void	init_pwd_vars(char ***envp)
 {
-	char    *cwd;
-	char    *pwd_var;
-	char    *oldpwd_var;
-	char    *current_pwd;
-	char    *current_pwd_copy;
+	char	*cwd;
+	char	*pwd_var;
+	char	*oldpwd_var;
+	char	*current_pwd;
+	char	*current_pwd_copy;
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 		return ;
-	
 	current_pwd = lookup_env_value("PWD", *envp);
 	current_pwd_copy = current_pwd ? ft_strdup(current_pwd) : NULL;
-	
 	pwd_var = ft_strjoin("PWD=", cwd);
 	if (pwd_var)
 	{
 		add_or_replace_env(envp, pwd_var);
 		free(pwd_var);
 	}
-	
 	if (current_pwd_copy)
 	{
 		oldpwd_var = ft_strjoin("OLDPWD=", current_pwd_copy);
@@ -65,7 +62,6 @@ void init_pwd_vars(char ***envp)
 	}
 	else
 		oldpwd_var = ft_strdup("OLDPWD=");
-		
 	if (oldpwd_var)
 	{
 		add_or_replace_env(envp, oldpwd_var);

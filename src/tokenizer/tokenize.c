@@ -6,16 +6,16 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:30 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 11:01:43 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/10 11:09:54 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void create_token(t_token **token, char *value, char *type)
+void	create_token(t_token **token, char *value, char *type)
 {
-	t_token *new;
-	t_token *temp;
+	t_token	*new;
+	t_token	*temp;
 
 	if (!value || !type)
 	{
