@@ -37,20 +37,20 @@ void	update_pwd_oldpwd(char ***envp, const char *new_pwd,
 
 void	handle_pwd_command(char ***envp)
 {
-	char	*pwd;
 	char	cwd[PATH_MAX];
+	char	*pwd;
 
-	pwd = lookup_env_value("PWD", *envp);
-	if (pwd && access(pwd, F_OK) == 0)
-	{
-		printf("%s\n", pwd);
-		g_signal = 0;
-		return ;
-	}
 	if (getcwd(cwd, sizeof(cwd)))
 	{
 		printf("%s\n", cwd);
 		update_pwd_oldpwd(envp, cwd, lookup_env_value("PWD", *envp));
+		g_signal = 0;
+		return ;
+	}
+	pwd = lookup_env_value("PWD", *envp);
+	if (pwd)
+	{
+		printf("%s\n", pwd);
 		g_signal = 0;
 		return ;
 	}

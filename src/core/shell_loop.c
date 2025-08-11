@@ -38,10 +38,15 @@ void	shell_loop(int arg_count, char ***envp)
 			continue ;
 		}
 		args = expand(args, *envp);
+		if (!args)
+		{
+			free(input);
+			continue ;
+		}
 		if (!check_syntax_error(args))
 			tokenize(args, &token);
-		ft_free_arr((void *)&args);
 		handle_command(token, envp);
+		ft_free_arr((void *)&args);
 		free_tokens(token);
 		free(input);
 	}

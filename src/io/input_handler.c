@@ -36,6 +36,7 @@ char	*append_until_quotes_closed(char *line)
 {
 	char	*new_part;
 	char	*combined;
+	char	*temp;
 
 	while (has_unclosed_quotes(line))
 	{
@@ -54,10 +55,19 @@ char	*append_until_quotes_closed(char *line)
 			return (NULL);
 		}
 		combined = ft_strjoin(line, "\n");
+		if (!combined)
+		{
+			free(line);
+			free(new_part);
+			return (NULL);
+		}
+		temp = ft_strjoin(combined, new_part);
 		free(line);
-		line = ft_strjoin(combined, new_part);
 		free(combined);
 		free(new_part);
+		if (!temp)
+			return (NULL);
+		line = temp;
 	}
 	return (line);
 }

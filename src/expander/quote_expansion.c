@@ -39,7 +39,7 @@ char	*expand_double_quote_loop(char *arg, char **envp)
 	ctx.arg = arg;
 	ctx.buffer = buffer;
 	ctx.envp = envp;
-	while (ctx.arg[ctx.i] && ctx.arg[ctx.i] != '"')
+	while (ctx.arg[ctx.i] && ctx.arg[ctx.i] != '"' && ctx.j < BUFFER_SIZE - 1)
 	{
 		result = handle_dollar_expansion(&ctx);
 		if (result != 0)

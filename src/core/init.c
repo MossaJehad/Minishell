@@ -80,8 +80,13 @@ void	init_shlvl(char ***envp)
 		shlvl = 0;
 	shlvl++;
 	new_shlvl = ft_itoa(shlvl);
+	if (!new_shlvl)
+		return ;
 	shlvl_var = ft_strjoin("SHLVL=", new_shlvl);
-	add_or_replace_env(envp, shlvl_var);
+	if (shlvl_var)
+	{
+		add_or_replace_env(envp, shlvl_var);
+		free(shlvl_var);
+	}
 	free(new_shlvl);
-	free(shlvl_var);
 }

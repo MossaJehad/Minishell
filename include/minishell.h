@@ -43,6 +43,11 @@
 # define MAX_COMMANDS 256
 # define MAX_PATH_LEN 1024
 
+/* PATH_MAX fallback definition */
+# ifndef PATH_MAX
+#  define PATH_MAX 4096
+# endif
+
 /*
 ** ============================================================================
 ** STRUCTURES AND TYPES
@@ -235,7 +240,7 @@ int					fork_processes(t_token *cmd_starts[256], int num_cmds, int heredoc_fds[2
 /* Process utilities */
 void				execute_child_process(t_token *cmd_starts[256], int i, int heredoc_fds[256], 
 							int pipefd[256][2], int num_cmds, char **envp);
-void				execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc);
+void				execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc, char **envp);
 void				wait_for_processes(pid_t pids[MAX_COMMANDS], int num_cmds);
 
 /* Pipe management */
@@ -342,6 +347,8 @@ void				ft_sort_array(char **array);
 
 /* String utilities - Additional functions not in libft */
 int					copy_char(const char *arg, int *i, char *buffer, int j);
+char				*ft_strndup(const char *s1, size_t n);
+void				free_split(char **split);
 
 /* File descriptor utilities */
 void				close_heredoc_fds(int heredoc_fds[MAX_COMMANDS], int num_cmds);

@@ -124,4 +124,5 @@ void	handle_export_command(char ***envp, char **args, int arg_count)
 			process_export_variable(envp, args[i]);
 		i++;
 	}
+	g_signal = 0;
 }

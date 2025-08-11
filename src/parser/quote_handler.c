@@ -15,13 +15,18 @@
 int	handle_whitespace(const char *input, t_parse_state *s, char **argv,
 		char *buffer)
 {
+	char	*token;
+
 	if (!s->in_single_quote && !s->in_double_quote && (input[s->i] == ' '
 			|| input[s->i] == '\t'))
 	{
 		if (s->j > 0)
 		{
 			buffer[s->j] = '\0';
-			argv[s->k++] = ft_strdup(buffer);
+			token = ft_strdup(buffer);
+			if (!token)
+				return (-1);
+			argv[s->k++] = token;
 			s->j = 0;
 		}
 		s->i++;

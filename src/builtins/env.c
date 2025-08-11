@@ -32,6 +32,7 @@ void	append_env_var(char ***envp, const char *var)
 	int		i;
 	int		j;
 	char	**newenv;
+	char	*new_var;
 
 	env = *envp;
 	i = 0;
@@ -46,7 +47,13 @@ void	append_env_var(char ***envp, const char *var)
 		newenv[j] = env[j];
 		j++;
 	}
-	newenv[i] = ft_strdup(var);
+	new_var = ft_strdup(var);
+	if (!new_var)
+	{
+		free(newenv);
+		return ;
+	}
+	newenv[i] = new_var;
 	newenv[i + 1] = NULL;
 	free(env);
 	*envp = newenv;

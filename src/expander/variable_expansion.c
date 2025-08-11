@@ -59,6 +59,56 @@ int	expand_braced_var(t_expand_ctx *ctx)
 	return (ctx->j);
 }
 
+int	expand_exit_status(t_expand_ctx *ctx)
+{
+	char	*exit_status_str;
+	int		len;
+
+	if (ctx->arg[ctx->i + 1] == '?')
+	{
+		exit_status_str = malloc(20);
+		if (!exit_status_str)
+			return (0);
+		sprintf(exit_status_str, "%d", get_shell_status());
+		len = ft_strlen(exit_status_str);
+		if (ctx->j + len < BUFFER_SIZE * 4 - 1)
+		{
+			ft_strcpy(ctx->buffer + ctx->j, exit_status_str);
+			ctx->j += len;
+		}
+		free(exit_status_str);
+		ctx->i += 2;
+		return (ctx->j);
+	}
+	return (0);
+}
+
+int	expand_pid(t_expand_ctx *ctx)
+{
+	char	*pid_str;
+	pid_t	pid;
+	int		len;
+
+	if (ctx->arg[ctx->i + 1] == '$')
+	{
+		pid = getpid();
+		pid_str = malloc(20);
+		if (!pid_str)
+			return (0);
+		sprintf(pid_str, "%d", pid);
+		len = ft_strlen(pid_str);
+		if (ctx->j + len < BUFFER_SIZE * 4 - 1)
+		{
+			ft_strcpy(ctx->buffer + ctx->j, pid_str);
+			ctx->j += len;
+		}
+		free(pid_str);
+		ctx->i += 2;
+		return (ctx->j);
+	}
+	return (0);
+}
+
 int	process_variable_expansion(t_expand_ctx *ctx)
 {
 	int	result;

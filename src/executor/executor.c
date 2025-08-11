@@ -12,7 +12,7 @@
 
 #include "../../include/minishell.h"
 
-void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc)
+void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc, char **envp)
 {
 	t_token	*cmd_token;
 	int		k;
@@ -29,6 +29,19 @@ void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc)
 		}
 		handle_echo_command(cmd_token);
 		free_tokens(cmd_token);
+	}
+	else if (!ft_strcmp(cmd_argv[0], "pwd"))
+	{
+		char	cwd[PATH_MAX];
+
+		if (getcwd(cwd, sizeof(cwd)))
+			printf("%s\n", cwd);
+		else
+			perror("pwd");
+	}
+	else if (!ft_strcmp(cmd_argv[0], "env"))
+	{
+		handle_env_command(envp);
 	}
 }
 
@@ -68,8 +81,6 @@ char	*find_executable(char *cmd, char **envp)
 	size_t	len;
 
 	path_env = NULL;
-	paths = NULL;
-	full_path = NULL;
 	i = 0;
 	while (envp && envp[i])
 	{
@@ -91,20 +102,22 @@ char	*find_executable(char *cmd, char **envp)
 		len = ft_strlen(paths[i]) + 1 + ft_strlen(cmd) + 1;
 		full_path = malloc(len);
 		if (!full_path)
-			break ;
+		{
+			ft_free_arr((void *)&paths);
+			return (NULL);
+		}
 		ft_strcpy(full_path, paths[i]);
 		ft_strcat(full_path, "/");
 		ft_strcat(full_path, cmd);
 		if (access(full_path, X_OK) == 0)
 		{
-			free_split(paths);
+			ft_free_arr((void *)&paths);
 			return (full_path);
 		}
 		free(full_path);
-		full_path = NULL;
 		i++;
 	}
-	free_split(paths);
+	ft_free_arr((void *)&paths);
 	return (NULL);
 }
 
@@ -127,7 +140,7 @@ void	execute_child_process(t_token *cmd_starts[256], int i,
 		exit(0);
 	if (is_shell_builtin(cmd_argv[0]))
 	{
-		execute_child_builtin(cmd_argv, cmd_argc);
+		execute_child_builtin(cmd_argv, cmd_argc, envp);
 		exit(0);
 	}
 	if (cmd_argv[0][0] == '/' || cmd_argv[0][0] == '.')

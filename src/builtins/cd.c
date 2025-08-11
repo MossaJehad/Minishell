@@ -81,7 +81,7 @@ char	*determine_cd_target(char *path, char **envp)
 			printf("cd: OLDPWD not set\n");
 		return (NULL);
 	}
-	if (ft_strcmp(path, "-") == 0)
+	if (path && ft_strcmp(path, "-") == 0)
 		printf("%s\n", target);
 	return (target);
 }

@@ -15,6 +15,8 @@
 int	handle_double_less(const char *input, t_parse_state *s, char **argv,
 		char *buffer)
 {
+	char	*token;
+
 	if (!s->in_single_quote && !s->in_double_quote && input[s->i] == '<'
 		&& input[s->i + 1] == '<')
 	{
@@ -22,9 +24,14 @@ int	handle_double_less(const char *input, t_parse_state *s, char **argv,
 		{
 			buffer[s->j] = '\0';
 			argv[s->k++] = ft_strdup(buffer);
+			if (!argv[s->k - 1])
+				return (-1);
 			s->j = 0;
 		}
-		argv[s->k++] = ft_strdup("<<");
+		token = ft_strdup("<<");
+		if (!token)
+			return (-1);
+		argv[s->k++] = token;
 		s->i += 2;
 		return (1);
 	}
@@ -34,6 +41,8 @@ int	handle_double_less(const char *input, t_parse_state *s, char **argv,
 int	handle_double_greater(const char *input, t_parse_state *s, char **argv,
 		char *buffer)
 {
+	char	*token;
+
 	if (!s->in_single_quote && !s->in_double_quote && input[s->i] == '>'
 		&& input[s->i + 1] == '>')
 	{
@@ -41,9 +50,14 @@ int	handle_double_greater(const char *input, t_parse_state *s, char **argv,
 		{
 			buffer[s->j] = '\0';
 			argv[s->k++] = ft_strdup(buffer);
+			if (!argv[s->k - 1])
+				return (-1);
 			s->j = 0;
 		}
-		argv[s->k++] = ft_strdup(">>");
+		token = ft_strdup(">>");
+		if (!token)
+			return (-1);
+		argv[s->k++] = token;
 		s->i += 2;
 		return (1);
 	}
@@ -63,6 +77,9 @@ int	handle_double_char_operators(const char *input, t_parse_state *s,
 int	handle_single_char_operators(const char *input, t_parse_state *s,
 		char **argv, char *buffer)
 {
+	char	operator_str[2];
+	char	*token;
+
 	if (!s->in_single_quote && !s->in_double_quote)
 	{
 		if (input[s->i] == '|' || input[s->i] == '<' || input[s->i] == '>')
@@ -71,11 +88,16 @@ int	handle_single_char_operators(const char *input, t_parse_state *s,
 			{
 				buffer[s->j] = '\0';
 				argv[s->k++] = ft_strdup(buffer);
+				if (!argv[s->k - 1])
+					return (-1);
 				s->j = 0;
 			}
-			buffer[0] = input[s->i];
-			buffer[1] = '\0';
-			argv[s->k++] = ft_strdup(buffer);
+			operator_str[0] = input[s->i];
+			operator_str[1] = '\0';
+			token = ft_strdup(operator_str);
+			if (!token)
+				return (-1);
+			argv[s->k++] = token;
 			s->i++;
 			return (1);
 		}

@@ -29,8 +29,10 @@ void	create_token(t_token **token, char *value, char *type)
 	new->type = ft_strdup(type);
 	if (!new->value || !new->type)
 	{
-		free(new->value);
-		free(new->type);
+		if (new->value)
+			free(new->value);
+		if (new->type)
+			free(new->type);
 		free(new);
 		return ;
 	}

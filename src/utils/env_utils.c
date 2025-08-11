@@ -29,3 +29,60 @@ char	*lookup_env_value(const char *name, char **envp)
 	}
 	return (NULL);
 }
+
+char	**ft_strdup_array(char **array)
+{
+	int		i;
+	int		count;
+	char	**dup;
+
+	if (!array)
+		return (NULL);
+	count = 0;
+	while (array[count])
+		count++;
+	dup = malloc(sizeof(char *) * (count + 1));
+	if (!dup)
+		return (NULL);
+	i = 0;
+	while (i < count)
+	{
+		dup[i] = ft_strdup(array[i]);
+		if (!dup[i])
+		{
+			while (--i >= 0)
+				free(dup[i]);
+			free(dup);
+			return (NULL);
+		}
+		i++;
+	}
+	dup[count] = NULL;
+	return (dup);
+}
+
+void	ft_sort_array(char **array)
+{
+	int		i;
+	int		j;
+	char	*temp;
+
+	if (!array)
+		return ;
+	i = 0;
+	while (array[i])
+	{
+		j = i + 1;
+		while (array[j])
+		{
+			if (ft_strcmp(array[i], array[j]) > 0)
+			{
+				temp = array[i];
+				array[i] = array[j];
+				array[j] = temp;
+			}
+			j++;
+		}
+		i++;
+	}
+}
