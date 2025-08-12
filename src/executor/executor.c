@@ -3,18 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:11:46 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 10:59:02 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/12 22:43:56 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc, char **envp)
+void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc,
+		char **envp)
 {
 	t_token	*cmd_token;
+	char	cwd[PATH_MAX];
 	int		k;
 
 	if (!ft_strcmp(cmd_argv[0], "echo"))
@@ -32,8 +34,6 @@ void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc, char **envp)
 	}
 	else if (!ft_strcmp(cmd_argv[0], "pwd"))
 	{
-		char	cwd[PATH_MAX];
-
 		if (getcwd(cwd, sizeof(cwd)))
 			printf("%s\n", cwd);
 		else

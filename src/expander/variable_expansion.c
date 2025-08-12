@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   variable_expansion.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:16:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 11:01:03 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/12 22:48:23 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,32 +83,6 @@ int	expand_exit_status(t_expand_ctx *ctx)
 	return (0);
 }
 
-int	expand_pid(t_expand_ctx *ctx)
-{
-	char	*pid_str;
-	pid_t	pid;
-	int		len;
-
-	if (ctx->arg[ctx->i + 1] == '$')
-	{
-		pid = getpid();
-		pid_str = malloc(20);
-		if (!pid_str)
-			return (0);
-		sprintf(pid_str, "%d", pid);
-		len = ft_strlen(pid_str);
-		if (ctx->j + len < BUFFER_SIZE * 4 - 1)
-		{
-			ft_strcpy(ctx->buffer + ctx->j, pid_str);
-			ctx->j += len;
-		}
-		free(pid_str);
-		ctx->i += 2;
-		return (ctx->j);
-	}
-	return (0);
-}
-
 int	process_variable_expansion(t_expand_ctx *ctx)
 {
 	int	result;
@@ -130,22 +104,6 @@ int	process_variable_expansion(t_expand_ctx *ctx)
 	}
 	ctx->buffer[ctx->j++] = ctx->arg[ctx->i++];
 	return (ctx->j);
-}
-
-char	*expand_variables_in_string(char *str, char **envp)
-{
-	char			buffer[BUFFER_SIZE * 4];
-	t_expand_ctx	ctx;
-
-	ctx.i = 0;
-	ctx.j = 0;
-	ctx.arg = str;
-	ctx.buffer = buffer;
-	ctx.envp = envp;
-	while (ctx.arg[ctx.i])
-		ctx.j = process_variable_expansion(&ctx);
-	ctx.buffer[ctx.j] = '\0';
-	return (ft_strdup(ctx.buffer));
 }
 
 int	expand_special_vars(t_expand_ctx *ctx)

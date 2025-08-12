@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:47:13 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 10:59:19 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/12 22:45:44 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,32 +58,28 @@ void	add_or_replace(char ***envp, const char *var)
 
 void	process_export_assignment(char ***envp, char *arg)
 {
-	char	*eq;
 	size_t	keylen;
 	char	*temp_key;
 	char	*key;
 	char	*temp_value;
 	char	*value;
-	char	*formatted_var;
-	char	*final_var;
 
-	eq = ft_strchr(arg, '=');
-	keylen = eq - arg;
+	keylen = ft_strchr(arg, '=') - arg;
 	temp_key = ft_strndup(arg, keylen);
 	key = ft_strtrim(temp_key, "\"");
 	free(temp_key);
-	temp_value = ft_strdup(eq + 1);
+	temp_value = ft_strdup(ft_strchr(arg, '=') + 1);
 	value = ft_strtrim(temp_value, "\"");
 	free(temp_value);
 	if (!is_valid_identifier(key))
 		perror("export: not a valid identifier");
 	else
 	{
-		formatted_var = ft_strjoin(key, "=");
-		final_var = ft_strjoin(formatted_var, value);
-		add_or_replace(envp, final_var);
-		free(formatted_var);
-		free(final_var);
+		temp_value = ft_strjoin(key, "=");
+		temp_key = ft_strjoin(temp_value, value);
+		add_or_replace(envp, temp_key);
+		free(temp_value);
+		free(temp_key);
 	}
 	free(key);
 	free(value);

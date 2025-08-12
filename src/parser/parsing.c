@@ -36,6 +36,7 @@ char	**parse_arguments(const char *input, int *arg_count)
 	t_parse_state	s;
 	char			**argv;
 	char			buffer[BUFFER_SIZE];
+	int				cleanup_i;
 
 	if (!input || !arg_count)
 		return (NULL);
@@ -50,7 +51,7 @@ char	**parse_arguments(const char *input, int *arg_count)
 		argv[s.k] = ft_strdup(buffer);
 		if (!argv[s.k])
 		{
-			int cleanup_i = 0;
+			cleanup_i = 0;
 			while (cleanup_i < s.k)
 			{
 				if (argv[cleanup_i])

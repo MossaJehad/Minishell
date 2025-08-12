@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/12 11:06:54 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/12 22:47:15 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,6 +292,7 @@ char				*expand_variables_in_string(char *str, char **envp);
 char				*expand_variables_in_string(char *str, char **envp);
 
 /* Quote expansion */
+int					process_variable_expansion(t_expand_ctx *ctx);
 char				*expand_double_quote(char *arg, char **envp);
 char				*expand_single_quote(char *arg);
 

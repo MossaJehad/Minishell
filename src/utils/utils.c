@@ -40,7 +40,8 @@ void	cleanup_and_exit(int exit_code, char **envp)
 	exit(exit_code);
 }
 
-void	cleanup_shell_resources(char **env, t_token *token, char **args, char *input)
+void	cleanup_shell_resources(char **env, t_token *token, char **args,
+		char *input)
 {
 	if (env)
 		ft_free_arr((void ***)&env);

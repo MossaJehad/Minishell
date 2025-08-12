@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quote_expansion.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:57:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 11:00:44 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/12 22:46:51 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,4 +85,20 @@ char	*expand_single_quote(char *arg)
 	str[j] = '\0';
 	free(arg);
 	return (str);
+}
+
+char	*expand_variables_in_string(char *str, char **envp)
+{
+	char			buffer[BUFFER_SIZE * 4];
+	t_expand_ctx	ctx;
+
+	ctx.i = 0;
+	ctx.j = 0;
+	ctx.arg = str;
+	ctx.buffer = buffer;
+	ctx.envp = envp;
+	while (ctx.arg[ctx.i])
+		ctx.j = process_variable_expansion(&ctx);
+	ctx.buffer[ctx.j] = '\0';
+	return (ft_strdup(ctx.buffer));
 }
