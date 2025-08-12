@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell_loop.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:30:47 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 14:34:58 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/12 11:03:51 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,8 @@ void	shell_loop(int arg_count, char ***envp)
 		if (!check_syntax_error(args))
 			tokenize(args, &token);
 		handle_command(token, envp);
-		ft_free_arr((void *)&args);
-		free_tokens(token);
-		free(input);
 	}
+	cleanup_shell_resources(*envp, token, args, input);
 }
 
 char	*get_input(void)

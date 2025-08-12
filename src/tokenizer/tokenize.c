@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:30 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 16:39:11 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/12 11:04:59 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,10 @@ void	create_token(t_token **token, char *value, char *type)
 	new = malloc(sizeof(t_token));
 	if (!new)
 		return ;
+	/* split those into a func */
+	new->value = NULL;
+	new->type = NULL;
+	new->next = NULL;
 	new->value = ft_strdup(value);
 	new->type = ft_strdup(type);
 	if (!new->value || !new->type)
@@ -36,7 +40,6 @@ void	create_token(t_token **token, char *value, char *type)
 		free(new);
 		return ;
 	}
-	new->next = NULL;
 	if (!*token)
 		*token = new;
 	else
@@ -120,12 +123,18 @@ void	tokenize(char **array, t_token **token)
 	int	result;
 	int	i;
 
+	if (!array || !token)
+		return ;
 	i = 0;
 	while (array[i])
 	{
 		result = tokenize_append_and_heredoc(array, &i, token);
 		if (result == -1)
+		{
+			free_tokens(*token);
+			*token = NULL;
 			return ;
+		}
 		if (result == 1)
 			continue ;
 		result = tokenize_pipe_and_redirects(array, &i, token);

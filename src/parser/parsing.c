@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 19:09:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 11:20:48 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/12 11:05:23 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char	**parse_arguments(const char *input, int *arg_count)
 	char			**argv;
 	char			buffer[BUFFER_SIZE];
 
-	if (!input)
+	if (!input || !arg_count)
 		return (NULL);
 	argv = ft_calloc(MAX_ARGS, sizeof(char *));
 	if (!argv)
@@ -50,7 +50,14 @@ char	**parse_arguments(const char *input, int *arg_count)
 		argv[s.k] = ft_strdup(buffer);
 		if (!argv[s.k])
 		{
-			ft_free_arr((void *)&argv);
+			int cleanup_i = 0;
+			while (cleanup_i < s.k)
+			{
+				if (argv[cleanup_i])
+					free(argv[cleanup_i]);
+				cleanup_i++;
+			}
+			free(argv);
 			return (NULL);
 		}
 		s.k++;

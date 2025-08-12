@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:26:44 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 17:47:57 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/12 11:03:13 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,25 @@ int	should_run_in_parent(const char *cmd)
 {
 	return (!ft_strcmp(cmd, "cd") || !ft_strcmp(cmd, "export")
 		|| !ft_strcmp(cmd, "unset") || !ft_strcmp(cmd, "exit"));
+}
+
+void	cleanup_and_exit(int exit_code, char **envp)
+{
+	if (envp)
+		ft_free_arr((void ***)&envp);
+	rl_clear_history();
+	exit(exit_code);
+}
+
+void	cleanup_shell_resources(char **env, t_token *token, char **args, char *input)
+{
+	if (env)
+		ft_free_arr((void ***)&env);
+	if (token)
+		free_tokens(token);
+	if (args)
+		ft_free_arr((void *)&args);
+	if (input)
+		free(input);
+	rl_clear_history();
 }

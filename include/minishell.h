@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:18:54 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/12 11:06:54 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -336,6 +336,8 @@ void				add_env_var(char ***envp, const char *var);
 void				remove_env_var(char ***envp, const char *name);
 int					find_env_index(char **envp, const char *name);
 void				replace_env_var(char **env, int idx, const char *var);
+void				cleanup_and_exit(int exit_code, char **envp);
+void				cleanup_shell_resources(char **env, t_token *token, char **args, char *input);
 
 /* Directory management */
 void				update_pwd_oldpwd(char ***envp, const char *new_pwd, 

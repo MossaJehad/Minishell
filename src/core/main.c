@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:04 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 14:39:10 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/12 11:06:29 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,18 @@ int	main(int argc, char **argv, char **envp)
 	while (envp[i])
 	{
 		env[i] = ft_strdup(envp[i]);
+		if (!env[i])
+		{
+			while (--i >= 0)
+				free(env[i]);
+			free(env);
+			return (1);
+		}
 		i++;
 	}
 	env[i] = NULL;
 	init_shell(env);
 	shell_loop(argc, &env);
-	rl_clear_history();
-	ft_free_arr((void *)&env);
 	return (get_shell_status());
 }
 
