@@ -11,6 +11,7 @@ INC_DIR		=	include
 
 # Core directories
 CORE_DIR	=	$(SRC_DIR)/core
+MEM_DIR		=	$(SRC_DIR)/memory
 PARSER_DIR	=	$(SRC_DIR)/parser
 TOKEN_DIR	=	$(SRC_DIR)/tokenizer
 BUILTIN_DIR	=	$(SRC_DIR)/builtins
@@ -34,6 +35,10 @@ READLINE_LIB	=	-lreadline
 CORE_SRC	=	main.c \
 			shell_loop.c \
 			init.c
+
+
+MEM_SRC		=	memory.c
+
 
 # Parser files - input parsing and validation
 PARSER_SRC	=	parsing.c \
@@ -81,6 +86,7 @@ UTILS_SRC	=	utils.c \
 
 # Combine all sources with their directory paths
 CORE_FILES		=	$(addprefix $(CORE_DIR)/, $(CORE_SRC))
+MEM_FILES		=	$(addprefix $(MEM_DIR)/, $(MEM_SRC))
 PARSER_FILES	=	$(addprefix $(PARSER_DIR)/, $(PARSER_SRC))
 TOKEN_FILES		=	$(addprefix $(TOKEN_DIR)/, $(TOKEN_SRC))
 BUILTIN_FILES	=	$(addprefix $(BUILTIN_DIR)/, $(BUILTIN_SRC))
@@ -92,6 +98,7 @@ UTILS_FILES		=	$(addprefix $(UTILS_DIR)/, $(UTILS_SRC))
 
 # All source files
 SRC_FILES	=	$(CORE_FILES) \
+			$(MEM_FILES) \
 			$(PARSER_FILES) \
 			$(TOKEN_FILES) \
 			$(BUILTIN_FILES) \
@@ -103,6 +110,7 @@ SRC_FILES	=	$(CORE_FILES) \
 
 # Object files (maintain directory structure in obj/)
 CORE_OBJS		=	$(CORE_FILES:$(CORE_DIR)/%.c=$(OBJ_DIR)/core/%.o)
+MEM_OBJS		=	$(MEM_FILES:$(MEM_DIR)/%.c=$(OBJ_DIR)/memory/%.o)
 PARSER_OBJS		=	$(PARSER_FILES:$(PARSER_DIR)/%.c=$(OBJ_DIR)/parser/%.o)
 TOKEN_OBJS		=	$(TOKEN_FILES:$(TOKEN_DIR)/%.c=$(OBJ_DIR)/tokenizer/%.o)
 BUILTIN_OBJS	=	$(BUILTIN_FILES:$(BUILTIN_DIR)/%.c=$(OBJ_DIR)/builtins/%.o)
@@ -114,6 +122,7 @@ UTILS_OBJS		=	$(UTILS_FILES:$(UTILS_DIR)/%.c=$(OBJ_DIR)/utils/%.o)
 
 # All object files
 OBJS		=	$(CORE_OBJS) \
+			$(MEM_OBJS) \
 			$(PARSER_OBJS) \
 			$(TOKEN_OBJS) \
 			$(BUILTIN_OBJS) \
@@ -171,6 +180,13 @@ $(NAME):	$(OBJS) $(LIBFT)
 
 # Core module compilation
 $(OBJ_DIR)/core/%.o: $(CORE_DIR)/%.c $(HEADERS)
+	@mkdir -p $(dir $@)
+	$(call update_progress)
+	@$(CC) $(CFLAGS) -c $< -o $@
+	$(call check_error)
+
+# Mem module compilation
+$(OBJ_DIR)/memory/%.o: $(MEM_DIR)/%.c $(HEADERS)
 	@mkdir -p $(dir $@)
 	$(call update_progress)
 	@$(CC) $(CFLAGS) -c $< -o $@
@@ -256,7 +272,7 @@ re:
 # Development helpers
 setup_dirs:
 	@echo "$(BLUE)📁 Creating project structure...$(RESET)"
-	@mkdir -p $(CORE_DIR) $(PARSER_DIR) $(TOKEN_DIR) $(BUILTIN_DIR)
+	@mkdir -p $(CORE_DIR) $(MEM_DIR) $(PARSER_DIR) $(TOKEN_DIR) $(BUILTIN_DIR)
 	@mkdir -p $(EXEC_DIR) $(SIGNAL_DIR) $(EXPANDER_DIR) $(IO_DIR) $(UTILS_DIR)
 	@echo "$(GREEN)✅ Directory structure created!$(RESET)"
 
@@ -264,7 +280,7 @@ info:
 	@echo "$(CYAN)Project Information:$(RESET)"
 	@echo "	Name: $(NAME)"
 	@echo "	Source files: $(words $(SRC_FILES))"
-	@echo "	Modules: core, parser, tokenizer, builtins, executor, signals, expander, io, utils"
+	@echo "	Modules: core, memory, parser, tokenizer, builtins, executor, signals, expander, io, utils"
 	@echo "	Compiler: $(CC)"
 	@echo "	Flags: $(CFLAGS)"
 

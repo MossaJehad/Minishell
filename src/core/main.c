@@ -3,47 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:04 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/12 11:06:29 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/13 05:04:55 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-volatile sig_atomic_t	g_signal;
+volatile sig_atomic_t	g_signal = 0;
 
 int	main(int argc, char **argv, char **envp)
 {
-	char	**env;
-	int		i;
+	t_shell	shell;
 
 	(void)argv;
-	setup_signal_handlers();
-	i = 0;
-	while (envp[i])
-		i++;
-	env = malloc(sizeof(char *) * (i + 1));
-	if (!env)
-		return (1);
-	i = 0;
-	while (envp[i])
-	{
-		env[i] = ft_strdup(envp[i]);
-		if (!env[i])
-		{
-			while (--i >= 0)
-				free(env[i]);
-			free(env);
-			return (1);
-		}
-		i++;
-	}
-	env[i] = NULL;
-	init_shell(env);
-	shell_loop(argc, &env);
-	return (get_shell_status());
+	(void)argc;
+	ft_memset(&shell, 0, sizeof(t_shell));
+	setup_signals();
+	init_shell(&shell, envp);
+	shell_loop(&shell);
+	cleanup_and_exit(&shell, shell.exit_status);
+	return (shell.exit_status);
 }
 
 /*
@@ -56,11 +38,4 @@ void	null_parse_state(t_parse_state *s)
 	s->k = 0;
 	s->in_single_quote = 0;
 	s->in_double_quote = 0;
-}
-
-void	null_shell(t_shell *shl)
-{
-	shl->oldpwd = NULL;
-	shl->shlvl = NULL;
-	shl->pwd = NULL;
 }

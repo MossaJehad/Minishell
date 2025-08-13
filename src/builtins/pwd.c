@@ -3,14 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:44:15 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 10:59:02 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/13 05:30:21 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+int	builtin_pwd(t_shell *shell, char **args)
+{
+	char	cwd[PATH_MAX];
+	char	*pwd;
+
+	(void)args;
+
+	if (getcwd(cwd, sizeof(cwd)))
+	{
+		printf("%s\n", cwd);
+		env_add(shell, "PWD", cwd);
+		return (EXIT_SUCCESS);
+	}
+
+	/* Fallback to PWD environment variable */
+	pwd = env_get(shell, "PWD");
+	if (pwd)
+	{
+		printf("%s\n", pwd);
+		return (EXIT_SUCCESS);
+	}
+
+	perror("pwd");
+	return (EXIT_FAILURE);
+}
 
 void	update_pwd_oldpwd(char ***envp, const char *new_pwd,
 		const char *old_pwd)
@@ -33,27 +59,4 @@ void	update_pwd_oldpwd(char ***envp, const char *new_pwd,
 		add_or_replace_env(envp, oldpwd_var);
 		free(oldpwd_var);
 	}
-}
-
-void	handle_pwd_command(char ***envp)
-{
-	char	cwd[PATH_MAX];
-	char	*pwd;
-
-	if (getcwd(cwd, sizeof(cwd)))
-	{
-		printf("%s\n", cwd);
-		update_pwd_oldpwd(envp, cwd, lookup_env_value("PWD", *envp));
-		g_signal = 0;
-		return ;
-	}
-	pwd = lookup_env_value("PWD", *envp);
-	if (pwd)
-	{
-		printf("%s\n", pwd);
-		g_signal = 0;
-		return ;
-	}
-	perror("pwd");
-	g_signal = 1;
 }

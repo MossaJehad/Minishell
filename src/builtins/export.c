@@ -6,11 +6,62 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:47:13 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/12 22:45:44 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/13 05:32:46 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+int	builtin_export(t_shell *shell, char **args)
+{
+	char	*equals;
+	char	*key;
+	char	*value;
+	int		i;
+
+	if (!args[1])
+	{
+		/* Print all environment variables in sorted order */
+		return (print_exported_vars(shell));
+	}
+
+	i = 1;
+	while (args[i])
+	{
+		equals = ft_strchr(args[i], '=');
+		if (equals)
+		{
+			/* Variable assignment */
+			key = ft_strndup(args[i], equals - args[i]);
+			value = equals + 1;
+
+			if (!is_valid_identifier(key))
+			{
+				print_error("export", args[i], "not a valid identifier");
+				free(key);
+				return (EXIT_FAILURE);
+			}
+
+			env_add(shell, key, value);
+			free(key);
+		}
+		else
+		{
+			/* Variable declaration without value */
+			if (!is_valid_identifier(args[i]))
+			{
+				print_error("export", args[i], "not a valid identifier");
+				return (EXIT_FAILURE);
+			}
+
+			if (!env_exists(shell, args[i]))
+				env_add(shell, args[i], NULL);
+		}
+		i++;
+	}
+
+	return (EXIT_SUCCESS);
+}
 
 void	export_no_args(char **env)
 {

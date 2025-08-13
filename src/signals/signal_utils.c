@@ -3,24 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   signal_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 15:41:17 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 16:40:13 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/13 05:14:50 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	handle_sigquit(int sig)
-{
-	(void)sig;
-}
 
-void	restore_signals(void)
-{
-	setup_signal_handlers();
-}
+//void	restore_signals(void)
+//{
+//	setup_signal_handlers();
+//}
 
 int	get_shell_status(void)
 {

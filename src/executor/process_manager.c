@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_manager.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:19:05 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:53:56 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/13 05:28:24 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,43 +22,43 @@ void	handle_single_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc,
 	else if (!ft_strcmp(cmd_argv[0], "cd"))
 		handle_cd_command(cmd_argv[1], cmd_argc, envp);
 	else if (!ft_strcmp(cmd_argv[0], "exit"))
-		handle_exit_command(cmd_argv, cmd_argc, *envp);
+		handle_exit_command(cmd_argv, cmd_argc);
 }
 
-void	init_heredoc_fds(int heredoc_fds[256])
-{
-	int	k;
+//void	init_heredoc_fds(int heredoc_fds[256])
+//{
+//	int	k;
 
-	k = 0;
-	while (k < 256)
-	{
-		heredoc_fds[k] = -1;
-		k++;
-	}
-}
+//	k = 0;
+//	while (k < 256)
+//	{
+//		heredoc_fds[k] = -1;
+//		k++;
+//	}
+//}
 
-int	setup_heredocs_for_cmd(t_token *cmd_start, int cmd_index,
-		int heredoc_fds[256])
-{
-	t_token	*temp;
+//int	setup_heredocs_for_cmd(t_token *cmd_start, int cmd_index,
+//		int heredoc_fds[256])
+//{
+//	t_token	*temp;
 
-	temp = cmd_start;
-	while (temp && ft_strcmp(temp->type, "pipe") != 0)
-	{
-		if (ft_strcmp(temp->type, "here-document") == 0)
-		{
-			heredoc_fds[cmd_index] = setup_redirection(temp);
-			if (heredoc_fds[cmd_index] == -1)
-			{
-				perror("heredoc failed");
-				set_shell_status(1);
-				return (-1);
-			}
-		}
-		temp = temp->next;
-	}
-	return (0);
-}
+//	temp = cmd_start;
+//	while (temp && ft_strcmp(temp->type, "pipe") != 0)
+//	{
+//		if (ft_strcmp(temp->type, "here-document") == 0)
+//		{
+//			heredoc_fds[cmd_index] = setup_redirection(temp);
+//			if (heredoc_fds[cmd_index] == -1)
+//			{
+//				perror("heredoc failed");
+//				set_shell_status(1);
+//				return (-1);
+//			}
+//		}
+//		temp = temp->next;
+//	}
+//	return (0);
+//}
 
 void	wait_for_processes(pid_t pids[256], int num_cmds)
 {
@@ -89,32 +89,94 @@ void	wait_for_processes(pid_t pids[256], int num_cmds)
 	}
 }
 
-int	parse_commands(t_token *token, t_token *cmd_starts[256],
-		int heredoc_fds[256])
+t_cmd	*parse_commands(t_token *tokens)
 {
-	int		num_cmds;
-	t_token	*cur;
-	int		i;
+	t_cmd	*commands;
+	t_cmd	*current_cmd;
+	t_token	*start;
+	t_token	*current;
 
-	i = 0;
-	num_cmds = 0;
-	cur = token;
-	init_heredoc_fds(heredoc_fds);
-	while (cur)
+	if (!tokens)
+		return (NULL);
+
+	commands = NULL;
+	start = tokens;
+	current = tokens;
+
+	while (current)
 	{
-		if (i == 0 || (cur && ft_strcmp(cur->type, "pipe") == 0 && cur->next))
+		if (current->type == TOKEN_PIPE || !current->next)
 		{
-			if (i == 0)
-				cmd_starts[num_cmds] = cur;
-			else
-				cmd_starts[num_cmds] = cur->next;
-			if (setup_heredocs_for_cmd(cmd_starts[num_cmds], num_cmds,
-					heredoc_fds) == -1)
-				return (-1);
-			num_cmds++;
+			current_cmd = cmd_new();
+			
+			/* Setup redirections first */
+			if (!setup_redirections(current_cmd, start, current->next))
+			{
+				cmd_free(current_cmd);
+				commands_free(commands);
+				return (NULL);
+			}
+			
+			/* Fill arguments */
+			fill_args(current_cmd, start, current->next);
+			
+			cmd_add_back(&commands, current_cmd);
+			
+			if (current->type == TOKEN_PIPE)
+				start = current->next;
 		}
-		cur = cur->next;
-		i++;
+		current = current->next;
 	}
-	return (num_cmds);
+
+	return (commands);
+}
+
+
+int	validate_syntax(t_token *tokens)
+{
+	t_token	*current;
+	int		expect_word;
+
+	if (!tokens)
+		return (1);
+
+	current = tokens;
+	expect_word = 0;
+
+	while (current)
+	{
+		if (expect_word)
+		{
+			if (current->type != TOKEN_WORD && current->type != TOKEN_COMMAND)
+			{
+				print_error("minishell", NULL, "syntax error: expected filename");
+				return (0);
+			}
+			expect_word = 0;
+		}
+		else if (current->type == TOKEN_PIPE)
+		{
+			if (!current->next)
+			{
+				print_error("minishell", NULL, "syntax error: unexpected end after '|'");
+				return (0);
+			}
+		}
+		else if (current->type == TOKEN_REDIRECT_IN || 
+				 current->type == TOKEN_REDIRECT_OUT ||
+				 current->type == TOKEN_REDIRECT_APPEND ||
+				 current->type == TOKEN_HEREDOC)
+		{
+			expect_word = 1;
+		}
+		current = current->next;
+	}
+
+	if (expect_word)
+	{
+		print_error("minishell", NULL, "syntax error: expected filename");
+		return (0);
+	}
+
+	return (1);
 }

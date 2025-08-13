@@ -3,97 +3,93 @@
 /*                                                        :::      ::::::::   */
 /*   shell_loop.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:30:47 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/12 11:03:51 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/13 05:22:00 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	shell_loop(int arg_count, char ***envp)
+void	process_input(t_shell *shell, char *input)
+{
+	/* Tokenize input */
+	shell->tokens = tokenize(input);
+	if (!shell->tokens)
+		return;
+	
+	/* Expand variables and quotes */
+	expand_tokens(shell, shell->tokens);
+	
+	/* Validate syntax */
+	if (!validate_syntax(shell->tokens))
+	{
+		shell->exit_status = EXIT_MISUSE;
+		return;
+	}
+	
+	/* Parse commands */
+	shell->commands = parse_commands(shell->tokens);
+	if (!shell->commands)
+	{
+		shell->exit_status = EXIT_FAILURE;
+		return;
+	}
+	
+	/* Execute commands */
+	execute_commands(shell, shell->commands);
+}
+
+void	shell_loop(t_shell *shell)
 {
 	char	*input;
-	char	**args;
-	t_token	*token;
-
-	while (1)
-	{
-		g_signal = 0;
-		token = NULL;
-		args = NULL;
-		input = get_input();
-		if (input == NULL)
-			break ;
-		if (*input == '\0')
-		{
-			free(input);
-			continue ;
-		}
-		args = parse_arguments(input, &arg_count);
-		if (!args)
-		{
-			free(input);
-			continue ;
-		}
-		args = expand(args, *envp);
-		if (!args)
-		{
-			free(input);
-			continue ;
-		}
-		if (!check_syntax_error(args))
-			tokenize(args, &token);
-		handle_command(token, envp);
-	}
-	cleanup_shell_resources(*envp, token, args, input);
-}
-
-char	*get_input(void)
-{
-	char	*line;
-
-	while (1)
-	{
-		line = read_prompt_line();
-		if (!line)
-		{
-			printf("\033[0;31mexit\n\033[0m");
-			return (NULL);
-		}
-		if (*line == '\0')
-		{
-			free(line);
-			continue ;
-		}
-		line = append_until_quotes_closed(line);
-		if (!line)
-			continue ;
-		add_history(line);
-		return (line);
-	}
-}
-
-char	*read_prompt_line(void)
-{
-	char	cwd[1024];
 	char	*prompt;
-	char	*tmp1;
-	char	*tmp2;
-	char	*line;
 
-	if (getcwd(cwd, sizeof(cwd)))
+	while (!shell->exit_flag)
 	{
-		tmp1 = ft_strjoin("\033[1;94m", cwd);
-		tmp2 = ft_strjoin(tmp1, "\033[0;37m");
-		free(tmp1);
-		prompt = ft_strjoin(tmp2, "$ ");
-		free(tmp2);
+		/* Reset signal flag */
+		g_signal = 0;
+		
+		/* Get and display prompt */
+		prompt = get_prompt(shell);
+		input = readline(prompt);
+		free(prompt);
+		
+		/* Handle EOF (Ctrl+D) */
+		if (!input)
+		{
+			printf("exit\n");
+			shell->exit_flag = 1;
+			break;
+		}
+		
+		/* Handle signal interruption */
+		if (g_signal)
+		{
+			shell->exit_status = EXIT_CTRL_C;
+			free(input);
+			continue;
+		}
+		
+		/* Skip empty input */
+		if (!*input)
+		{
+			free(input);
+			continue;
+		}
+		
+		/* Add to history */
+		add_history(input);
+		
+		/* Process input */
+		process_input(shell, input);
+		
+		/* Cleanup for next iteration */
+		free(input);
+		tokens_free(shell->tokens);
+		commands_free(shell->commands);
+		shell->tokens = NULL;
+		shell->commands = NULL;
 	}
-	else
-		prompt = ft_strdup("$ ");
-	line = readline(prompt);
-	free(prompt);
-	return (line);
 }

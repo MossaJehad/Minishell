@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_handler.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:19:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:53:53 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/13 04:10:56 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	handle_single_command(t_token *cmd_starts[256], int heredoc_fds[256],
 
 	seg = cmd_starts[0];
 	cmd_argc = build_cmd_args(seg, cmd_argv);
-	if (is_shell_builtin(cmd_argv[0]) && should_run_in_parent(cmd_argv[0]))
+	if (is_builtin(cmd_argv[0]) && should_run_in_parent(cmd_argv[0]))
 	{
 		handle_single_builtin(cmd_argv, cmd_argc, envp);
 		if (heredoc_fds[0] != -1)

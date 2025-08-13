@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:16:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/12 22:48:23 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/13 05:10:59 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,38 +83,38 @@ int	expand_exit_status(t_expand_ctx *ctx)
 	return (0);
 }
 
-int	process_variable_expansion(t_expand_ctx *ctx)
-{
-	int	result;
+//int	process_variable_expansion(t_expand_ctx *ctx)
+//{
+//	int	result;
 
-	if (ctx->arg[ctx->i] == '$' && ctx->arg[ctx->i + 1])
-	{
-		result = expand_exit_status(ctx);
-		if (result != 0)
-			return (result);
-		result = expand_pid(ctx);
-		if (result != 0)
-			return (result);
-		if (ctx->arg[ctx->i + 1] == '{')
-			return (expand_braced_var(ctx));
-		if (ft_isalnum(ctx->arg[ctx->i + 1]) || ctx->arg[ctx->i + 1] == '_')
-			return (expand_simple_var(ctx));
-		ctx->buffer[ctx->j++] = ctx->arg[ctx->i++];
-		return (ctx->j);
-	}
-	ctx->buffer[ctx->j++] = ctx->arg[ctx->i++];
-	return (ctx->j);
-}
+//	if (ctx->arg[ctx->i] == '$' && ctx->arg[ctx->i + 1])
+//	{
+//		result = expand_exit_status(ctx);
+//		if (result != 0)
+//			return (result);
+//		result = expand_pid(ctx);
+//		if (result != 0)
+//			return (result);
+//		if (ctx->arg[ctx->i + 1] == '{')
+//			return (expand_braced_var(ctx));
+//		if (ft_isalnum(ctx->arg[ctx->i + 1]) || ctx->arg[ctx->i + 1] == '_')
+//			return (expand_simple_var(ctx));
+//		ctx->buffer[ctx->j++] = ctx->arg[ctx->i++];
+//		return (ctx->j);
+//	}
+//	ctx->buffer[ctx->j++] = ctx->arg[ctx->i++];
+//	return (ctx->j);
+//}
 
-int	expand_special_vars(t_expand_ctx *ctx)
-{
-	int	result;
+//int	expand_special_vars(t_expand_ctx *ctx)
+//{
+//	int	result;
 
-	result = expand_exit_status(ctx);
-	if (result != 0)
-		return (result);
-	result = expand_pid(ctx);
-	if (result != 0)
-		return (result);
-	return (0);
-}
+//	result = expand_exit_status(ctx);
+//	if (result != 0)
+//		return (result);
+//	result = expand_pid(ctx);
+//	if (result != 0)
+//		return (result);
+//	return (0);
+//}

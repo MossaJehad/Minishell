@@ -6,11 +6,70 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:42:16 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 16:39:11 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/13 05:30:56 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+int	builtin_cd(t_shell *shell, char **args)
+{
+	char	*target;
+	char	*old_pwd;
+	char	cwd[PATH_MAX];
+
+	/* Determine target directory */
+	if (!args[1] || ft_strcmp(args[1], "~") == 0)
+	{
+		target = env_get(shell, "HOME");
+		if (!target)
+		{
+			print_error("cd", NULL, "HOME not set");
+			return (EXIT_FAILURE);
+		}
+	}
+	else if (ft_strcmp(args[1], "-") == 0)
+	{
+		target = env_get(shell, "OLDPWD");
+		if (!target)
+		{
+			print_error("cd", NULL, "OLDPWD not set");
+			return (EXIT_FAILURE);
+		}
+		printf("%s\n", target);
+	}
+	else
+	{
+		target = args[1];
+	}
+
+	/* Check for too many arguments */
+	if (args[1] && args[2])
+	{
+		print_error("cd", NULL, "too many arguments");
+		return (EXIT_FAILURE);
+	}
+
+	/* Save current PWD as OLDPWD */
+	old_pwd = env_get(shell, "PWD");
+
+	/* Change directory */
+	if (chdir(target) != 0)
+	{
+		perror("cd");
+		return (EXIT_FAILURE);
+	}
+
+	/* Update PWD and OLDPWD */
+	if (getcwd(cwd, sizeof(cwd)))
+	{
+		env_add(shell, "PWD", cwd);
+		if (old_pwd)
+			env_add(shell, "OLDPWD", old_pwd);
+	}
+
+	return (EXIT_SUCCESS);
+}
 
 int	change_directory(char *target_dir, char ***envp)
 {

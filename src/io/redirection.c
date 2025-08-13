@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:32:55 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/12 10:49:00 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/13 04:49:29 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ int	setup_redirection(t_token *tok)
 
 	if (validate_token(tok) < 0)
 		return (-1);
-	if (ft_strcmp(tok->type, "here-document") == 0)
-		return (handle_heredoc(tok));
+	if (ft_strcmp(tok->value, "here-document") == 0)
+		return (handle_heredoc(tok->value));
 	fd = handle_file_redirection(tok);
 	if (fd < 0)
 		return (-1);
-	if (ft_strcmp(tok->type, "redirect input") == 0)
+	if (ft_strcmp(tok->value, "redirect input") == 0)
 		dup2(fd, STDIN_FILENO);
 	else
 		dup2(fd, STDOUT_FILENO);
@@ -36,11 +36,11 @@ int	handle_file_redirection(t_token *tok)
 	int	fd;
 
 	fd = -1;
-	if (ft_strcmp(tok->type, "redirect input") == 0)
+	if (ft_strcmp(tok->value, "redirect input") == 0)
 		fd = open(tok->value, O_RDONLY);
-	else if (ft_strcmp(tok->type, "redirect output") == 0)
+	else if (ft_strcmp(tok->value, "redirect output") == 0)
 		fd = open(tok->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	else if (ft_strcmp(tok->type, "append output") == 0)
+	else if (ft_strcmp(tok->value, "append output") == 0)
 		fd = open(tok->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else
 		return (-1);

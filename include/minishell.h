@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/12 22:47:15 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/13 05:28:44 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,98 @@
 /* Project Libraries */
 # include "../libft/libft.h"
 
-/* Project Constants */
+/* Constants */
 # define MAX_ARGS 1024
 # define BUFFER_SIZE 4096
 # define MAX_COMMANDS 256
 # define MAX_PATH_LEN 1024
 
-/* PATH_MAX fallback definition */
 # ifndef PATH_MAX
 #  define PATH_MAX 4096
 # endif
+
+/* Exit status codes */
+# define EXIT_SUCCESS 0
+# define EXIT_FAILURE 1
+# define EXIT_MISUSE 2
+# define EXIT_CANNOT_EXECUTE 126
+# define EXIT_COMMAND_NOT_FOUND 127
+# define EXIT_CTRL_C 130
+# define EXIT_CTRL_BACKSLASH 131
+
+/*
+** TOKEN SYSTEM
+*/
+typedef enum e_token_type
+{
+	TOKEN_WORD,
+	TOKEN_COMMAND,
+	TOKEN_PIPE,
+	TOKEN_REDIRECT_IN,
+	TOKEN_REDIRECT_OUT,
+	TOKEN_REDIRECT_APPEND,
+	TOKEN_HEREDOC,
+	TOKEN_EOF
+}	t_token_type;
+
+typedef struct s_token
+{
+	char			*value;
+	t_token_type	type;
+	struct s_token	*next;
+}	t_token;
+
+/*
+** ENVIRONMENT MANAGEMENT
+*/
+typedef struct s_env
+{
+	char			*key;
+	char			*value;
+	struct s_env	*next;
+}	t_env;
+
+/*
+** COMMAND STRUCTURE
+*/
+typedef struct s_cmd
+{
+	char			**args;
+	int				argc;
+	int				input_fd;
+	int				output_fd;
+	struct s_cmd	*next;
+}	t_cmd;
+
+/*
+** SHELL STATE
+*/
+typedef struct s_shell
+{
+	t_env			*env;
+	t_token			*tokens;
+	t_cmd			*commands;
+	int				exit_status;
+	int				exit_flag;
+	pid_t			*pids;
+	int				num_processes;
+}	t_shell;
+
+/*
+** PARSER STATE
+*/
+typedef struct s_parser
+{
+	char			*input;
+	int				pos;
+	int				len;
+	int				in_quotes;
+	char			quote_char;
+}	t_parser;
+
+/* Global variable for signal handling */
+extern volatile sig_atomic_t	g_signal;
+
 
 /*
 ** ============================================================================
@@ -58,12 +140,6 @@
 ** TOKEN SYSTEM
 ** Represents parsed command line tokens with type classification
 */
-typedef struct s_token
-{
-	char			*value;		/* Token string value */
-	char			*type;		/* Token type (command, word, pipe, redirect, etc.) */
-	struct s_token	*next;		/* Next token in linked list */
-}					t_token;
 
 /*
 ** PARSER STATE
@@ -82,13 +158,6 @@ typedef struct s_parse_state
 ** SHELL ENVIRONMENT
 ** Core shell state and environment variables
 */
-typedef struct s_shell
-{
-	char			*oldpwd;	/* Previous working directory */
-	char			*shlvl;		/* Shell level */
-	char			*pwd;		/* Current working directory */
-}					t_shell;
-
 /*
 ** EXPANSION CONTEXT
 ** Holds state for variable expansion in strings
@@ -121,7 +190,6 @@ typedef struct s_exec_ctx
 ** GLOBAL VARIABLES
 ** Signal handling and exit status management
 */
-extern volatile sig_atomic_t	g_signal;	/* Global signal status */
 
 /*
 ** ============================================================================
@@ -131,15 +199,15 @@ extern volatile sig_atomic_t	g_signal;	/* Global signal status */
 */
 
 /* Main shell functions */
-void				shell_loop(int argc, char ***envp);
+void				shell_loop(t_shell *shell);
 char				*get_input(void);
-void				init_shell(char **envp);
+void				init_shell(t_shell *shell, char **envp);
 void				print_welcome_banner(void);
 
 /* Shell state management */
 void				null_shell(t_shell *s);
-void				init_pwd_vars(char ***envp);
-void				init_shlvl(char ***envp);
+void				init_pwd_vars(t_shell *shell);
+void				init_shlvl(t_shell *shell);
 
 /*
 ** ============================================================================
@@ -177,7 +245,7 @@ int					handle_whitespace(const char *input, t_parse_state *s,
 */
 
 /* Token creation and management */
-void				tokenize(char **array, t_token **token);
+t_token				*tokenize(const char *input);
 void				create_token(t_token **token, char *value, char *type);
 void				free_tokens(t_token *token);
 
@@ -201,7 +269,7 @@ void				handle_pwd_command(char ***envp);
 void				handle_env_command(char **env);
 void				handle_export_command(char ***envp, char **args, int arg_count);
 void				handle_unset_command(char ***envp, char **args, int arg_count);
-void				handle_exit_command(char **args, int arg_count, char **envp);
+void				handle_exit_command(char **args, int arg_count);
 
 /* Built-in utilities */
 int					is_shell_builtin(const char *cmd);
@@ -214,7 +282,7 @@ int					count_n_flags(t_token *token);
 int					is_all_n(const char *str);
 
 /* Exit command utilities */
-void				cleanup_and_exit(int exit_code, char **envp);
+void				cleanup_and_exit(t_shell *shell, int exit_code);
 int					is_valid_number(const char *str);
 int					check_overflow(const char *str);
 
@@ -230,8 +298,7 @@ int					check_overflow(const char *str);
 void				handle_command(t_token *token, char ***envp);
 
 /* Process management */
-int					parse_commands(t_token *token, t_token *cmd_starts[MAX_COMMANDS], 
-								int heredoc_fds[MAX_COMMANDS]);
+t_cmd				*parse_commands(t_token *tokens);
 int					handle_single_command(t_token *cmd_starts[MAX_COMMANDS], 
 								int heredoc_fds[MAX_COMMANDS], char ***envp);
 int					fork_processes(t_token *cmd_starts[256], int num_cmds, int heredoc_fds[256],
@@ -289,7 +356,6 @@ int					expand_simple_var(t_expand_ctx *ctx);
 int					expand_braced_var(t_expand_ctx *ctx);
 int					expand_special_vars(t_expand_ctx *ctx);
 char				*expand_variables_in_string(char *str, char **envp);
-char				*expand_variables_in_string(char *str, char **envp);
 
 /* Quote expansion */
 int					process_variable_expansion(t_expand_ctx *ctx);
@@ -319,7 +385,7 @@ int					handle_file_redirection(t_token *tok);
 void				setup_child_heredoc(int heredoc_fds[MAX_COMMANDS], int i);
 
 /* Heredoc handling */
-int					handle_heredoc(t_token *tok);
+int					handle_heredoc(const char *delimiter);
 int					read_heredoc_lines(int write_fd, const char *delimiter);
 
 /*
@@ -337,7 +403,6 @@ void				add_env_var(char ***envp, const char *var);
 void				remove_env_var(char ***envp, const char *name);
 int					find_env_index(char **envp, const char *name);
 void				replace_env_var(char **env, int idx, const char *var);
-void				cleanup_and_exit(int exit_code, char **envp);
 void				cleanup_shell_resources(char **env, t_token *token, char **args, char *input);
 
 /* Directory management */
@@ -345,12 +410,12 @@ void				update_pwd_oldpwd(char ***envp, const char *new_pwd,
 								const char *old_pwd);
 
 /* Array utilities */
-char				**ft_strdup_array(char **array);
-void				ft_sort_array(char **array);
+//char				**ft_strdup_array(char **array);
+//void				ft_sort_array(char **array);
 
 /* String utilities - Additional functions not in libft */
-int					copy_char(const char *arg, int *i, char *buffer, int j);
-char				*ft_strndup(const char *s1, size_t n);
+//int					copy_char(const char *arg, int *i, char *buffer, int j);
+//char				*ft_strndup(const char *s1, size_t n);
 void				free_split(char **split);
 
 /* File descriptor utilities */
@@ -372,5 +437,71 @@ void				prompt(void);
 /* Legacy command handlers - to be moved to appropriate modules */
 void				handle_cat_command(char **args, char **envp);
 void				handle_ls_command(char **args, char **envp);
+
+
+
+/*
+
+*******************************************************************************************************************************************
+*******************************************************************************************************************************************
+*******************************************************************************************************************************************
+
+*/
+
+
+
+char	*env_get(t_shell *shell, const char *key);
+void	print_error(const char *cmd, const char *arg, const char *msg);
+void	env_add(t_shell *shell, const char *key, const char *value);
+void	*safe_malloc(size_t size);
+char	*safe_strdup(const char *s);
+char	**allocate_string_array(int size);
+int	is_numeric(const char *str);
+int	print_exported_vars(t_shell *shell);
+int	env_exists(t_shell *shell, const char *key);
+void	env_remove(t_shell *shell, const char *key);
+void	env_init_from_array(t_shell *shell, char **envp);
+void	env_free(t_env *env);
+void	tokens_free(t_token *tokens);
+void	commands_free(t_cmd *commands);
+void	setup_signals(void);
+void	expand_tokens(t_shell *shell, t_token *tokens);
+int	validate_syntax(t_token *tokens);
+void	execute_commands(t_shell *shell, t_cmd *commands);
+char	*get_prompt(t_shell *shell);
+char	**safe_split(char const *s, char c);
+void	free_string_array(char **arr);
+int	is_builtin(const char *cmd);
+int	execute_builtin(t_shell *shell, t_cmd *cmd);
+char	**env_to_array(t_shell *shell);
+void	close_pipe_fds(int *pipe_fds, int count);
+int	count_commands(t_cmd *commands);
+void	wait_for_all_processes(t_shell *shell);
+int	setup_redirections(t_cmd *cmd, t_token *start, t_token *end);
+t_cmd	*cmd_new(void);
+void	cmd_free(t_cmd *cmd);
+void	fill_args(t_cmd *cmd, t_token *start, t_token *end);
+void	cmd_add_back(t_cmd **commands, t_cmd *new_cmd);
+char	*ft_strjoin_free(char *s1, const char *s2);
+char	*extract_var_name(const char *str, int *pos);
+char	*expand_variable(t_shell *shell, const char *var_name);
+char	*expand_variables_with_quotes(t_shell *shell, const char *str);
+void	cleanup_shell(t_shell *shell);
+void	skip_whitespace(const char *input, int *pos);
+int	is_operator(const char *str);
+t_token	*tokenize_operator(const char *input, int *pos);
+void	token_add_back(t_token **tokens, t_token *new_token);
+char	*extract_word(const char *input, int *pos);
+t_token	*token_new(const char *value, t_token_type type);
+t_token_type	determine_word_type(const char *word, int is_first_word);
+int	builtin_echo(t_shell *shell, char **args);
+int	builtin_cd(t_shell *shell, char **args);
+int	builtin_pwd(t_shell *shell, char **args);
+int	builtin_export(t_shell *shell, char **args);
+int	builtin_unset(t_shell *shell, char **args);
+int	builtin_env(t_shell *shell, char **args);
+int	builtin_exit(t_shell *shell, char **args);
+void	sort_string_array(char **arr);
+
 
 #endif
