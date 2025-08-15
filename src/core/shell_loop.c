@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell_loop.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:30:47 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/12 11:03:51 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/15 17:56:43 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,9 @@ void	shell_loop(int arg_count, char ***envp)
 		if (!check_syntax_error(args))
 			tokenize(args, &token);
 		handle_command(token, envp);
+		cleanup_shell_resources(envp, token, args, input);
 	}
-	cleanup_shell_resources(*envp, token, args, input);
+	ft_free_arr((void *)&envp);
 }
 
 char	*get_input(void)
@@ -69,7 +70,7 @@ char	*get_input(void)
 		}
 		line = append_until_quotes_closed(line);
 		if (!line)
-			continue ;
+			return (NULL);
 		add_history(line);
 		return (line);
 	}

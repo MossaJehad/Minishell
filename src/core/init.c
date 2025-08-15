@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:29:53 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 11:05:56 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/15 17:48:54 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ void	print_welcome_banner(void)
 
 void	init_shell(char **envp)
 {
+	g_signal = 0;
 	init_shlvl(&envp);
 	init_pwd_vars(&envp);
-	g_signal = 0;
 	print_welcome_banner();
 }
 

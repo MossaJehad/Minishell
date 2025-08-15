@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:44:48 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 10:59:02 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/15 17:46:25 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ void	append_env_var(char ***envp, const char *var)
 	newenv[i + 1] = NULL;
 	free(env);
 	*envp = newenv;
+	free(newenv);
+	free(new_var);
 }
 
 void	add_or_replace_env(char ***envp, const char *var)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:44:15 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 10:59:02 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/15 17:44:22 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void	update_pwd_oldpwd(char ***envp, const char *new_pwd,
 		add_or_replace_env(envp, oldpwd_var);
 		free(oldpwd_var);
 	}
+	ft_free_arr((void *)&old_pwd);
 }
 
 void	handle_pwd_command(char ***envp)

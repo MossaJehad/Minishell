@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_free_arr.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 03:51:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:42:06 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/15 17:22:24 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,6 @@ void	ft_free_arr(void ***arr)
 		free(array[i]);
 		i++;
 	}
-	free(array);
+	//free(array);
 	*arr = NULL;
 }

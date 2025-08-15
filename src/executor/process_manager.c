@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_manager.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:19:05 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:53:56 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/15 17:01:33 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	handle_single_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc,
 	else if (!ft_strcmp(cmd_argv[0], "cd"))
 		handle_cd_command(cmd_argv[1], cmd_argc, envp);
 	else if (!ft_strcmp(cmd_argv[0], "exit"))
-		handle_exit_command(cmd_argv, cmd_argc, *envp);
+		handle_exit_command(cmd_argv, cmd_argc);
 }
 
 void	init_heredoc_fds(int heredoc_fds[256])

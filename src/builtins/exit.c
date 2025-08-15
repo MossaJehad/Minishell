@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:00:00 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/12 11:06:45 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/15 17:53:40 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	process_exit_args(char **args, int arg_count)
 	return (-1);
 }
 
-void	handle_exit_command(char **args, int arg_count, char **envp)
+void	handle_exit_command(char **args, int arg_count)
 {
 	int	exit_code;
 
@@ -70,8 +70,8 @@ void	handle_exit_command(char **args, int arg_count, char **envp)
 	else if (exit_code == -2)
 	{
 		perror("minishell: exit: numeric argument required");
-		cleanup_and_exit(2, envp);
+		cleanup_and_exit(2);
 	}
 	else
-		cleanup_and_exit(exit_code, envp);
+		cleanup_and_exit(exit_code);
 }

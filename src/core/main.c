@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:04 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/12 11:06:29 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/15 17:41:19 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ int	main(int argc, char **argv, char **envp)
 	}
 	env[i] = NULL;
 	init_shell(env);
+
+	//printf("%i", argc);
 	shell_loop(argc, &env);
 	return (get_shell_status());
 }

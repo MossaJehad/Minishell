@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/12 22:47:15 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/15 17:49:23 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,7 @@ void				handle_pwd_command(char ***envp);
 void				handle_env_command(char **env);
 void				handle_export_command(char ***envp, char **args, int arg_count);
 void				handle_unset_command(char ***envp, char **args, int arg_count);
-void				handle_exit_command(char **args, int arg_count, char **envp);
+void				handle_exit_command(char **args, int arg_count);
 
 /* Built-in utilities */
 int					is_shell_builtin(const char *cmd);
@@ -214,7 +214,7 @@ int					count_n_flags(t_token *token);
 int					is_all_n(const char *str);
 
 /* Exit command utilities */
-void				cleanup_and_exit(int exit_code, char **envp);
+void				cleanup_and_exit(int exit_code);
 int					is_valid_number(const char *str);
 int					check_overflow(const char *str);
 
@@ -337,8 +337,7 @@ void				add_env_var(char ***envp, const char *var);
 void				remove_env_var(char ***envp, const char *name);
 int					find_env_index(char **envp, const char *name);
 void				replace_env_var(char **env, int idx, const char *var);
-void				cleanup_and_exit(int exit_code, char **envp);
-void				cleanup_shell_resources(char **env, t_token *token, char **args, char *input);
+void				cleanup_shell_resources(char ***env, t_token *token, char **args, char *input);
 
 /* Directory management */
 void				update_pwd_oldpwd(char ***envp, const char *new_pwd, 

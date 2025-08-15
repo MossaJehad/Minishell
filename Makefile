@@ -1,8 +1,9 @@
-NAME	=	minishell
-CC		=	cc
-CFLAGS	=	-Wall -Wextra -Werror -g -Iinclude -g3
-RM		=	rm -rf
-HEADERS	=	include/minishell.h
+NAME			=	minishell
+CC				=	cc
+LEAKSANITIZER	=	-g3 -fsanitize=leak -fsanitize=address -fno-omit-frame-pointer
+CFLAGS			=	-Wall -Wextra -Werror -g -Iinclude $(LEAKSANITIZER)
+RM				=	rm -rf
+HEADERS			=	include/minishell.h
 
 # Directories
 SRC_DIR		=	src

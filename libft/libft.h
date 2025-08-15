@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:01:12 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 18:51:33 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/15 16:48:57 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,5 @@ char		*ft_strndup(const char *s1, size_t n);
 int			copy_char(const char *arg, int *i, char *buffer, int j);
 char		**ft_strdup_array(char **array);
 void		ft_sort_array(char **array);
-void		free_split(char **arr);
 long long	ft_atol(const char *str);
 #endif
