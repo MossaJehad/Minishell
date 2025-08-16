@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:26:44 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/15 17:55:34 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/16 16:14:22 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,4 @@ void	cleanup_shell_resources(char ***env, t_token *token, char **args,
 		ft_free_arr((void ***)&args);
 	if (input)
 		free(input);
-	rl_clear_history();
 }
