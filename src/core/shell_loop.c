@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell_loop.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:30:47 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/15 17:56:43 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/16 15:49:47 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ char	*get_input(void)
 {
 	char	*line;
 
+	ignore_signals();
 	while (1)
 	{
 		line = read_prompt_line();
