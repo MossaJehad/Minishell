@@ -1,33 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal_utils.c                                     :+:      :+:    :+:   */
+/*   get_length.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/31 15:41:17 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 16:40:13 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/08/16 21:26:20 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/18 13:27:38 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "libft.h"
 
-void	handle_sigquit(int sig)
+int	get_length(char	**str)
 {
-	(void)sig;
-}
+	int	i;
 
-void	restore_signals(void)
-{
-	setup_signal_handlers();
-}
-
-int	get_shell_status(void)
-{
-	return (g_signal);
-}
-
-void	set_shell_status(int status)
-{
-	g_signal = status;
+	i = 0;
+	while(str[i])
+		i++;
+	return (i + 1);
 }

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:47:13 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/12 22:45:44 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/19 02:30:42 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	export_no_args(char **env)
 			printf("declare -x %s\n", sorted_env[j]);
 		j++;
 	}
-	ft_free_arr((void *)&sorted_env);
+	ft_free_arr(sorted_env);
 }
 
 void	add_or_replace(char ***envp, const char *var)
@@ -72,7 +72,10 @@ void	process_export_assignment(char ***envp, char *arg)
 	value = ft_strtrim(temp_value, "\"");
 	free(temp_value);
 	if (!is_valid_identifier(key))
-		perror("export: not a valid identifier");
+	{
+		write(2, "export: not a valid identifier\n", 32);
+		set_shell_status(1);
+	}
 	else
 	{
 		temp_value = ft_strjoin(key, "=");
@@ -92,7 +95,10 @@ void	process_export_variable(char ***envp, char *arg)
 
 	temp_key = ft_strtrim(arg, "\"");
 	if (!is_valid_identifier(temp_key))
-		perror("export: not a valid identifier");
+	{
+		write(2, "export: not a valid identifier\n", 32);
+		set_shell_status(1);
+	}
 	else
 	{
 		buf = ft_strjoin(temp_key, "=");

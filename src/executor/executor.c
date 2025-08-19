@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:11:46 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/15 17:35:26 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/19 05:34:49 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,25 +48,34 @@ void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc,
 int	prepare_child_command(t_token *seg, char *cmd_argv[MAX_ARGS])
 {
 	int	cmd_argc;
+	t_token *current;
 
 	cmd_argc = 0;
-	while (seg && ft_strcmp(seg->type, "pipe") != 0)
+	current = seg;
+	while (current && current->type != PIPE)
 	{
-		if (ft_strncmp(seg->type, "redirect", 8) == 0 || ft_strcmp(seg->type,
-				"append output") == 0)
+		if (current->type == REDIRECT || current->type == REDIRECT_OUT || 
+			current->type == APPEND)
 		{
-			if (setup_redirection(seg) == -1)
+			if (setup_redirection(current) == -1)
 				return (-1);
-			seg = seg->next;
+			current = current->next;
+			if (current)
+				current = current->next;
 			continue ;
 		}
-		else if (ft_strcmp(seg->type, "here-document") == 0)
+		else if (current->type == HEREDOC)
 		{
-			seg = seg->next;
+			current = current->next;
+			if (current)
+				current = current->next;
 			continue ;
 		}
-		cmd_argv[cmd_argc++] = seg->value;
-		seg = seg->next;
+		if (current->type == WORD || current->type == COMMAND || current->type == QUOTED_STRING)
+		{
+			cmd_argv[cmd_argc++] = current->value;
+		}
+		current = current->next;
 	}
 	cmd_argv[cmd_argc] = NULL;
 	return (cmd_argc);
@@ -100,10 +109,10 @@ char	*find_executable(char *cmd, char **envp)
 	while (paths[i])
 	{
 		len = ft_strlen(paths[i]) + 1 + ft_strlen(cmd) + 1;
-		full_path = malloc(len);
+		full_path = ft_calloc(len, sizeof(char));
 		if (!full_path)
 		{
-			ft_free_arr((void *)&paths);
+			ft_free_arr(paths);
 			return (NULL);
 		}
 		ft_strcpy(full_path, paths[i]);
@@ -111,18 +120,18 @@ char	*find_executable(char *cmd, char **envp)
 		ft_strcat(full_path, cmd);
 		if (access(full_path, X_OK) == 0)
 		{
-			ft_free_arr((void *)&paths);
+			ft_free_arr(paths);
 			return (full_path);
 		}
 		free(full_path);
 		i++;
 	}
-	ft_free_arr((void *)&paths);
+	ft_free_arr(paths);
 	return (NULL);
 }
 
 void	execute_child_process(t_token *cmd_starts[256], int i,
-		int heredoc_fds[256], int pipefd[256][2], int num_cmds, char **envp)
+		int heredoc_fds[MAX_CMDS], int pipefd[256][2], int num_cmds, char **envp)
 {
 	t_token	*seg;
 	char	*cmd_argv[MAX_ARGS];
@@ -138,7 +147,7 @@ void	execute_child_process(t_token *cmd_starts[256], int i,
 		exit(1);
 	if (cmd_argc == 0 || cmd_argv[0] == NULL)
 		exit(0);
-	if (is_shell_builtin(cmd_argv[0]))
+	if (is_builtin(cmd_argv[0]))
 	{
 		execute_child_builtin(cmd_argv, cmd_argc, envp);
 		exit(0);
@@ -158,7 +167,7 @@ void	execute_child_process(t_token *cmd_starts[256], int i,
 	exit(127);
 }
 
-int	fork_processes(t_token *cmd_starts[256], int num_cmds, int heredoc_fds[256],
+int	fork_processes(t_token *cmd_starts[256], int num_cmds, int heredoc_fds[MAX_CMDS],
 		int pipefd[256][2], pid_t pids[256], char **envp)
 {
 	int	i;

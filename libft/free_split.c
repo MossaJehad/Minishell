@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 18:47:05 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:20:30 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/17 21:29:27 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	free_split(char **split)
 {
 	int	i;
 	if (!split)
-		return;
+		return ;
 	i = 0;
 	while (split[i])
 	{

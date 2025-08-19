@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/21 19:09:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/12 11:05:23 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/08/17 16:14:31 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/17 20:20:15 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	run_parsing_loop(const char *input, t_parse_state *s, char **argv,
 		char *buffer)
 {
-	while (input[s->i])
+	while (input[s->cursor])
 	{
 		if (handle_quotes(input, s, buffer))
 			continue ;
@@ -27,7 +27,7 @@ void	run_parsing_loop(const char *input, t_parse_state *s, char **argv,
 			continue ;
 		if (handle_escape_sequences(input, s, buffer))
 			continue ;
-		buffer[s->j++] = input[s->i++];
+		buffer[s->buffer_pos++] = input[s->cursor++];
 	}
 }
 
@@ -45,14 +45,14 @@ char	**parse_arguments(const char *input, int *arg_count)
 		return (NULL);
 	null_parse_state(&s);
 	run_parsing_loop(input, &s, argv, buffer);
-	if (s.j > 0)
+	if (s.buffer_pos > 0)
 	{
-		buffer[s.j] = '\0';
-		argv[s.k] = ft_strdup(buffer);
-		if (!argv[s.k])
+		buffer[s.buffer_pos] = '\0';
+		argv[s.arg_count] = ft_strdup(buffer);
+		if (!argv[s.arg_count])
 		{
 			cleanup_i = 0;
-			while (cleanup_i < s.k)
+			while (cleanup_i < s.arg_count)
 			{
 				if (argv[cleanup_i])
 					free(argv[cleanup_i]);
@@ -61,9 +61,9 @@ char	**parse_arguments(const char *input, int *arg_count)
 			free(argv);
 			return (NULL);
 		}
-		s.k++;
+		s.arg_count++;
 	}
-	argv[s.k] = NULL;
-	*arg_count = s.k;
+	argv[s.arg_count] = NULL;
+	*arg_count = s.arg_count;
 	return (argv);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:00:00 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/16 15:51:22 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/18 13:41:00 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	handle_sigint(int sig)
 {
 	(void)sig;
-	g_signal = 1;
+	g_signal = 130;
 	printf("\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/15 17:49:23 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/19 05:54:21 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,14 @@
 # define BUFFER_SIZE 4096
 # define MAX_COMMANDS 256
 # define MAX_PATH_LEN 1024
+# define MAX_CMDS 256
+# define X_UNUSED __attribute__((unused))
 
 /* PATH_MAX fallback definition */
 # ifndef PATH_MAX
 #  define PATH_MAX 4096
 # endif
+
 
 /*
 ** ============================================================================
@@ -54,16 +57,23 @@
 ** ============================================================================
 */
 
-/*
-** TOKEN SYSTEM
-** Represents parsed command line tokens with type classification
-*/
-typedef struct s_token
-{
-	char			*value;		/* Token string value */
-	char			*type;		/* Token type (command, word, pipe, redirect, etc.) */
-	struct s_token	*next;		/* Next token in linked list */
-}					t_token;
+typedef enum e_token_type {
+	WORD,
+	COMMAND,
+	QUOTED_STRING,
+	OPERATOR,
+	PIPE,
+	REDIRECT,
+	REDIRECT_OUT,
+	HEREDOC,
+	APPEND
+}	t_token_type;
+
+typedef struct s_token {
+	char			*value;
+	t_token_type	type;
+	struct s_token	*next;
+}	t_token;
 
 /*
 ** PARSER STATE
@@ -71,12 +81,13 @@ typedef struct s_token
 */
 typedef struct s_parse_state
 {
-	int				i;					/* Current character index */
-	int				j;					/* Buffer position */
-	int				k;					/* Argument count */
-	int				in_single_quote;	/* Single quote state flag */
-	int				in_double_quote;	/* Double quote state flag */
-}					t_parse_state;
+	int	cursor;			/* Current character index in input */
+	int	buffer_pos;		/* Current position in temporary buffer */
+	int	arg_count;		/* Number of arguments parsed so far */
+	int	in_single_quote;/* Flag: inside single quote */
+	int	in_double_quote;/* Flag: inside double quote */
+}	t_parse_state;
+
 
 /*
 ** SHELL ENVIRONMENT
@@ -84,10 +95,10 @@ typedef struct s_parse_state
 */
 typedef struct s_shell
 {
-	char			*oldpwd;	/* Previous working directory */
-	char			*shlvl;		/* Shell level */
-	char			*pwd;		/* Current working directory */
-}					t_shell;
+	char	*pwd;	/* Current working directory */
+	char	*oldpwd;/* Previous working directory */
+	int		shlvl;	/* Shell level (as integer for easier increment) */
+}	t_shell;
 
 /*
 ** EXPANSION CONTEXT
@@ -95,11 +106,11 @@ typedef struct s_shell
 */
 typedef struct s_expand_ctx
 {
-	int			i;			/* Current index in input string */
-	int			j;			/* Current position in output buffer */
-	const char 	*arg;		/* Input argument string to expand */
-	char		*buffer;	/* Output buffer to write expanded result */
-	char		**envp;		/* Environment variables array */
+	const char	*input;	/* Input string to expand */
+	char		*output;/* Buffer for expanded result */
+	int			in_idx;	/* Current index in input string */
+	int			out_idx;/* Current position in output buffer */
+	char		**envp;	/* Environment variables array */
 }	t_expand_ctx;
 
 /*
@@ -109,12 +120,30 @@ typedef struct s_expand_ctx
 */
 typedef struct s_exec_ctx
 {
-	int     pipefd[256][2];		/* File descriptors for pipes between commands */
-	int     heredoc_fds[256];	/* File descriptors for heredoc inputs */
-	pid_t   pids[256];			/* Process IDs of forked child processes */
-	int     num_cmds;			/* Number of parsed commands to execute */
-	t_token *cmd_starts[256];	/* Array of pointers to the start tokens of each command */
-}   t_exec_ctx;
+	int		pipe_fds[MAX_CMDS][2];	/* Pipes between commands */
+	int		heredoc_fds[MAX_CMDS];	/* Heredoc file descriptors */
+	pid_t	pids[MAX_CMDS];			/* Process IDs of child processes */
+	int		cmd_count;				/* Number of commands to execute */
+	t_token	*cmd_starts[MAX_CMDS];	/* Start token of each command */
+}	t_exec_ctx;
+
+typedef struct s_allstructs {
+	/* Core shell state */
+	t_shell			*shell;
+
+	/* Input and parsing */
+	char			*input;
+	t_parse_state	*parse_state;
+	t_token			*tokens;
+
+	/* Expansion and execution */
+	t_expand_ctx	*expand_ctx;
+	t_exec_ctx		*exec_ctx;
+
+	/* Original env */
+	char			***envp;
+	int				arg_count;
+}	t_allstructs;
 
 
 /*
@@ -131,15 +160,13 @@ extern volatile sig_atomic_t	g_signal;	/* Global signal status */
 */
 
 /* Main shell functions */
+t_token				*prepare_command(char *input, char ***envp, int arg_count);
 void				shell_loop(int argc, char ***envp);
-char				*get_input(void);
 void				init_shell(char **envp);
 void				print_welcome_banner(void);
 
 /* Shell state management */
 void				null_shell(t_shell *s);
-void				init_pwd_vars(char ***envp);
-void				init_shlvl(char ***envp);
 
 /*
 ** ============================================================================
@@ -151,7 +178,6 @@ void				init_shlvl(char ***envp);
 /* Main parsing functions */
 char				**parse_arguments(const char *input, int *arg_count);
 int					check_syntax_error(char **array);
-int					has_unclosed_quotes(const char *input);
 
 /* Parser utilities */
 void				null_parse_state(t_parse_state *s);
@@ -159,15 +185,15 @@ char				*unescape_string(const char *src);
 int					handle_double_char_operators(const char *input,
 						t_parse_state *s, char **argv, char *buffer);
 int					handle_single_char_operators(const char *input, t_parse_state *s,
-						 char **argv, char *buffer);
+						char **argv, char *buffer);
 int					handle_escape_sequences(const char *input, t_parse_state *s,
-						 char *buffer);
+						char *buffer);
 
 /* Quote handling */
 int					handle_quotes(const char *input, t_parse_state *s, char *buffer);
 char				*append_until_quotes_closed(char *line);
 int					handle_whitespace(const char *input, t_parse_state *s,
-						 char **argv, char *buffer);
+						char **argv, char *buffer);
 
 /*
 ** ============================================================================
@@ -201,10 +227,9 @@ void				handle_pwd_command(char ***envp);
 void				handle_env_command(char **env);
 void				handle_export_command(char ***envp, char **args, int arg_count);
 void				handle_unset_command(char ***envp, char **args, int arg_count);
-void				handle_exit_command(char **args, int arg_count);
+void				handle_exit_command(char **args, t_token *seg, int arg_count, char ***envp);
 
 /* Built-in utilities */
-int					is_shell_builtin(const char *cmd);
 int					should_run_in_parent(const char *cmd);
 char				*determine_cd_target(char *path, char **envp);
 int					is_valid_identifier(const char *str);
@@ -228,17 +253,18 @@ int					check_overflow(const char *str);
 
 /* Main command execution */
 void				handle_command(t_token *token, char ***envp);
+int					command_exists(char *cmd, char **envp);
 
 /* Process management */
 int					parse_commands(t_token *token, t_token *cmd_starts[MAX_COMMANDS], 
 								int heredoc_fds[MAX_COMMANDS]);
 int					handle_single_command(t_token *cmd_starts[MAX_COMMANDS], 
 								int heredoc_fds[MAX_COMMANDS], char ***envp);
-int					fork_processes(t_token *cmd_starts[256], int num_cmds, int heredoc_fds[256],
+int					fork_processes(t_token *cmd_starts[256], int num_cmds, int heredoc_fds[MAX_CMDS],
 								int pipefd[256][2], pid_t pids[256], char **envp);
 
 /* Process utilities */
-void				execute_child_process(t_token *cmd_starts[256], int i, int heredoc_fds[256], 
+void				execute_child_process(t_token *cmd_starts[256], int i, int heredoc_fds[MAX_CMDS], 
 							int pipefd[256][2], int num_cmds, char **envp);
 void				execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc, char **envp);
 void				wait_for_processes(pid_t pids[MAX_COMMANDS], int num_cmds);
@@ -250,12 +276,12 @@ void				close_all_pipes(int pipefd[MAX_COMMANDS][2], int num_cmds);
 
 /* Command building */
 int					build_cmd_args(t_token *seg, char *cmd_argv[MAX_ARGS]);
-void				handle_single_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc, char ***envp);
+void				handle_single_builtin(char *cmd_argv[MAX_ARGS], t_token	*seg, int cmd_argc, char ***envp);
 
 /*
 ** ============================================================================
 ** SIGNAL HANDLING MODULE - Signal management
-** Files: src/signals/signals.c, src/signals/signal_utils.c
+** Files: src/signals/signals.c, src/signals/signals_utils.c
 ** ============================================================================
 */
 
@@ -289,7 +315,6 @@ int					expand_simple_var(t_expand_ctx *ctx);
 int					expand_braced_var(t_expand_ctx *ctx);
 int					expand_special_vars(t_expand_ctx *ctx);
 char				*expand_variables_in_string(char *str, char **envp);
-char				*expand_variables_in_string(char *str, char **envp);
 
 /* Quote expansion */
 int					process_variable_expansion(t_expand_ctx *ctx);
@@ -302,6 +327,8 @@ void				append_env_var(char ***envp, const char *var);
 int					handle_dollar_expansion(t_expand_ctx *ctx);
 int					expand_exit_status(t_expand_ctx *ctx);
 int					expand_pid(t_expand_ctx *ctx);
+void				copy_env(char **env, char **envp);
+
 
 /*
 ** ============================================================================
@@ -310,16 +337,13 @@ int					expand_pid(t_expand_ctx *ctx);
 ** ============================================================================
 */
 
-/* Input handling */
-char				*read_prompt_line(void);
-
 /* Redirection handling */
 int					setup_redirection(t_token *token);
 int					handle_file_redirection(t_token *tok);
 void				setup_child_heredoc(int heredoc_fds[MAX_COMMANDS], int i);
 
 /* Heredoc handling */
-int					handle_heredoc(t_token *tok);
+int					handle_heredoc(t_token *tok, t_exec_ctx ctx);
 int					read_heredoc_lines(int write_fd, const char *delimiter);
 
 /*
@@ -338,25 +362,21 @@ void				remove_env_var(char ***envp, const char *name);
 int					find_env_index(char **envp, const char *name);
 void				replace_env_var(char **env, int idx, const char *var);
 void				cleanup_shell_resources(char ***env, t_token *token, char **args, char *input);
+int					is_builtin(const char *cmd);
 
 /* Directory management */
 void				update_pwd_oldpwd(char ***envp, const char *new_pwd, 
 								const char *old_pwd);
 
-/* Array utilities */
-char				**ft_strdup_array(char **array);
-void				ft_sort_array(char **array);
-
 /* String utilities - Additional functions not in libft */
-int					copy_char(const char *arg, int *i, char *buffer, int j);
-char				*ft_strndup(const char *s1, size_t n);
-void				free_split(char **split);
+int					has_unclosed_quotes(const char *input);
 
 /* File descriptor utilities */
 void				close_heredoc_fds(int heredoc_fds[MAX_COMMANDS], int num_cmds);
 
 /* Validation utilities */
 int					ft_isdigit(int c);
+int					is_operator(const char *s);
 
 /* Debug and development utilities */
 void				prompt(void);

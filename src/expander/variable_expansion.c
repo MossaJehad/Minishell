@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:16:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/12 22:48:23 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/19 03:55:04 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,65 +20,62 @@ int	expand_simple_var(t_expand_ctx *ctx)
 	int		len;
 
 	k = 0;
-	ctx->i++;
-	while (ctx->arg[ctx->i] && (ft_isalnum(ctx->arg[ctx->i])
-			|| ctx->arg[ctx->i] == '_') && k < 255)
-		var[k++] = ctx->arg[ctx->i++];
+	ctx->in_idx++;
+	while (ctx->input[ctx->in_idx] && (ft_isalnum(ctx->input[ctx->in_idx])
+		|| ctx->input[ctx->in_idx] == '_') && k < 255)
+		var[k++] = ctx->input[ctx->in_idx++];
 	var[k] = '\0';
 	val = lookup_env(var, ctx->envp);
 	if (val)
 	{
 		len = ft_strlen(val);
-		ft_strcpy(ctx->buffer + ctx->j, val);
-		ctx->j += len;
+		ft_strcpy(ctx->output + ctx->out_idx, val);
+		ctx->out_idx += len;
 	}
-	return (ctx->j);
+	return (ctx->out_idx);
 }
+
 
 int	expand_braced_var(t_expand_ctx *ctx)
 {
 	char	var[256];
-	int		k;
 	char	*val;
+	int		k;
 	int		len;
 
 	k = 0;
-	ctx->i += 2;
-	while (ctx->arg[ctx->i] && ctx->arg[ctx->i] != '}' && k < 255)
-		var[k++] = ctx->arg[ctx->i++];
+	ctx->in_idx += 2;
+	while (ctx->input[ctx->in_idx] && ctx->input[ctx->in_idx] != '}' && k < 255)
+		var[k++] = ctx->input[ctx->in_idx++];
 	var[k] = '\0';
-	if (ctx->arg[ctx->i] == '}')
-		ctx->i++;
+	if (ctx->input[ctx->in_idx] == '}')
+		ctx->in_idx++;
 	val = lookup_env(var, ctx->envp);
 	if (val)
 	{
 		len = ft_strlen(val);
-		ft_strcpy(ctx->buffer + ctx->j, val);
-		ctx->j += len;
+		ft_strcpy(ctx->output + ctx->out_idx, val);
+		ctx->out_idx += len;
 	}
-	return (ctx->j);
+	return (ctx->out_idx);
 }
 
 int	expand_exit_status(t_expand_ctx *ctx)
 {
-	char	*exit_status_str;
+	char	exit_status_str[20];
 	int		len;
 
-	if (ctx->arg[ctx->i + 1] == '?')
+	if (ctx->input[ctx->in_idx + 1] == '?')
 	{
-		exit_status_str = malloc(20);
-		if (!exit_status_str)
-			return (0);
-		sprintf(exit_status_str, "%d", get_shell_status());
+		ft_itoa_buf(get_shell_status(), exit_status_str, 0, 0);
 		len = ft_strlen(exit_status_str);
-		if (ctx->j + len < BUFFER_SIZE * 4 - 1)
+		if (ctx->out_idx + len < BUFFER_SIZE * 4 - 1)
 		{
-			ft_strcpy(ctx->buffer + ctx->j, exit_status_str);
-			ctx->j += len;
+			ft_strcpy(ctx->output + ctx->out_idx, exit_status_str);
+			ctx->out_idx += len;
 		}
-		free(exit_status_str);
-		ctx->i += 2;
-		return (ctx->j);
+		ctx->in_idx += 2;
+		return (ctx->out_idx);
 	}
 	return (0);
 }
@@ -87,7 +84,7 @@ int	process_variable_expansion(t_expand_ctx *ctx)
 {
 	int	result;
 
-	if (ctx->arg[ctx->i] == '$' && ctx->arg[ctx->i + 1])
+	if (ctx->input[ctx->in_idx] == '$' && ctx->input[ctx->in_idx + 1])
 	{
 		result = expand_exit_status(ctx);
 		if (result != 0)
@@ -95,15 +92,13 @@ int	process_variable_expansion(t_expand_ctx *ctx)
 		result = expand_pid(ctx);
 		if (result != 0)
 			return (result);
-		if (ctx->arg[ctx->i + 1] == '{')
+		if (ctx->input[ctx->in_idx + 1] == '{')
 			return (expand_braced_var(ctx));
-		if (ft_isalnum(ctx->arg[ctx->i + 1]) || ctx->arg[ctx->i + 1] == '_')
+		if (ft_isalnum(ctx->input[ctx->in_idx + 1]) || ctx->input[ctx->in_idx + 1] == '_')
 			return (expand_simple_var(ctx));
-		ctx->buffer[ctx->j++] = ctx->arg[ctx->i++];
-		return (ctx->j);
+		return (copy_char(ctx->input, &ctx->in_idx, ctx->output, ctx->out_idx));
 	}
-	ctx->buffer[ctx->j++] = ctx->arg[ctx->i++];
-	return (ctx->j);
+	return (copy_char(ctx->input, &ctx->in_idx, ctx->output, ctx->out_idx));
 }
 
 int	expand_special_vars(t_expand_ctx *ctx)

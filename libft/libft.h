@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:01:12 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/15 16:48:57 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/19 03:55:48 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# define BUFFER_SIZE 4096
 
 int			ft_isalpha(int c);
 int			ft_isdigit(int c);
@@ -58,10 +59,15 @@ char		*ft_strcat(char *dest, const char *src);
 char		*ft_strcpy(char *dest, const char *src);
 int			ft_isspace(char c);
 void		ft_free(void **ptr);
-void		ft_free_arr(void ***arr);
+void		ft_free_arr(char **arr);
 char		*ft_strndup(const char *s1, size_t n);
-int			copy_char(const char *arg, int *i, char *buffer, int j);
+int			copy_char(const char *input, int *in_idx, char *output, int out_idx);
 char		**ft_strdup_array(char **array);
 void		ft_sort_array(char **array);
+void		*safe_malloc(size_t size);
+int			get_length(char	**str);
 long long	ft_atol(const char *str);
+void		ft_free_multiple(void **ptrs[], size_t count);
+void		ft_itoa_buf(int n, char *buf, int i, int j);
+void		free_split(char **split);
 #endif

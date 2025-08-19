@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:18:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/12 22:48:29 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/19 03:58:33 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,23 @@ int	handle_dollar_expansion(t_expand_ctx *ctx)
 {
 	int	result;
 
-	if (ctx->arg[ctx->i] == '$' && ctx->arg[ctx->i + 1])
+	if (ctx->input[ctx->in_idx] == '$' && ctx->input[ctx->in_idx + 1])
 	{
 		result = expand_special_vars(ctx);
 		if (result != 0)
 			return (result);
-		if (ctx->arg[ctx->i + 1] == '{')
+
+		if (ctx->input[ctx->in_idx + 1] == '{')
 			return (expand_braced_var(ctx));
-		if (ft_isalnum(ctx->arg[ctx->i + 1]) || ctx->arg[ctx->i + 1] == '_')
+
+		if (ft_isalnum(ctx->input[ctx->in_idx + 1]) || ctx->input[ctx->in_idx + 1] == '_')
 			return (expand_simple_var(ctx));
-		return (copy_char(ctx->arg, &ctx->i, ctx->buffer, ctx->j));
+
+		return (copy_char(ctx->input, &ctx->in_idx, ctx->output, ctx->out_idx));
 	}
 	return (0);
 }
+
 
 char	**expand(char **args, char **envp)
 {
@@ -59,26 +63,24 @@ char	**expand(char **args, char **envp)
 
 int	expand_pid(t_expand_ctx *ctx)
 {
-	char	*pid_str;
+	char	pid_str[20];
 	pid_t	pid;
 	int		len;
 
-	if (ctx->arg[ctx->i + 1] == '$')
+	if (ctx->input[ctx->in_idx + 1] == '$')
 	{
-		pid = getpid();
-		pid_str = malloc(20);
-		if (!pid_str)
-			return (0);
+		pid = fork();
+		if (pid == 0)
+			exit(0);
 		sprintf(pid_str, "%d", pid);
 		len = ft_strlen(pid_str);
-		if (ctx->j + len < BUFFER_SIZE * 4 - 1)
+		if (ctx->out_idx + len < BUFFER_SIZE * 4 - 1)
 		{
-			ft_strcpy(ctx->buffer + ctx->j, pid_str);
-			ctx->j += len;
+			ft_strcpy(ctx->output + ctx->out_idx, pid_str);
+			ctx->out_idx += len;
 		}
-		free(pid_str);
-		ctx->i += 2;
-		return (ctx->j);
+		ctx->in_idx += 2;
+		return ctx->out_idx;
 	}
 	return (0);
 }

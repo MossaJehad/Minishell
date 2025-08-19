@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:00:00 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/15 17:53:40 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/18 13:40:19 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,23 +55,22 @@ int	process_exit_args(char **args, int arg_count)
 	return (-1);
 }
 
-void	handle_exit_command(char **args, int arg_count)
+void	handle_exit_command(char **args, t_token *seg, int arg_count, char ***envp)
 {
 	int	exit_code;
-
+	
 	printf("\033[0;31mexit\n\033[0m");
 	exit_code = process_exit_args(args, arg_count);
 	if (exit_code == -1)
 	{
 		perror("minishell: exit: too many arguments");
 		set_shell_status(1);
-		return ;
+		return;
 	}
-	else if (exit_code == -2)
-	{
-		perror("minishell: exit: numeric argument required");
-		cleanup_and_exit(2);
-	}
+	cleanup_shell_resources(envp, seg, NULL, NULL);
+	rl_clear_history();
+	if (exit_code == -2)
+		exit(2);
 	else
-		cleanup_and_exit(exit_code);
+		exit(exit_code);
 }

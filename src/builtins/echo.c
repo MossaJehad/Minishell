@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:40:06 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:52:42 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/19 01:12:41 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,15 +57,13 @@ void	print_echo_args(t_token *token, int newline)
 
 	while (token)
 	{
-		if (ft_strcmp(token->type, "word") == 0 || ft_strcmp(token->type,
-				"command") == 0)
+		if (token->type == WORD || token->type == QUOTED_STRING || token->type == COMMAND)
 		{
 			printf("%s", token->value);
 			peek = token->next;
-			while (peek && !(ft_strcmp(peek->type, "word") == 0
-					|| ft_strcmp(peek->type, "command") == 0))
+			while (peek && !(peek->type == WORD || peek->type == QUOTED_STRING || peek->type == COMMAND))
 				peek = peek->next;
-			if (peek)
+			if (peek && peek->value && *peek->value)
 				printf(" ");
 		}
 		token = token->next;

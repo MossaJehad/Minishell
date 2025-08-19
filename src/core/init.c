@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/09 15:29:53 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/15 17:48:54 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/08/16 21:28:30 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/18 23:53:55 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,38 +24,25 @@ void	print_welcome_banner(void)
 	printf("\n");
 }
 
-void	init_shell(char **envp)
-{
-	g_signal = 0;
-	init_shlvl(&envp);
-	init_pwd_vars(&envp);
-	print_welcome_banner();
-}
-
 void	init_pwd_vars(char ***envp)
 {
 	char	*cwd;
 	char	*pwd_var;
 	char	*oldpwd_var;
 	char	*current_pwd;
-	char	*current_pwd_copy;
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 		return ;
-	current_pwd = lookup_env_value("PWD", *envp);
-	current_pwd_copy = current_pwd ? ft_strdup(current_pwd) : NULL;
 	pwd_var = ft_strjoin("PWD=", cwd);
 	if (pwd_var)
 	{
 		add_or_replace_env(envp, pwd_var);
 		free(pwd_var);
 	}
-	if (current_pwd_copy)
-	{
-		oldpwd_var = ft_strjoin("OLDPWD=", current_pwd_copy);
-		free(current_pwd_copy);
-	}
+	current_pwd = lookup_env_value("PWD", *envp);
+	if (current_pwd)
+		oldpwd_var = ft_strjoin("OLDPWD=", current_pwd);
 	else
 		oldpwd_var = ft_strdup("OLDPWD=");
 	if (oldpwd_var)
@@ -68,25 +55,37 @@ void	init_pwd_vars(char ***envp)
 
 void	init_shlvl(char ***envp)
 {
-	char	*shlvl_str;
+	char	*shlvl_str; 
 	int		shlvl;
 	char	*new_shlvl;
 	char	*shlvl_var;
 
 	shlvl_str = lookup_env_value("SHLVL", *envp);
 	if (shlvl_str)
-		shlvl = ft_atoi(shlvl_str);
+		shlvl = ft_atoi(shlvl_str) + 1;
 	else
 		shlvl = 0;
-	shlvl++;
+	if(shlvl > 999 || shlvl < 0)
+	{
+		printf("minishell: warning: shell level (1000) too high, resetting to 1\n");
+		shlvl = 1;
+	}
 	new_shlvl = ft_itoa(shlvl);
 	if (!new_shlvl)
 		return ;
 	shlvl_var = ft_strjoin("SHLVL=", new_shlvl);
+	free(new_shlvl);
 	if (shlvl_var)
 	{
 		add_or_replace_env(envp, shlvl_var);
 		free(shlvl_var);
 	}
-	free(new_shlvl);
+}
+
+void	init_shell(char **envp)
+{
+	g_signal = 0;
+	print_welcome_banner();
+	init_shlvl(&envp);
+	init_pwd_vars(&envp);
 }

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:30:02 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:54:24 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/17 20:21:31 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,19 @@ int	handle_whitespace(const char *input, t_parse_state *s, char **argv,
 {
 	char	*token;
 
-	if (!s->in_single_quote && !s->in_double_quote && (input[s->i] == ' '
-			|| input[s->i] == '\t'))
+	if (!s->in_single_quote && !s->in_double_quote && (input[s->cursor] == ' '
+			|| input[s->cursor] == '\t'))
 	{
-		if (s->j > 0)
+		if (s->buffer_pos > 0)
 		{
-			buffer[s->j] = '\0';
+			buffer[s->buffer_pos] = '\0';
 			token = ft_strdup(buffer);
 			if (!token)
 				return (-1);
-			argv[s->k++] = token;
-			s->j = 0;
+			argv[s->arg_count++] = token;
+			s->buffer_pos = 0;
 		}
-		s->i++;
+		s->cursor++;
 		return (1);
 	}
 	return (0);
@@ -37,16 +37,16 @@ int	handle_whitespace(const char *input, t_parse_state *s, char **argv,
 
 int	handle_quotes(const char *input, t_parse_state *s, char *buffer)
 {
-	if (input[s->i] == '\'' && !s->in_double_quote)
+	if (input[s->cursor] == '\'' && !s->in_double_quote)
 	{
 		s->in_single_quote = !s->in_single_quote;
-		buffer[s->j++] = input[s->i++];
+		buffer[s->buffer_pos++] = input[s->cursor++];
 		return (1);
 	}
-	if (input[s->i] == '"' && !s->in_single_quote)
+	if (input[s->cursor] == '"' && !s->in_single_quote)
 	{
 		s->in_double_quote = !s->in_double_quote;
-		buffer[s->j++] = input[s->i++];
+		buffer[s->buffer_pos++] = input[s->cursor++];
 		return (1);
 	}
 	return (0);

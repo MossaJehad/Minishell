@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_handler.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:14:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 20:53:46 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/19 05:42:50 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,18 @@
 
 int	prepare_and_execute_commands(t_token *token, char ***envp, t_exec_ctx *ctx)
 {
-	ctx->num_cmds = parse_commands(token, ctx->cmd_starts, ctx->heredoc_fds);
-	if (ctx->num_cmds == -1)
+	ctx->cmd_count = parse_commands(token, ctx->cmd_starts, ctx->heredoc_fds);
+	if (ctx->cmd_count == -1)
 		return (-1);
-	if (ctx->num_cmds == 1)
+	if (ctx->cmd_count == 1)
 	{
 		if (handle_single_command(ctx->cmd_starts, ctx->heredoc_fds, envp))
 			return (0);
 	}
 	ignore_signals();
-	if (create_pipes(ctx->pipefd, ctx->num_cmds) == -1
-		|| fork_processes(ctx->cmd_starts, ctx->num_cmds, ctx->heredoc_fds,
-			ctx->pipefd, ctx->pids, *envp) == -1)
+	if (create_pipes(ctx->pipe_fds, ctx->cmd_count) == -1
+		|| fork_processes(ctx->cmd_starts, ctx->cmd_count, ctx->heredoc_fds,
+			ctx->pipe_fds, ctx->pids, *envp) == -1)
 	{
 		restore_signals();
 		return (-1);
@@ -35,20 +35,48 @@ int	prepare_and_execute_commands(t_token *token, char ***envp, t_exec_ctx *ctx)
 
 void	finalize_command_execution(t_exec_ctx *ctx)
 {
-	close_all_pipes(ctx->pipefd, ctx->num_cmds);
-	close_heredoc_fds(ctx->heredoc_fds, ctx->num_cmds);
-	wait_for_processes(ctx->pids, ctx->num_cmds);
+	close_all_pipes(ctx->pipe_fds, ctx->cmd_count);
+	close_heredoc_fds(ctx->heredoc_fds, ctx->cmd_count);
+	wait_for_processes(ctx->pids, ctx->cmd_count);
 	restore_signals();
 }
 
 void	handle_command(t_token *token, char ***envp)
 {
 	t_exec_ctx	ctx;
+	t_token		*current;
+	int			is_heredoc_only;
 
-	if (prepare_and_execute_commands(token, envp, &ctx) == 0)
+	ft_bzero(&ctx, sizeof(t_exec_ctx));
+	is_heredoc_only = 1;
+	current = token;
+	while (current)
 	{
-		finalize_command_execution(&ctx);
+		if (current->type == COMMAND || current->type == WORD)
+		{
+			is_heredoc_only = 0;
+			break;
+		}
+		current = current->next;
 	}
+	if (is_heredoc_only)
+	{
+		current = token;
+		while (current)
+		{
+			if (current->type == HEREDOC)
+			{
+				int heredoc_fd = handle_heredoc(current->next, ctx);
+				if (heredoc_fd != -1)
+					close(heredoc_fd);
+				return ;
+			}
+			current = current->next;
+		}
+		return ;
+	}
+	if (prepare_and_execute_commands(token, envp, &ctx) == 0)
+		finalize_command_execution(&ctx);
 }
 
 int	build_cmd_args(t_token *seg, char *cmd_argv[MAX_ARGS])
@@ -56,11 +84,9 @@ int	build_cmd_args(t_token *seg, char *cmd_argv[MAX_ARGS])
 	int	cmd_argc;
 
 	cmd_argc = 0;
-	while (seg && ft_strcmp(seg->type, "pipe") != 0)
+	while (seg && seg->type != PIPE)
 	{
-		if (ft_strncmp(seg->type, "redirect", 8) == 0 || ft_strcmp(seg->type,
-				"here-document") == 0 || ft_strcmp(seg->type,
-				"append output") == 0)
+		if (seg->type == REDIRECT || seg->type == HEREDOC || seg->type == APPEND)
 		{
 			seg = seg->next;
 			continue ;
@@ -72,7 +98,7 @@ int	build_cmd_args(t_token *seg, char *cmd_argv[MAX_ARGS])
 	return (cmd_argc);
 }
 
-void	close_heredoc_fds(int heredoc_fds[256], int num_cmds)
+void	close_heredoc_fds(int heredoc_fds[MAX_CMDS], int num_cmds)
 {
 	int	i;
 

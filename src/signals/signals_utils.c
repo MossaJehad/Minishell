@@ -1,43 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_sort_array.c                                    :+:      :+:    :+:   */
+/*   signals_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/09 12:52:53 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/17 21:29:27 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/07/31 15:41:17 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/17 13:18:00 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../include/minishell.h"
 
-void	ft_sort_array(char **array)
+void	handle_sigquit(int sig)
 {
-	char	*temp;
-	int		len;
-	int		i;
-	int		j;
+	(void)sig;
+}
 
-	if (!array)
-		return ;
-	len = 0;
-	while (array[len])
-		len++;
-	i = 0;
-	while (i < len - 1)
-	{
-		j = i + 1;
-		while (j < len)
-		{
-			if (ft_strcmp(array[i], array[j]) > 0)
-			{
-				temp = array[i];
-				array[i] = array[j];
-				array[j] = temp;
-			}
-			j++;
-		}
-		i++;
-	}
+void	restore_signals(void)
+{
+	setup_signal_handlers();
+}
+
+int	get_shell_status(void)
+{
+	return (g_signal);
+}
+
+void	set_shell_status(int status)
+{
+	g_signal = status;
 }

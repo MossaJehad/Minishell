@@ -3,93 +3,56 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 10:55:50 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/09 15:51:34 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/19 02:46:53 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
-char	*ft_min(void)
+int	count_digits(int n)
 {
-	char	*str;
+	int	count;
 
-	str = (char *)malloc(12);
-	if (!str)
+	count = 0;
+	if (n == 0)
+		return (1);
+	if (n < 0)
+		count++;
+	while (n)
 	{
-		ft_free((void **)&str);
-		return (NULL);
+		n /= 10;
+		count++;
 	}
-	ft_strlcpy(str, "-2147483648", 12);
-	return (str);
-}
-
-char	*ft_final(char *temp, char *str, int i)
-{
-	int	j;
-	int	w;
-
-	j = 0;
-	w = 0;
-	if (!str)
-		return (NULL);
-	if (temp[0] == '-')
-	{
-		str[j] = '-';
-		j++;
-		w = 1;
-	}
-	while (i >= w)
-	{
-		str[j] = temp[i];
-		j++;
-		i--;
-	}
-	str[j] = '\0';
-	return (str);
-}
-
-char	*ft_zero_case(void)
-{
-	char	*str;
-
-	str = (char *)malloc(2);
-	if (!str)
-	{
-		ft_free((void **)&str);
-		return (NULL);
-	}
-	str[0] = '0';
-	str[1] = '\0';
-	return (str);
+	return (count);
 }
 
 char	*ft_itoa(int n)
 {
-	char	temp[12];
+	long	num;
+	int		len;
 	char	*str;
-	int		i;
+	int		len_adj;
 
-	i = 0;
-	if (n == 0)
-		return (ft_zero_case());
-	else if (n < 0)
-	{
-		if (n == -2147483648)
-			return (ft_min());
-		temp[i++] = '-';
-		n = -n;
-	}
-	while (n > 0)
-	{
-		temp[i++] = (n % 10) + '0';
-		n = n / 10;
-	}
-	temp[i] = '\0';
-	str = (char *)malloc(i + 1);
+	num = n;
+	len = count_digits(num);
+	str = (char *)malloc(len + 1);
 	if (!str)
-		ft_free((void **)&str);
-	return (ft_final(temp, str, i - 1));
+		return (NULL);
+	str[len] = '\0';
+	if (num < 0)
+	{
+		str[0] = '-';
+		num = -num;
+	}
+	len_adj = 0;
+	if (n < 0)
+		len_adj = 1;
+	while (len-- > len_adj)
+	{
+		str[len] = (num % 10) + '0';
+		num /= 10;
+	}
+	return (str);
 }

@@ -1,7 +1,7 @@
 NAME			=	minishell
 CC				=	cc
 LEAKSANITIZER	=	-g3 -fsanitize=leak -fsanitize=address -fno-omit-frame-pointer
-CFLAGS			=	-Wall -Wextra -Werror -g -Iinclude $(LEAKSANITIZER)
+CFLAGS			=	-Wall -Wextra -Werror -g -Iinclude
 RM				=	rm -rf
 HEADERS			=	include/minishell.h
 
@@ -17,7 +17,7 @@ TOKEN_DIR	=	$(SRC_DIR)/tokenizer
 BUILTIN_DIR	=	$(SRC_DIR)/builtins
 EXEC_DIR	=	$(SRC_DIR)/executor
 SIGNAL_DIR	=	$(SRC_DIR)/signals
-EXPANDER_DIR =	$(SRC_DIR)/expander
+EXPANDER_DIR=	$(SRC_DIR)/expander
 UTILS_DIR	=	$(SRC_DIR)/utils
 IO_DIR		=	$(SRC_DIR)/io
 
@@ -55,14 +55,15 @@ BUILTIN_SRC	=	echo.c \
 			exit.c
 
 # Executor files - command execution and process management
-EXEC_SRC	=	executor.c \
+EXEC_SRC	=	command_lookup.c \
+			executor.c \
 			command_handler.c \
 			pipe_handler.c \
 			process_manager.c
 
 # Signal handling files
 SIGNAL_SRC	=	signals.c \
-			signal_utils.c
+			signals_utils.c
 
 # Variable expansion files
 EXPANDER_SRC =	expander.c \
@@ -75,9 +76,9 @@ IO_SRC		=	input_handler.c \
 			heredoc.c
 
 # Utility files - helper functions
-UTILS_SRC	=	utils.c \
+UTILS_SRC	=	env_utils.c \
+			utils.c \
 			string_utils.c \
-			env_utils.c \
 			validation.c
 
 # Combine all sources with their directory paths
@@ -115,14 +116,15 @@ UTILS_OBJS		=	$(UTILS_FILES:$(UTILS_DIR)/%.c=$(OBJ_DIR)/utils/%.o)
 
 # All object files
 OBJS		=	$(CORE_OBJS) \
+			$(UTILS_OBJS) \
+			$(IO_OBJS) \
+			$(SIGNAL_OBJS) \
 			$(PARSER_OBJS) \
+			$(EXEC_OBJS) \
 			$(TOKEN_OBJS) \
 			$(BUILTIN_OBJS) \
-			$(EXEC_OBJS) \
-			$(SIGNAL_OBJS) \
 			$(EXPANDER_OBJS) \
-			$(IO_OBJS) \
-			$(UTILS_OBJS)
+			
 
 # Compilation flags
 CFLAGS		+=	-I$(INC_DIR) -I$(LIBFT_INC) $(READLINE_INC)

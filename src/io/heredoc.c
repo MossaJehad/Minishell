@@ -3,31 +3,53 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:32:55 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/10 11:00:55 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/19 05:45:39 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	handle_heredoc(t_token *tok)
+int handle_heredoc(t_token *tok, t_exec_ctx ctx)
 {
-	int	pipefd[2];
+	int pipefd[2];
+	pid_t pid;
+	int status;
 
 	if (pipe(pipefd) == -1)
-		return (perror("pipe"), -1);
-	signal(SIGINT, SIG_DFL);
-	if (read_heredoc_lines(pipefd[1], tok->value) == -1)
 	{
+		perror("pipe");
+		return (-1);
+	}
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
 		close(pipefd[0]);
 		close(pipefd[1]);
 		return (-1);
 	}
+	if (pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		close(pipefd[0]);
+		if (read_heredoc_lines(pipefd[1], tok->value) == -1)
+			exit(1);
+		close(pipefd[1]);
+		close_heredoc_fds(ctx.heredoc_fds, ctx.cmd_count);
+		//(void)ctx;
+		exit(0);
+	}
 	close(pipefd[1]);
-	setup_signal_handlers();
-	return (pipefd[0]);
+	waitpid(pid, &status, 0);
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+	{
+		close(pipefd[0]);
+		return (-1);
+	}
+	return pipefd[0];
 }
 
 int	read_heredoc_lines(int write_fd, const char *delimiter)

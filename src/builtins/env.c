@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:44:48 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/15 17:46:25 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/18 20:24:02 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,61 +26,47 @@ void	replace_env_var(char **env, int idx, const char *var)
 	env[idx] = ft_strdup(var);
 }
 
-void	append_env_var(char ***envp, const char *var)
+void append_env_var(char ***envp, const char *var)
 {
 	char	**env;
 	int		i;
-	int		j;
 	char	**newenv;
-	char	*new_var;
-
-	env = *envp;
+	
 	i = 0;
+	env = *envp;
 	while (env[i])
 		i++;
-	newenv = malloc(sizeof(char *) * (i + 2));
+	newenv = ft_calloc((i + 2), sizeof(char *));
 	if (!newenv)
-		return ;
-	j = 0;
-	while (j < i)
+		return;
+	i = 0;
+	while (env[i])
 	{
-		newenv[j] = env[j];
-		j++;
+		newenv[i] = env[i];
+		i++;
 	}
-	new_var = ft_strdup(var);
-	if (!new_var)
-	{
-		free(newenv);
-		return ;
-	}
-	newenv[i] = new_var;
+	newenv[i] = ft_strdup(var);
 	newenv[i + 1] = NULL;
 	free(env);
 	*envp = newenv;
-	free(newenv);
-	free(new_var);
 }
 
 void	add_or_replace_env(char ***envp, const char *var)
 {
-	char	**env;
-	char	*eq;
+	char	*eq; 
 	size_t	keylen;
 	char	*name;
 	int		idx;
 
-	if (!envp || !*envp || !var)
-		return ;
-	env = *envp;
-	eq = ft_strchr(var, '=');
-	keylen = eq ? (size_t)(eq - var) : ft_strlen(var);
+	eq = strchr(var, '=');
+	keylen = eq ? (size_t)(eq - var) : strlen(var);
 	name = ft_strndup(var, keylen);
 	if (!name)
 		return ;
-	idx = find_env_index(env, name);
+	idx = find_env_index(*envp, name);
 	free(name);
 	if (idx >= 0)
-		replace_env_var(env, idx, var);
+		replace_env_var(*envp, idx, var);
 	else
 		append_env_var(envp, var);
 }
