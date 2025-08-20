@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:11:46 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/19 05:34:49 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/20 02:28:48 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc,
 			create_token(&cmd_token, cmd_argv[k], "word");
 			k++;
 		}
-		handle_echo_command(cmd_token);
+		ft_echo(cmd_argc, cmd_argv, envp);
 		free_tokens(cmd_token);
 	}
 	else if (!ft_strcmp(cmd_argv[0], "pwd"))
@@ -41,7 +41,7 @@ void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc,
 	}
 	else if (!ft_strcmp(cmd_argv[0], "env"))
 	{
-		handle_env_command(envp);
+		ft_env(envp);
 	}
 }
 
@@ -54,7 +54,7 @@ int	prepare_child_command(t_token *seg, char *cmd_argv[MAX_ARGS])
 	current = seg;
 	while (current && current->type != PIPE)
 	{
-		if (current->type == REDIRECT || current->type == REDIRECT_OUT || 
+		if (current->type == REDIRIN || current->type == REDIROUT || 
 			current->type == APPEND)
 		{
 			if (setup_redirection(current) == -1)
@@ -71,10 +71,8 @@ int	prepare_child_command(t_token *seg, char *cmd_argv[MAX_ARGS])
 				current = current->next;
 			continue ;
 		}
-		if (current->type == WORD || current->type == COMMAND || current->type == QUOTED_STRING)
-		{
+		if (current->type == WORD || current->type == SINGLEQ || current->type == DOUBLEQ)
 			cmd_argv[cmd_argc++] = current->value;
-		}
 		current = current->next;
 	}
 	cmd_argv[cmd_argc] = NULL;

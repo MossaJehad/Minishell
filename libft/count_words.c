@@ -1,42 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_itoa_buf.c                                      :+:      :+:    :+:   */
+/*   count_words.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/19 03:55:19 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/20 00:24:06 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/08/20 00:27:28 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/20 00:28:14 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_itoa_buf(int n, char *buf)
+int	count_words(char *str)
 {
-	char	temp[20];
-	int		i;
-	int		j;
-	int		sign;
+	int	count;
+	int	in_word;
+	int	i;
 
 	i = 0;
-	sign = 0;
-	if (n < 0)
+	count = 0;
+	in_word = 0;
+	if (!str)
+		return (0);
+	while (str[i])
 	{
-		sign = 1;
-		n = -n;
+		if (str[i] != ' ' && str[i] != '\t' && !in_word)
+		{
+			in_word = 1;
+			count++;
+		}
+		else if ((str[i] == ' ' || str[i] == '\t') && in_word)
+		{
+			in_word = 0;
+		}
+		i++;
 	}
-	if (n == 0)
-		temp[i++] = '0';
-	while (n > 0)
-	{
-		temp[i++] = (n % 10) + '0';
-		n /= 10;
-	}
-	if (sign)
-		temp[i++] = '-';
-	j = 0;
-	while (i > 0)
-		buf[j++] = temp[--i];
-	buf[j] = '\0';
+	return (count);
 }

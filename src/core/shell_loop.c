@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 22:33:21 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/19 20:18:16 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/20 02:38:06 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ char	*get_input(void)
 	}
 }
 
-void	shell_loop(int arg_count, char ***envp)
+void	shell_loop(int arg_count, char ***envp, t_shell *shell)
 {
 	char			*input;
 	t_token			*token;
@@ -127,7 +127,7 @@ void	shell_loop(int arg_count, char ***envp)
 		input = NULL;
 		if (token)
 		{
-			handle_command(token, envp);
+			handle_command(token, envp, shell);
 			free_tokens(token);
 			token = NULL;
 		}

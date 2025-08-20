@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:01:12 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/19 03:55:48 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/20 00:28:28 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,8 @@ void		*safe_malloc(size_t size);
 int			get_length(char	**str);
 long long	ft_atol(const char *str);
 void		ft_free_multiple(void **ptrs[], size_t count);
-void		ft_itoa_buf(int n, char *buf, int i, int j);
+void		ft_itoa_buf(int n, char *buf);
 void		free_split(char **split);
+char		*ft_strtrim_new(char const *s1, char const *set);
+int			count_words(char *str);
 #endif

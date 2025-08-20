@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:28:48 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/17 20:35:47 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/20 02:44:55 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,26 @@ int	has_unclosed_quotes(const char *input)
 		input++;
 	}
 	return (in_single || in_double);
+}
+
+
+int	ft_isupper(int c)
+{
+	if (c > 64 && c < 91)
+		return (1);
+	if (c == '_')
+		return (1);
+	if (c > 47 && c < 58)
+		return (1);
+	return (0);
+}
+
+int	count_line(char **array)
+{
+	int	i;
+
+	i = 0;
+	while (array[i])
+		i++;
+	return (i);
 }

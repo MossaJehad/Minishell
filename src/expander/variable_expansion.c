@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   variable_expansion.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:16:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/19 03:55:04 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/20 00:22:24 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	expand_exit_status(t_expand_ctx *ctx)
 
 	if (ctx->input[ctx->in_idx + 1] == '?')
 	{
-		ft_itoa_buf(get_shell_status(), exit_status_str, 0, 0);
+		ft_itoa_buf(get_shell_status(), exit_status_str);
 		len = ft_strlen(exit_status_str);
 		if (ctx->out_idx + len < BUFFER_SIZE * 4 - 1)
 		{

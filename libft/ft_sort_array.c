@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 12:52:53 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/17 21:29:27 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/20 00:24:59 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ void	ft_sort_array(char **array)
 	len = 0;
 	while (array[len])
 		len++;
-	i = 0;
-	while (i < len - 1)
+	i = -1;
+	while (++i < len - 1)
 	{
 		j = i + 1;
 		while (j < len)
@@ -38,6 +38,5 @@ void	ft_sort_array(char **array)
 			}
 			j++;
 		}
-		i++;
 	}
 }

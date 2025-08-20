@@ -3,81 +3,72 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/09 15:40:06 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/19 01:12:41 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/07/10 14:06:42 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/20 02:43:57 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	count_n_flags(t_token *token)
+void	last_check(int flag)
 {
-	int		n_count;
-	char	*flag;
-	int		i;
+	if (flag == 0)
+		write(1, "\n", 1);
+}
 
-	n_count = 0;
-	while (token && ft_strncmp(token->value, "-", 1) == 0)
+int	check_flag(char **flag, int *idx)
+{
+	int		i;
+	int		j;
+	int	ret;
+
+	i = 1;
+	if (flag[i] == NULL)
+		return (0);
+	while (flag[i] && flag[i][0] == '-')
 	{
-		flag = token->value;
-		if (ft_strlen(flag) < 2)
-			break ;
-		i = 1;
-		while (flag[i])
+		j = 1;
+		while (flag[i][j] == 'n')
+			j++;
+		if (flag[i][j] == '\0')
 		{
-			if (flag[i] != 'n')
-				return (n_count);
+			(*idx)++;
 			i++;
 		}
-		n_count++;
-		token = token->next;
+		else
+			break ;
 	}
-	return (n_count);
+	ret = *idx > 0;
+	return (ret);
 }
 
-t_token	*skip_n_flags(t_token *token, int *newline)
+int	ft_echo(int nb, char **arg, char **envp)
 {
-	int	n_flags;
+	int		i;
+	int		j;
+	int	flag;
 
-	n_flags = count_n_flags(token);
-	if (n_flags > 0)
+	i = 0;
+	flag = check_flag(arg, &i);
+	while (++i < nb)
 	{
-		*newline = 0;
-		while (n_flags-- > 0 && token)
-			token = token->next;
-	}
-	return (token);
-}
-
-void	print_echo_args(t_token *token, int newline)
-{
-	t_token	*peek;
-
-	while (token)
-	{
-		if (token->type == WORD || token->type == QUOTED_STRING || token->type == COMMAND)
+		j = 0;
+		while (arg[i][j] && arg[i][j + 1])
 		{
-			printf("%s", token->value);
-			peek = token->next;
-			while (peek && !(peek->type == WORD || peek->type == QUOTED_STRING || peek->type == COMMAND))
-				peek = peek->next;
-			if (peek && peek->value && *peek->value)
-				printf(" ");
+			if (arg[i][j] == '$' && ft_isupper(arg[i][++j]))
+			{
+				if (arg[i + 1] && ft_getenv(arg[++i], envp) == NULL)
+					ft_putstr_fd("\n", 1);
+			}
+			else
+				break ;
 		}
-		token = token->next;
+		ft_putstr_fd(arg[i], 1);
+		if (i != nb - 1)
+			ft_putchar_fd(' ', 1);
 	}
-	if (newline)
-		printf("\n");
-}
-
-void	handle_echo_command(t_token *token)
-{
-	int	newline;
-
-	newline = 1;
-	token = token->next;
-	token = skip_n_flags(token, &newline);
-	print_echo_args(token, newline);
+	last_check(flag);
+	return (0);
 }

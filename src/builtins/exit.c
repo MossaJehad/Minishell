@@ -3,74 +3,85 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/30 12:00:00 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/18 13:40:19 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/08/11 12:48:25 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/20 02:44:09 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	is_valid_number(const char *str)
+void	ft_exit(t_shell *shell, char **cmd)
 {
-	int	i;
+	int	code;
 
-	if (!str || !*str)
-		return (0);
-	i = 0;
-	if (str[i] == '-' || str[i] == '+')
-		i++;
-	if (!str[i])
-		return (0);
-	while (str[i])
+	code = 0;
+	if (!ft_strcmp(cmd[0], "exit"))
 	{
-		if (!ft_isdigit(str[i]))
-			return (0);
-		i++;
+		if (shell->exec->if_pipe == 1)
+			exit_code_in_pipes(shell, cmd);
+		else
+		{
+			if (count_line(cmd) > 2)
+				exit_err(shell);
+			else if (cmd[1] && !cmd[2])
+				exit_code(shell, cmd);
+		}
+		if (!cmd[1])
+		{
+			close(shell->exec->tty_fd0);
+			close(shell->exec->tty_fd1);
+			simple_exit(shell, code);
+		}
 	}
-	return (1);
-}
-
-int	check_overflow(const char *str)
-{
-	long long	num;
-
-	num = ft_atol(str);
-	if (num > LLONG_MAX || num < LLONG_MIN)
-		return (1);
-	return (0);
-}
-
-int	process_exit_args(char **args, int arg_count)
-{
-	if (arg_count == 1)
-		return (get_shell_status());
-	if (arg_count == 2)
-	{
-		if (!is_valid_number(args[1]) || check_overflow(args[1]))
-			return (-2);
-		return ((unsigned char)ft_atol(args[1]));
-	}
-	return (-1);
-}
-
-void	handle_exit_command(char **args, t_token *seg, int arg_count, char ***envp)
-{
-	int	exit_code;
-	
-	printf("\033[0;31mexit\n\033[0m");
-	exit_code = process_exit_args(args, arg_count);
-	if (exit_code == -1)
-	{
-		perror("minishell: exit: too many arguments");
-		set_shell_status(1);
-		return;
-	}
-	cleanup_shell_resources(envp, seg, NULL, NULL);
-	rl_clear_history();
-	if (exit_code == -2)
-		exit(2);
 	else
-		exit(exit_code);
+		simple_exit(shell, code);
+}
+
+void	simple_exit(t_shell *shell, int code)
+{
+	code = shell->last_status;
+	cleanup_all(shell);
+	free(shell->input);
+	ft_free_arr(shell->envp);
+	free(shell);
+	exit(code);
+}
+
+void	exit_code(t_shell *shell, char **args)
+{
+	int	code;
+
+	code = 0;
+	if (!is_exit_correct(shell, args[1], 0))
+		code = shell->last_status;
+	else
+		exit_err(shell);
+	cleanup_all(shell);
+	free(shell->input);
+	ft_free_arr(shell->envp);
+	free(shell);
+	exit(code);
+}
+
+void	exit_code_in_pipes(t_shell *shell, char **arg)
+{
+	int	code;
+
+	code = 0;
+	if (count_line(arg) == 1)
+		simple_exit(shell, code);
+	if (count_line(arg) > 2)
+		exit_err(shell);
+	else if (!is_exit_correct(shell, arg[1], 0))
+		code = ft_atol(arg[1]);
+	else
+		exit_err(shell);
+	code = shell->last_status;
+	cleanup_all(shell);
+	free(shell->input);
+	ft_free_arr(shell->envp);
+	free(shell);
+	exit(code);
 }

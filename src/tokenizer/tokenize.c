@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:30 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/19 03:02:05 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/20 02:43:12 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,21 @@
 void	find_type(t_token	*new, char *type)
 {
 	if (ft_strcmp(type, "command") == 0)
-		new->type = COMMAND;
+		new->type = WORD;
 	else if (ft_strcmp(type, "word") == 0)
 		new->type = WORD;
 	else if (ft_strcmp(type, "pipe") == 0)
 		new->type = PIPE;
-	else if (ft_strcmp(type, "redirect input") == 0)
-		new->type = REDIRECT;
-	else if (ft_strcmp(type, "redirect output") == 0)
-		new->type = REDIRECT_OUT;
+	else if (ft_strcmp(type, "REDIRIN input") == 0)
+		new->type = REDIRIN;
+	else if (ft_strcmp(type, "REDIRIN output") == 0)
+		new->type = REDIROUT;
 	else if (ft_strcmp(type, "append output") == 0)
 		new->type = APPEND;
 	else if (ft_strcmp(type, "here-document") == 0)
 		new->type = HEREDOC;
 	else
-		new->type = WORD;
+		new->type = UNKNOWN;
 }
 
 void	create_token(t_token **token, char *value, char *type)
@@ -134,7 +134,7 @@ int	tokenize_pipe_and_redirects(char **array, int *i, t_token **token)
 	}
 	else if (ft_strcmp(array[*i], "<") == 0)
 	{
-		create_token(token, "<", "redirect input");
+		create_token(token, "<", "REDIRIN input");
 		(*i)++;
 		if (!array[*i])
 		{
@@ -147,7 +147,7 @@ int	tokenize_pipe_and_redirects(char **array, int *i, t_token **token)
 	}
 	else if (ft_strcmp(array[*i], ">") == 0)
 	{
-		create_token(token, ">", "redirect output");
+		create_token(token, ">", "REDIRIN output");
 		(*i)++;
 		if (!array[*i])
 		{
