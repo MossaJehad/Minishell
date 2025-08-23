@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:40:06 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 15:15:26 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 15:46:05 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ void	handle_echo_command(t_token *token)
 
 	newline = 1;
 	token = token->next;
-	printf("%s\n", token->value);
 	token = skip_n_flags(token, &newline);
 	print_echo_args(token, newline);
 }
