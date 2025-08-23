@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:01:12 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/22 00:17:10 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:45:51 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int			copy_char(const char *input, int *in_idx,
 char		**ft_strdup_array(char **array);
 void		ft_sort_array(char **array);
 void		*safe_malloc(size_t size);
-int			get_length(char	**str);
+size_t		get_length(char	**str);
 long long	ft_atol(const char *str);
 void		ft_free_multiple(void **ptrs[], size_t count);
 void		ft_itoa_buf(int n, char *buf, int i, int j);

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:30:50 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 18:30:02 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:47:40 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 */
 char	*ft_strtok(char *str, const char *delim)
 {
+	(void)str;
+	(void)delim;
 	return (NULL);
 }
 

@@ -1,7 +1,7 @@
 NAME			=	minishell
 CC				=	cc
 LEAKSANITIZER	=	-g3 -fsanitize=leak -fsanitize=address -fno-omit-frame-pointer
-CFLAGS			=	-Wall -Wextra -Werror -Weverything -g -Iinclude
+CFLAGS			=	-Wall -Wextra -Werror -g -Iinclude
 RM				=	rm -rf
 HEADERS			=	include/minishell.h
 

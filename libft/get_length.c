@@ -6,15 +6,15 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 21:26:20 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/22 00:17:29 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:44:49 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	get_length(char **str)
+size_t	get_length(char **str)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
 	while (str[i])

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 03:55:19 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 18:26:06 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:48:06 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void	ft_itoa_buf(int n, char *buf, int i, int j)
 	char	tmp[12];
 	int		len;
 
+	(void)i;
 	if (n == 0)
 	{
 		buf[0] = '0';

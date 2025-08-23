@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 16:14:31 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/17 20:20:15 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:56:51 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,38 +31,53 @@ void	run_parsing_loop(const char *input, t_parse_state *s, char **argv,
 	}
 }
 
+char	**allocate_argv(void)
+{
+	char	**argv;
+
+	argv = ft_calloc(MAX_ARGS, sizeof(char *));
+	return (argv);
+}
+
+int	handle_final_buffer(char **argv, t_parse_state *s, char *buffer)
+{
+	int	i;
+
+	if (s->buffer_pos > 0)
+	{
+		buffer[s->buffer_pos] = '\0';
+		argv[s->arg_count] = ft_strdup(buffer);
+		if (!argv[s->arg_count])
+		{
+			i = 0;
+			while (i < s->arg_count)
+			{
+				free(argv[i]);
+				i++;
+			}
+			free(argv);
+			return (-1);
+		}
+		s->arg_count++;
+	}
+	return (0);
+}
+
 char	**parse_arguments(const char *input, int *arg_count)
 {
 	t_parse_state	s;
 	char			**argv;
 	char			buffer[BUFFER_SIZE];
-	int				cleanup_i;
 
 	if (!input || !arg_count)
 		return (NULL);
-	argv = ft_calloc(MAX_ARGS, sizeof(char *));
+	argv = allocate_argv();
 	if (!argv)
 		return (NULL);
 	null_parse_state(&s);
 	run_parsing_loop(input, &s, argv, buffer);
-	if (s.buffer_pos > 0)
-	{
-		buffer[s.buffer_pos] = '\0';
-		argv[s.arg_count] = ft_strdup(buffer);
-		if (!argv[s.arg_count])
-		{
-			cleanup_i = 0;
-			while (cleanup_i < s.arg_count)
-			{
-				if (argv[cleanup_i])
-					free(argv[cleanup_i]);
-				cleanup_i++;
-			}
-			free(argv);
-			return (NULL);
-		}
-		s.arg_count++;
-	}
+	if (handle_final_buffer(argv, &s, buffer) == -1)
+		return (NULL);
 	argv[s.arg_count] = NULL;
 	*arg_count = s.arg_count;
 	return (argv);

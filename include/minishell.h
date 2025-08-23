@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 18:21:32 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:46:36 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,10 +160,10 @@ extern volatile sig_atomic_t	g_signal;	/* Global signal status */
 
 /* Main shell functions */
 t_token				*prepare_command(char *input, char ***envp, int arg_count);
+t_token				*handle_operator(char **args, char **envp);
 void				shell_loop(int argc, char ***envp);
 void				init_shell(char **envp);
 void				print_welcome_banner(void);
-
 /* Shell state management */
 void				null_shell(t_shell *s);
 
