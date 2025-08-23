@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:14:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/22 11:25:26 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 20:15:46 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,38 +44,9 @@ void	finalize_command_execution(t_exec_ctx *ctx)
 void	handle_command(t_token *token, char ***envp)
 {
 	t_exec_ctx	ctx;
-	t_token		*current;
-	int			is_heredoc_only;
-	int			heredoc_fd;
 
 	ft_bzero(&ctx, sizeof(t_exec_ctx));
-	is_heredoc_only = 1;
-	current = token;
-	while (current)
-	{
-		if (current->type == COMMAND || current->type == WORD)
-		{
-			is_heredoc_only = 0;
-			break ;
-		}
-		current = current->next;
-	}
-	if (is_heredoc_only)
-	{
-		current = token;
-		while (current)
-		{
-			if (current->type == HEREDOC)
-			{
-				heredoc_fd = handle_heredoc(current->next, ctx);
-				if (heredoc_fd != -1)
-					close(heredoc_fd);
-				return ;
-			}
-			current = current->next;
-		}
-		return ;
-	}
+	check_heredoc_only(token, &ctx);
 	if (prepare_and_execute_commands(token, envp, &ctx) == 0)
 		finalize_command_execution(&ctx);
 }

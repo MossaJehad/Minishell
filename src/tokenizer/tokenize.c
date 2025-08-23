@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:30 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 18:22:16 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 20:14:40 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,11 @@ int	check_syntax_error(char **array)
 			if (!array[i + 1] || is_operator(array[i + 1]))
 			{
 				if (array[i + 1])
-					printf("minishell: syntax error near unexpected token: \
-				%s\n", array[i + 1]);
+					printf("minishell:\
+						syntax error near unexpected token: %s\n", array[i + 1]);
 				else
-					printf("minishell: syntax error near unexpected token: \
-				newline\n");
+					printf("minishell:\
+						syntax error near unexpected token: newline\n");
 				return (1);
 			}
 		}

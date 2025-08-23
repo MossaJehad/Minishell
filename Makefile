@@ -34,7 +34,8 @@ READLINE_LIB	=	-lreadline
 # Core files - main entry point and shell loop
 CORE_SRC	=	main.c \
 			shell_loop.c \
-			init.c
+			init.c \
+			prepare_cmd.c
 
 # Parser files - input parsing and validation
 PARSER_SRC	=	parsing.c \
@@ -52,7 +53,8 @@ BUILTIN_SRC	=	echo.c \
 			env.c \
 			export.c \
 			unset.c \
-			exit.c
+			exit.c \
+			builtins_utils.c
 
 # Executor files - command execution and process management
 EXEC_SRC	=	command_lookup.c \

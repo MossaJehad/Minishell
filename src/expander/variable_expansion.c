@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:16:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 17:56:36 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 20:03:19 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,32 +68,26 @@ int	expand_braced_var(t_expand_ctx *ctx)
 int	expand_exit_status(t_expand_ctx *ctx)
 {
 	char	exit_status_str[20];
+	char	*str;
 	int		len;
 
 	if (ctx->input[ctx->in_idx + 1] == '?')
 	{
 		ft_itoa_buf(get_shell_status(), exit_status_str, 0, 0);
-		len = ft_strlen(exit_status_str);
-		if (ctx->out_idx + len < BUFFER_SIZE * 4 - 1)
-		{
-			ft_strcpy(ctx->output + ctx->out_idx, exit_status_str);
-			ctx->out_idx += len;
-		}
-		ctx->in_idx += 2;
-		return (ctx->out_idx);
+		str = exit_status_str;
 	}
-	if (ctx->input[ctx->in_idx + 1] == '0')
+	else if (ctx->input[ctx->in_idx + 1] == '0')
+		str = "minishell";
+	else
+		return (0);
+	len = ft_strlen(str);
+	if (ctx->out_idx + len < BUFFER_SIZE * 4 - 1)
 	{
-		len = ft_strlen("minishell");
-		if (ctx->out_idx + len < BUFFER_SIZE * 4 - 1)
-		{
-			ft_strcpy(ctx->output + ctx->out_idx, "minishell");
-			ctx->out_idx += len;
-		}
-		ctx->in_idx += 2;
-		return (ctx->out_idx);
+		ft_strcpy(ctx->output + ctx->out_idx, str);
+		ctx->out_idx += len;
 	}
-	return (0);
+	ctx->in_idx += 2;
+	return (ctx->out_idx);
 }
 
 int	process_variable_expansion(t_expand_ctx *ctx)

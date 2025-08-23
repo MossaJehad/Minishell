@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:31:06 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 18:59:44 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 19:49:59 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,28 +80,25 @@ int	handle_single_char_operators(const char *input, t_parse_state *s,
 	char	operator_str[2];
 	char	*token;
 
-	if (!s->in_single_quote && !s->in_double_quote)
+	if ((!s->in_single_quote && !s->in_double_quote) && (input[s->cursor] == '|'
+			|| input[s->cursor] == '<' || input[s->cursor] == '>'))
 	{
-		if (input[s->cursor] == '|' || input[s->cursor] == '<'
-			|| input[s->cursor] == '>')
+		if (s->buffer_pos > 0)
 		{
-			if (s->buffer_pos > 0)
-			{
-				buffer[s->buffer_pos] = '\0';
-				argv[s->arg_count++] = ft_strdup(buffer);
-				if (!argv[s->arg_count - 1])
-					return (-1);
-				s->buffer_pos = 0;
-			}
-			operator_str[0] = input[s->cursor];
-			operator_str[1] = '\0';
-			token = ft_strdup(operator_str);
-			if (!token)
+			buffer[s->buffer_pos] = '\0';
+			argv[s->arg_count++] = ft_strdup(buffer);
+			if (!argv[s->arg_count - 1])
 				return (-1);
-			argv[s->arg_count++] = token;
-			s->cursor++;
-			return (1);
+			s->buffer_pos = 0;
 		}
+		operator_str[0] = input[s->cursor];
+		operator_str[1] = '\0';
+		token = ft_strdup(operator_str);
+		if (!token)
+			return (-1);
+		argv[s->arg_count++] = token;
+		s->cursor++;
+		return (1);
 	}
 	return (0);
 }

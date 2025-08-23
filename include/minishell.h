@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 18:46:36 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 20:17:10 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,6 +238,8 @@ void				handle_exit_command(char **args, t_token *seg,
 int					should_run_in_parent(const char *cmd);
 char				*determine_cd_target(char *path, char **envp);
 int					is_valid_identifier(const char *str);
+void				extract_key_value(char *arg, char **key, char **value);
+void				assign_env_variable(char ***envp, char *key, char *value);
 
 /* Echo command utilities */
 int					count_n_flags(t_token *token);
@@ -269,7 +271,7 @@ int					handle_single_command(t_token *cmd_starts[MAX_COMMANDS],
 int					fork_processes(t_token *cmd_starts[256], int num_cmds,
 						int heredoc_fds[MAX_CMDS], int pipefd[256][2],
 						pid_t pids[256], char **envp);
-
+void				check_heredoc_only(t_token *token, t_exec_ctx *ctx);
 /* Process utilities */
 void				execute_child_process(t_token *cmd_starts[256], int i,
 						int heredoc_fds[MAX_CMDS], int pipefd[256][2],
@@ -367,6 +369,7 @@ int					read_heredoc_lines(int write_fd, const char *delimiter);
 /* Environment variable management */
 char				*lookup_env(const char *name, char **envp);
 void				add_or_replace_env(char ***envp, const char *var);
+void				add_or_replace(char ***envp, const char *var);
 void				add_env_var(char ***envp, const char *var);
 void				remove_env_var(char ***envp, const char *name);
 int					find_env_index(char **envp, const char *name);
