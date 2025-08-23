@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 15:28:41 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/21 22:58:56 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:21:17 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,13 +90,14 @@ int	find_in_dirs(char **dirs, char *cmd, int i)
  *
  * @return 1 if the command exists in one of the PATH directories, 0 otherwise
  */
-int	find_in_path_str(char *cmd, char **envp X_UNUSED, char *path_env)
+int	find_in_path_str(char *cmd, char **envp, char *path_env)
 {
 	char	**dirs;
 	size_t	max_len;
 	size_t	len;
 	int		i;
 
+	(void)envp;
 	dirs = ft_split(path_env, ':');
 	if (!dirs)
 		return (0);

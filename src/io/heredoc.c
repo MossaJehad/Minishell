@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:32:55 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/22 11:11:24 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 17:57:05 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ int	handle_heredoc(t_token *tok, t_exec_ctx ctx)
 			exit(1);
 		close(pipefd[1]);
 		close_heredoc_fds(ctx.heredoc_fds, ctx.cmd_count);
-		//(void)ctx;
 		exit(0);
 	}
 	close(pipefd[1]);

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 20:29:22 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/18 23:41:25 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:21:28 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,12 @@
 
 volatile sig_atomic_t	g_signal;
 
-int	main(int ac, char *av[] X_UNUSED, char **envp)
+int	main(int ac, char *av[], char **envp)
 {
 	char	**env;
 	int		env_count;
 
+	(void)av;
 	setup_signal_handlers();
 	env_count = get_length(envp);
 	env = ft_calloc((env_count + 1), sizeof(char *));

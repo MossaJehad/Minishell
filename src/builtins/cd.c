@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:42:16 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/18 19:57:28 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:00:00 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@ int	change_directory(char *target_dir, char ***envp)
 	char	*old_pwd;
 
 	lookup = lookup_env_value("PWD", *envp);
-	old_pwd = lookup ? ft_strdup(lookup) : NULL;
+	if(lookup)
+		old_pwd = ft_strdup(lookup);
+	else
+		old_pwd = NULL;
 	if (chdir(target_dir) != 0)
 	{
 		printf("cd: %s: No such file or directory\n", target_dir);

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:16:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/22 10:50:09 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 17:56:36 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ int	expand_simple_var(t_expand_ctx *ctx)
 	{
 		while (ctx->input[ctx->in_idx]
 			&& (ft_isalnum(ctx->input[ctx->in_idx])
-			|| ctx->input[ctx->in_idx] == '_') && k < 255)
-				var[k++] = ctx->input[ctx->in_idx++];
+				|| ctx->input[ctx->in_idx] == '_') && k < 255)
+			var[k++] = ctx->input[ctx->in_idx++];
 	}
 	var[k] = '\0';
 	val = lookup_env(var, ctx->envp);
@@ -65,7 +65,7 @@ int	expand_braced_var(t_expand_ctx *ctx)
 	return (ctx->out_idx);
 }
 
-int expand_exit_status(t_expand_ctx *ctx)
+int	expand_exit_status(t_expand_ctx *ctx)
 {
 	char	exit_status_str[20];
 	int		len;
@@ -110,7 +110,8 @@ int	process_variable_expansion(t_expand_ctx *ctx)
 			return (result);
 		if (ctx->input[ctx->in_idx + 1] == '{')
 			return (expand_braced_var(ctx));
-		if (ft_isalnum(ctx->input[ctx->in_idx + 1]) || ctx->input[ctx->in_idx + 1] == '_')
+		if (ft_isalnum(ctx->input[ctx->in_idx + 1])
+			|| ctx->input[ctx->in_idx + 1] == '_')
 			return (expand_simple_var(ctx));
 		return (copy_char(ctx->input, &ctx->in_idx, ctx->output, ctx->out_idx));
 	}

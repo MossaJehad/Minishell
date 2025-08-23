@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:19:05 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/22 11:25:19 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:22:45 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,8 +108,8 @@ int	parse_commands(t_token *token, t_token *cmd_starts[256],
 	if (!current)
 		return (0);
 	cmd_starts[num_cmds] = current;
-	if (setup_heredocs_for_cmd(cmd_starts[num_cmds], num_cmds, heredoc_fds) ==
-		-1)
+	if (setup_heredocs_for_cmd(cmd_starts[num_cmds],
+			num_cmds, heredoc_fds) == -1)
 		return (-1);
 	num_cmds++;
 	while (current)

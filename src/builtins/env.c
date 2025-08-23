@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:44:48 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/18 20:24:02 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:00:56 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,10 @@ void	add_or_replace_env(char ***envp, const char *var)
 	int		idx;
 
 	eq = strchr(var, '=');
-	keylen = eq ? (size_t)(eq - var) : strlen(var);
+	if (eq)
+		keylen = (size_t)(eq - var);
+	else
+		keylen = ft_strlen(var);
 	name = ft_strndup(var, keylen);
 	if (!name)
 		return ;

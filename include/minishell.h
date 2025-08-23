@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 14:43:00 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:21:32 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,6 @@
 # define MAX_COMMANDS 256
 # define MAX_PATH_LEN 1024
 # define MAX_CMDS 256
-# define X_UNUSED __attribute__((unused))
-
 /* PATH_MAX fallback definition */
 # ifndef PATH_MAX
 #  define PATH_MAX 4096
@@ -82,11 +80,11 @@ typedef struct s_token
 */
 typedef struct s_parse_state
 {
-	int cursor;          /* Current character index in input */
-	int buffer_pos;      /* Current position in temporary buffer */
-	int arg_count;       /* Number of arguments parsed so far */
-	int in_single_quote; /* Flag: inside single quote */
-	int in_double_quote; /* Flag: inside double quote */
+	int	cursor;			/* Current character index in input */
+	int	buffer_pos;		/* Current position in temporary buffer */
+	int	arg_count;		/* Number of arguments parsed so far */
+	int	in_single_quote;/* Flag: inside single quote */
+	int	in_double_quote;/* Flag: inside double quote */
 }					t_parse_state;
 
 /*
@@ -95,9 +93,9 @@ typedef struct s_parse_state
 */
 typedef struct s_shell
 {
-	char *pwd;    /* Current working directory */
-	char *oldpwd; /* Previous working directory */
-	int shlvl;    /* Shell level (as integer for easier increment) */
+	char	*pwd;		/* Current working directory */
+	char	*oldpwd;	/* Previous working directory */
+	int		shlvl;		/* Shell level (as integer for easier increment) */
 }					t_shell;
 
 /*
@@ -106,11 +104,11 @@ typedef struct s_shell
 */
 typedef struct s_expand_ctx
 {
-	const char *input; /* Input string to expand */
-	char *output;      /* Buffer for expanded result */
-	int in_idx;        /* Current index in input string */
-	int out_idx;       /* Current position in output buffer */
-	char **envp;       /* Environment variables array */
+	const char	*input;		/* Input string to expand */
+	char		*output;	/* Buffer for expanded result */
+	int			in_idx;		/* Current index in input string */
+	int			out_idx;	/* Current position in output buffer */
+	char		**envp;		/* Environment variables array */
 }					t_expand_ctx;
 
 /*
@@ -121,11 +119,11 @@ typedef struct s_expand_ctx
 */
 typedef struct s_exec_ctx
 {
-	int pipe_fds[MAX_CMDS][2];     /* Pipes between commands */
-	int heredoc_fds[MAX_CMDS];     /* Heredoc file descriptors */
-	pid_t pids[MAX_CMDS];          /* Process IDs of child processes */
-	int cmd_count;                 /* Number of commands to execute */
-	t_token *cmd_starts[MAX_CMDS]; /* Start token of each command */
+	int		pipe_fds[MAX_CMDS][2];	/* Pipes between commands */
+	int		heredoc_fds[MAX_CMDS];	/* Heredoc file descriptors */
+	pid_t	pids[MAX_CMDS];			/* Process IDs of child processes */
+	int		cmd_count;				/* Number of commands to execute */
+	t_token	*cmd_starts[MAX_CMDS];	/* Start token of each command */
 }					t_exec_ctx;
 
 typedef struct s_allstructs
@@ -151,7 +149,7 @@ typedef struct s_allstructs
 ** GLOBAL VARIABLES
 ** Signal handling and exit status management
 */
-extern volatile sig_atomic_t g_signal; /* Global signal status */
+extern volatile sig_atomic_t	g_signal;	/* Global signal status */
 
 /*
 ** ============================================================================

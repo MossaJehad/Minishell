@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:47:13 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/22 22:24:18 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 17:59:11 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include <stddef.h>
 
 void	export_no_args(char **env)
 {
@@ -44,7 +45,10 @@ void	add_or_replace(char ***envp, const char *var)
 
 	env = *envp;
 	eq = ft_strchr(var, '=');
-	keylen = eq ? (size_t)(eq - var) : ft_strlen(var);
+	if (eq)
+		keylen = (size_t)(eq - var);
+	else
+		keylen = ft_strlen(var);
 	name = ft_strndup(var, keylen);
 	if (!name)
 		return ;
@@ -108,7 +112,7 @@ void	process_export_variable(char ***envp, char *arg)
 	free(temp_key);
 }
 
-void handle_export_command(char ***envp, char **args, int arg_count)
+void	handle_export_command(char ***envp, char **args, int arg_count)
 {
 	int	i;
 	int	error_occurred;
@@ -118,7 +122,7 @@ void handle_export_command(char ***envp, char **args, int arg_count)
 	{
 		export_no_args(*envp);
 		g_signal = 0;
-		return;
+		return ;
 	}
 	i = 1;
 	while (i < arg_count)
@@ -131,7 +135,7 @@ void handle_export_command(char ***envp, char **args, int arg_count)
 			error_occurred = 1;
 		i++;
 	}
-	if(error_occurred)
+	if (error_occurred)
 		g_signal = 1;
 	else
 		g_signal = 0;

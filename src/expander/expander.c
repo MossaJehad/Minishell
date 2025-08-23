@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:18:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/22 08:15:00 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:01:40 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ int	handle_dollar_expansion(t_expand_ctx *ctx)
 			return (result);
 		if (ctx->input[ctx->in_idx + 1] == '{')
 			return (expand_braced_var(ctx));
-		if (ft_isalnum(ctx->input[ctx->in_idx + 1]) || ctx->input[ctx->in_idx
-			+ 1] == '_')
+		if (ft_isalnum(ctx->input[ctx->in_idx + 1])
+			|| ctx->input[ctx->in_idx + 1] == '_')
 			return (expand_simple_var(ctx));
 		return (copy_char(ctx->input, &ctx->in_idx, ctx->output, ctx->out_idx));
 	}
