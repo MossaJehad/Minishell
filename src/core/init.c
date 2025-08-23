@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 21:28:30 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/20 02:56:00 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/22 00:26:59 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,26 @@ void	init_pwd_vars(char ***envp)
 	free(cwd);
 }
 
+int	check_shlvl(int shlvl)
+{
+	if (shlvl > 999)
+	{
+		printf("minishell: Warning: shell level (%i) \
+			too high, resetting to 1\n", shlvl);
+		shlvl = 1;
+	}
+	else if (shlvl < 0)
+	{
+		printf("minishell: Warning: shell level (%i) too low, resetting to 1\n",
+			shlvl);
+		shlvl = 1;
+	}
+	return (shlvl);
+}
+
 void	init_shlvl(char ***envp)
 {
-	char	*shlvl_str; 
+	char	*shlvl_str;
 	int		shlvl;
 	char	*new_shlvl;
 	char	*shlvl_var;
@@ -64,12 +81,8 @@ void	init_shlvl(char ***envp)
 	if (shlvl_str)
 		shlvl = ft_atoi(shlvl_str) + 1;
 	else
-		shlvl = 0;
-	if(shlvl > 999 || shlvl < 0)
-	{
-		printf("minishell: warning: shell level (1000) too high, resetting to 1\n");
 		shlvl = 1;
-	}
+	shlvl = check_shlvl(shlvl);
 	new_shlvl = ft_itoa(shlvl);
 	if (!new_shlvl)
 		return ;

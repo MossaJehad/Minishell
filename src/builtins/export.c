@@ -5,99 +5,134 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/20 01:08:17 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/20 03:13:03 by mhasoneh         ###   ########.fr       */
+/*   Created: 2025/08/09 15:47:13 by mhasoneh          #+#    #+#             */
+/*   Updated: 2025/08/22 22:24:18 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../../include/minishell.h"
 
-int	find_env_var(char **envp, char *var_name)
+void	export_no_args(char **env)
 {
-	int	i;
-	int	var_len;
+	char	**sorted_env;
+	char	*eq;
+	int		j;
 
-	if (!envp || !var_name)
-		return (-1);
-	var_len = ft_strlen(var_name);
-	i = 0;
-	while (envp[i])
+	sorted_env = ft_strdup_array(env);
+	ft_sort_array(sorted_env);
+	j = 0;
+	while (sorted_env[j])
 	{
-		if (ft_strncmp(envp[i], var_name, var_len) == 0 \
-		&& (envp[i][var_len] == '=' || envp[i][var_len] == '\0'))
-			return (i);
-		i++;
-	}
-	return (-1);
-}
-
-void	add_to_env(t_shell *shell, char *arg)
-{
-	int		env_size;
-	char	**new_env;
-
-	env_size = 0;
-	while (shell->envp && shell->envp[env_size])
-		env_size++;
-	new_env = ft_realloc_array(shell->envp, env_size + 1);
-	if (!new_env)
-		return ;
-	new_env[env_size] = ft_strdup(arg);
-	shell->envp = new_env;
-}
-
-void	update_env_var(t_shell *shell, int i, char *arg)
-{
-	free(shell->envp[i]);
-	shell->envp[i] = ft_strdup(arg);
-}
-
-int	handle_env_var(t_shell *shell, char *arg)
-{
-	char	*var_name;
-	int		var_index;
-
-	if (!is_valid_var(arg))
-	{
-		err_message2("export", arg, "not a valid identifier");
-		return (1);
-	}
-	var_name = get_var_name(shell, arg);
-	var_index = find_env_var(shell->envp, var_name);
-	if (ft_strchr(arg, '='))
-	{
-		if (var_index >= 0)
-			update_env_var(shell, var_index, arg);
+		eq = ft_strchr(sorted_env[j], '=');
+		if (eq)
+			printf("declare -x %.*s=\"%s\"\n", (int)(eq - sorted_env[j]),
+				sorted_env[j], eq + 1);
 		else
-			add_to_env(shell, arg);
+			printf("declare -x %s\n", sorted_env[j]);
+		j++;
 	}
-	return (0);
+	ft_free_arr(sorted_env);
 }
 
-int	ft_export(t_shell *shell)
+void	add_or_replace(char ***envp, const char *var)
 {
-	int	i;
-	int	status;
+	char	**env;
+	char	*eq;
+	size_t	keylen;
+	char	*name;
+	int		idx;
 
-	if (!shell || !shell->cmd || !shell->cmd->full_cmd)
-		return (1);
-	i = 1;
-	status = 0;
-	if (!shell->cmd->full_cmd[1])
-		ft_env_export(shell->envp);
+	env = *envp;
+	eq = ft_strchr(var, '=');
+	keylen = eq ? (size_t)(eq - var) : ft_strlen(var);
+	name = ft_strndup(var, keylen);
+	if (!name)
+		return ;
+	idx = find_env_index(env, name);
+	free(name);
+	if (idx >= 0)
+		replace_env_var(env, idx, var);
+	else
+		append_env_var(envp, var);
+}
+
+void	process_export_assignment(char ***envp, char *arg)
+{
+	size_t	keylen;
+	char	*temp_key;
+	char	*key;
+	char	*temp_value;
+	char	*value;
+
+	keylen = ft_strchr(arg, '=') - arg;
+	temp_key = ft_strndup(arg, keylen);
+	key = ft_strtrim(temp_key, "\"");
+	free(temp_key);
+	temp_value = ft_strdup(ft_strchr(arg, '=') + 1);
+	value = ft_strtrim(temp_value, "\"");
+	free(temp_value);
+	if (!is_valid_identifier(key))
+	{
+		set_shell_status(1);
+		perror("export: not a valid identifier");
+	}
 	else
 	{
-		while (shell->cmd->full_cmd[i])
-		{
-			if (shell->cmd->full_cmd[i][0] == '\0')
-			{
-				i++;
-				continue ;
-			}
-			status = handle_env_var(shell, shell->cmd->full_cmd[i]);
-			i++;
-		}
+		temp_value = ft_strjoin(key, "=");
+		temp_key = ft_strjoin(temp_value, value);
+		add_or_replace(envp, temp_key);
+		free(temp_value);
+		free(temp_key);
 	}
-	return (status);
+	free(key);
+	free(value);
+}
+
+void	process_export_variable(char ***envp, char *arg)
+{
+	char	*temp_key;
+	char	*buf;
+
+	temp_key = ft_strtrim(arg, "\"");
+	if (!is_valid_identifier(temp_key))
+	{
+		set_shell_status(1);
+		perror("export: not a valid identifier");
+	}
+	else
+	{
+		buf = ft_strjoin(temp_key, "=");
+		add_or_replace(envp, buf);
+		free(buf);
+	}
+	free(temp_key);
+}
+
+void handle_export_command(char ***envp, char **args, int arg_count)
+{
+	int	i;
+	int	error_occurred;
+
+	error_occurred = 0;
+	if (arg_count == 1)
+	{
+		export_no_args(*envp);
+		g_signal = 0;
+		return;
+	}
+	i = 1;
+	while (i < arg_count)
+	{
+		if (ft_strchr(args[i], '='))
+			process_export_assignment(envp, args[i]);
+		else
+			process_export_variable(envp, args[i]);
+		if (g_signal != 0)
+			error_occurred = 1;
+		i++;
+	}
+	if(error_occurred)
+		g_signal = 1;
+	else
+		g_signal = 0;
 }

@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_handler.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:19:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/20 02:42:07 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/22 11:27:39 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
 int	handle_single_command(t_token *cmd_starts[256], int heredoc_fds[256],
-		char ***envp, t_shell *shell)
+		char ***envp)
 {
 	t_token	*seg;
 	int		cmd_argc;
@@ -23,7 +23,7 @@ int	handle_single_command(t_token *cmd_starts[256], int heredoc_fds[256],
 	cmd_argc = build_cmd_args(seg, cmd_argv);
 	if (is_builtin(cmd_argv[0]) && should_run_in_parent(cmd_argv[0]))
 	{
-		handle_single_builtin(shell, cmd_argv, cmd_argc, envp);
+		handle_single_builtin(cmd_argv, seg, cmd_argc, envp);
 		if (heredoc_fds[0] != -1)
 			close(heredoc_fds[0]);
 		return (1);

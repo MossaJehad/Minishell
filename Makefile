@@ -46,16 +46,13 @@ TOKEN_SRC	=	tokenize.c \
 			token_utils.c
 
 # Built-in command files - all shell built-ins
-BUILTIN_SRC	=	cd.c \
-			echo.c \
-			env.c \
-			env_utils.c \
-			exit.c \
-			exit_utils.c \
-			export.c \
-			export_utils.c \
+BUILTIN_SRC	=	echo.c \
+			cd.c \
 			pwd.c \
+			env.c \
+			export.c \
 			unset.c \
+			exit.c
 
 # Executor files - command execution and process management
 EXEC_SRC	=	command_lookup.c \
@@ -81,7 +78,6 @@ IO_SRC		=	input_handler.c \
 # Utility files - helper functions
 UTILS_SRC	=	env_utils.c \
 			utils.c \
-			error.c \
 			string_utils.c \
 			validation.c
 

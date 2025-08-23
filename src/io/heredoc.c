@@ -6,17 +6,17 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:32:55 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/19 05:45:39 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/22 11:11:24 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int handle_heredoc(t_token *tok, t_exec_ctx ctx)
+int	handle_heredoc(t_token *tok, t_exec_ctx ctx)
 {
-	int pipefd[2];
-	pid_t pid;
-	int status;
+	int		pipefd[2];
+	pid_t	pid;
+	int		status;
 
 	if (pipe(pipefd) == -1)
 	{
@@ -49,7 +49,7 @@ int handle_heredoc(t_token *tok, t_exec_ctx ctx)
 		close(pipefd[0]);
 		return (-1);
 	}
-	return pipefd[0];
+	return (pipefd[0]);
 }
 
 int	read_heredoc_lines(int write_fd, const char *delimiter)

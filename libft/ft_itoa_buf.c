@@ -3,40 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa_buf.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 03:55:19 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/20 00:24:06 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/22 00:19:28 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_itoa_buf(int n, char *buf)
+void	ft_itoa_buf(int n, char *buf, int i, int j)
 {
-	char	temp[20];
-	int		i;
-	int		j;
-	int		sign;
+	char	tmp[12];
+	int		neg;
 
-	i = 0;
-	sign = 0;
+	neg = 0;
+	if (n == 0)
+	{
+		buf[0] = '0';
+		buf[1] = '\0';
+		return ;
+	}
 	if (n < 0)
 	{
-		sign = 1;
+		neg = 1;
 		n = -n;
 	}
-	if (n == 0)
-		temp[i++] = '0';
 	while (n > 0)
 	{
-		temp[i++] = (n % 10) + '0';
+		tmp[i++] = (n % 10) + '0';
 		n /= 10;
 	}
-	if (sign)
-		temp[i++] = '-';
-	j = 0;
-	while (i > 0)
-		buf[j++] = temp[--i];
-	buf[j] = '\0';
+	if (neg)
+		tmp[i++] = '-';
+	while (j < i)
+	{
+		buf[j] = tmp[i - j - 1];
+		j++;
+	}
+	buf[i] = '\0';
 }

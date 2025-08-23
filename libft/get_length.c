@@ -6,18 +6,18 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 21:26:20 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/18 13:27:38 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/22 00:17:29 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	get_length(char	**str)
+int	get_length(char **str)
 {
 	int	i;
 
 	i = 0;
-	while(str[i])
+	while (str[i])
 		i++;
 	return (i + 1);
 }

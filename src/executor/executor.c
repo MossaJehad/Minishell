@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:11:46 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/20 02:28:48 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 14:39:17 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc,
 			create_token(&cmd_token, cmd_argv[k], "word");
 			k++;
 		}
-		ft_echo(cmd_argc, cmd_argv, envp);
+		handle_echo_command(cmd_token);
 		free_tokens(cmd_token);
 	}
 	else if (!ft_strcmp(cmd_argv[0], "pwd"))
@@ -41,21 +41,21 @@ void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc,
 	}
 	else if (!ft_strcmp(cmd_argv[0], "env"))
 	{
-		ft_env(envp);
+		handle_env_command(envp);
 	}
 }
 
 int	prepare_child_command(t_token *seg, char *cmd_argv[MAX_ARGS])
 {
-	int	cmd_argc;
-	t_token *current;
+	int		cmd_argc;
+	t_token	*current;
 
 	cmd_argc = 0;
 	current = seg;
 	while (current && current->type != PIPE)
 	{
-		if (current->type == REDIRIN || current->type == REDIROUT || 
-			current->type == APPEND)
+		if (current->type == REDIRECT || current->type == REDIRECT_OUT
+			|| current->type == APPEND)
 		{
 			if (setup_redirection(current) == -1)
 				return (-1);
@@ -71,7 +71,8 @@ int	prepare_child_command(t_token *seg, char *cmd_argv[MAX_ARGS])
 				current = current->next;
 			continue ;
 		}
-		if (current->type == WORD || current->type == SINGLEQ || current->type == DOUBLEQ)
+		if (current->type == WORD || current->type == COMMAND
+			|| current->type == QUOTED_STRING)
 			cmd_argv[cmd_argc++] = current->value;
 		current = current->next;
 	}
@@ -129,7 +130,8 @@ char	*find_executable(char *cmd, char **envp)
 }
 
 void	execute_child_process(t_token *cmd_starts[256], int i,
-		int heredoc_fds[MAX_CMDS], int pipefd[256][2], int num_cmds, char **envp)
+		int heredoc_fds[MAX_CMDS], int pipefd[256][2], int num_cmds,
+		char **envp)
 {
 	t_token	*seg;
 	char	*cmd_argv[MAX_ARGS];
@@ -165,8 +167,9 @@ void	execute_child_process(t_token *cmd_starts[256], int i,
 	exit(127);
 }
 
-int	fork_processes(t_token *cmd_starts[256], int num_cmds, int heredoc_fds[MAX_CMDS],
-		int pipefd[256][2], pid_t pids[256], char **envp)
+int	fork_processes(t_token *cmd_starts[256], int num_cmds,
+		int heredoc_fds[MAX_CMDS], int pipefd[256][2], pid_t pids[256],
+		char **envp)
 {
 	int	i;
 

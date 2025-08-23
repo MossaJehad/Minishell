@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   variable_expansion.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:16:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/20 00:22:24 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/22 10:50:09 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,21 @@
 int	expand_simple_var(t_expand_ctx *ctx)
 {
 	char	var[256];
-	int		k;
 	char	*val;
+	int		k;
 	int		len;
 
 	k = 0;
 	ctx->in_idx++;
-	while (ctx->input[ctx->in_idx] && (ft_isalnum(ctx->input[ctx->in_idx])
-		|| ctx->input[ctx->in_idx] == '_') && k < 255)
+	if (ft_isdigit(ctx->input[ctx->in_idx]))
 		var[k++] = ctx->input[ctx->in_idx++];
+	else
+	{
+		while (ctx->input[ctx->in_idx]
+			&& (ft_isalnum(ctx->input[ctx->in_idx])
+			|| ctx->input[ctx->in_idx] == '_') && k < 255)
+				var[k++] = ctx->input[ctx->in_idx++];
+	}
 	var[k] = '\0';
 	val = lookup_env(var, ctx->envp);
 	if (val)
@@ -34,7 +40,6 @@ int	expand_simple_var(t_expand_ctx *ctx)
 	}
 	return (ctx->out_idx);
 }
-
 
 int	expand_braced_var(t_expand_ctx *ctx)
 {
@@ -60,18 +65,29 @@ int	expand_braced_var(t_expand_ctx *ctx)
 	return (ctx->out_idx);
 }
 
-int	expand_exit_status(t_expand_ctx *ctx)
+int expand_exit_status(t_expand_ctx *ctx)
 {
 	char	exit_status_str[20];
 	int		len;
 
 	if (ctx->input[ctx->in_idx + 1] == '?')
 	{
-		ft_itoa_buf(get_shell_status(), exit_status_str);
+		ft_itoa_buf(get_shell_status(), exit_status_str, 0, 0);
 		len = ft_strlen(exit_status_str);
 		if (ctx->out_idx + len < BUFFER_SIZE * 4 - 1)
 		{
 			ft_strcpy(ctx->output + ctx->out_idx, exit_status_str);
+			ctx->out_idx += len;
+		}
+		ctx->in_idx += 2;
+		return (ctx->out_idx);
+	}
+	if (ctx->input[ctx->in_idx + 1] == '0')
+	{
+		len = ft_strlen("minishell");
+		if (ctx->out_idx + len < BUFFER_SIZE * 4 - 1)
+		{
+			ft_strcpy(ctx->output + ctx->out_idx, "minishell");
 			ctx->out_idx += len;
 		}
 		ctx->in_idx += 2;

@@ -3,23 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   command_handler.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:14:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/20 02:39:32 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/22 11:25:26 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	prepare_and_execute_commands(t_token *token, char ***envp, t_exec_ctx *ctx, t_shell *shell)
+int	prepare_and_execute_commands(t_token *token, char ***envp, t_exec_ctx *ctx)
 {
 	ctx->cmd_count = parse_commands(token, ctx->cmd_starts, ctx->heredoc_fds);
 	if (ctx->cmd_count == -1)
 		return (-1);
 	if (ctx->cmd_count == 1)
 	{
-		if (handle_single_command(ctx->cmd_starts, ctx->heredoc_fds, envp, shell))
+		if (handle_single_command(ctx->cmd_starts, ctx->heredoc_fds, envp))
 			return (0);
 	}
 	ignore_signals();
@@ -41,21 +41,22 @@ void	finalize_command_execution(t_exec_ctx *ctx)
 	restore_signals();
 }
 
-void	handle_command(t_token *token, char ***envp, t_shell *shell)
+void	handle_command(t_token *token, char ***envp)
 {
 	t_exec_ctx	ctx;
 	t_token		*current;
 	int			is_heredoc_only;
+	int			heredoc_fd;
 
 	ft_bzero(&ctx, sizeof(t_exec_ctx));
 	is_heredoc_only = 1;
 	current = token;
 	while (current)
 	{
-		if (current->type == WORD)
+		if (current->type == COMMAND || current->type == WORD)
 		{
 			is_heredoc_only = 0;
-			break;
+			break ;
 		}
 		current = current->next;
 	}
@@ -66,7 +67,7 @@ void	handle_command(t_token *token, char ***envp, t_shell *shell)
 		{
 			if (current->type == HEREDOC)
 			{
-				int heredoc_fd = handle_heredoc(current->next, ctx);
+				heredoc_fd = handle_heredoc(current->next, ctx);
 				if (heredoc_fd != -1)
 					close(heredoc_fd);
 				return ;
@@ -75,7 +76,7 @@ void	handle_command(t_token *token, char ***envp, t_shell *shell)
 		}
 		return ;
 	}
-	if (prepare_and_execute_commands(token, envp, &ctx, shell) == 0)
+	if (prepare_and_execute_commands(token, envp, &ctx) == 0)
 		finalize_command_execution(&ctx);
 }
 
@@ -86,7 +87,8 @@ int	build_cmd_args(t_token *seg, char *cmd_argv[MAX_ARGS])
 	cmd_argc = 0;
 	while (seg && seg->type != PIPE)
 	{
-		if (seg->type == REDIRIN || seg->type == HEREDOC || seg->type == APPEND)
+		if (seg->type == REDIRECT || seg->type == HEREDOC
+			|| seg->type == APPEND)
 		{
 			seg = seg->next;
 			continue ;

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:57:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/19 01:34:48 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/22 08:10:47 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ char	*lookup_env(const char *name, char **envp)
 	return (NULL);
 }
 
-char *expand_double_quote_loop(char *arg, char **envp)
+char	*expand_double_quote_loop(char *arg, char **envp)
 {
 	char			buffer[BUFFER_SIZE];
 	int				result;
@@ -39,12 +39,14 @@ char *expand_double_quote_loop(char *arg, char **envp)
 	ctx.in_idx = 1;
 	ctx.out_idx = 0;
 	ctx.envp = envp;
-	while (ctx.input[ctx.in_idx] && ctx.input[ctx.in_idx] != '"' && ctx.out_idx < BUFFER_SIZE - 1)
+	while (ctx.input[ctx.in_idx] && ctx.input[ctx.in_idx] != '"'
+		&& ctx.out_idx < BUFFER_SIZE - 1)
 	{
 		result = handle_dollar_expansion(&ctx);
 		if (result != 0)
 			continue ;
-		ctx.out_idx = copy_char(ctx.input, &ctx.in_idx, ctx.output, ctx.out_idx);
+		ctx.out_idx = copy_char(ctx.input, &ctx.in_idx, ctx.output,
+				ctx.out_idx);
 	}
 	ctx.output[ctx.out_idx] = '\0';
 	return (ft_strdup(ctx.output));
@@ -89,18 +91,16 @@ char	*expand_single_quote(char *arg)
 
 char	*expand_variables_in_string(char *str, char **envp)
 {
-    char			buffer[BUFFER_SIZE * 4];
-    t_expand_ctx	ctx;
+	char			buffer[BUFFER_SIZE * 4];
+	t_expand_ctx	ctx;
 
-    ctx.input = str;
-    ctx.output = buffer;
-    ctx.in_idx = 0;
-    ctx.out_idx = 0;
-    ctx.envp = envp;
-    while (ctx.input[ctx.in_idx])
-    {
+	ctx.input = str;
+	ctx.output = buffer;
+	ctx.in_idx = 0;
+	ctx.out_idx = 0;
+	ctx.envp = envp;
+	while (ctx.input[ctx.in_idx])
 		ctx.out_idx = process_variable_expansion(&ctx);
-	}
-    ctx.output[ctx.out_idx] = '\0';
-    return (ft_strdup(ctx.output));
+	ctx.output[ctx.out_idx] = '\0';
+	return (ft_strdup(ctx.output));
 }

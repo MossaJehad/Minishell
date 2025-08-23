@@ -15,8 +15,8 @@
 char	*ft_strtok(char *str, const char *delim)
 {
 	char	*save;
-	char		*token;
-	int			i;
+	char	*token;
+	int		i;
 
 	i = 0;
 	if (str)

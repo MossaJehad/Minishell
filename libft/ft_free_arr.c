@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 03:51:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/18 13:24:02 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/22 00:18:17 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 void	ft_free_arr(char **arr)
 {
 	int	i;
-	
+
 	i = 0;
 	if (!arr)
-		return;
+		return ;
 	while (arr[i])
 		free(arr[i++]);
 	free(arr);

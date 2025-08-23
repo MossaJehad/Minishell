@@ -82,7 +82,8 @@ int	handle_single_char_operators(const char *input, t_parse_state *s,
 
 	if (!s->in_single_quote && !s->in_double_quote)
 	{
-		if (input[s->cursor] == '|' || input[s->cursor] == '<' || input[s->cursor] == '>')
+		if (input[s->cursor] == '|' || input[s->cursor] == '<'
+			|| input[s->cursor] == '>')
 		{
 			if (s->buffer_pos > 0)
 			{

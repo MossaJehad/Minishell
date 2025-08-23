@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 20:29:22 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/20 02:37:12 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/18 23:41:25 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,10 @@
 
 volatile sig_atomic_t	g_signal;
 
-int main(int ac, char *av[] X_UNUSED, char **envp)
+int	main(int ac, char *av[] X_UNUSED, char **envp)
 {
 	char	**env;
 	int		env_count;
-	t_shell	shell;
 
 	setup_signal_handlers();
 	env_count = get_length(envp);
@@ -27,8 +26,7 @@ int main(int ac, char *av[] X_UNUSED, char **envp)
 		return (1);
 	copy_env(env, envp);
 	init_shell(env);
-	ft_bzero(&shell, sizeof(t_shell));
-	shell_loop(ac, &env, &shell);
+	shell_loop(ac, &env);
 	if (env)
 		ft_free_arr(env);
 	rl_clear_history();

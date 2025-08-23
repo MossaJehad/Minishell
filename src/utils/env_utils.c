@@ -12,15 +12,17 @@
 
 #include "../../include/minishell.h"
 
-void copy_env(char **dest, char **src)
+void	copy_env(char **dest, char **src)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (src[i])
 	{
 		dest[i] = ft_strdup(src[i]);
 		i++;
 	}
-	dest[i] = NULL; 
+	dest[i] = NULL;
 }
 
 char	*lookup_env_value(const char *name, char **envp)

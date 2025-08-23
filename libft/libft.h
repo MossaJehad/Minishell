@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:01:12 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/20 00:28:28 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/22 00:17:10 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,15 +61,14 @@ int			ft_isspace(char c);
 void		ft_free(void **ptr);
 void		ft_free_arr(char **arr);
 char		*ft_strndup(const char *s1, size_t n);
-int			copy_char(const char *input, int *in_idx, char *output, int out_idx);
+int			copy_char(const char *input, int *in_idx,
+				char *output, int out_idx);
 char		**ft_strdup_array(char **array);
 void		ft_sort_array(char **array);
 void		*safe_malloc(size_t size);
 int			get_length(char	**str);
 long long	ft_atol(const char *str);
 void		ft_free_multiple(void **ptrs[], size_t count);
-void		ft_itoa_buf(int n, char *buf);
+void		ft_itoa_buf(int n, char *buf, int i, int j);
 void		free_split(char **split);
-char		*ft_strtrim_new(char const *s1, char const *set);
-int			count_words(char *str);
 #endif
