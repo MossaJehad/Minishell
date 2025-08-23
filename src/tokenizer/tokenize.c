@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:30 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 20:14:40 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 20:51:00 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,89 +59,14 @@ void	create_token(t_token **token, char *value, char *type)
 	}
 }
 
-int	check_syntax_error(char **array)
+int	tokenize_redirects(char **array, int *i, t_token **token)
 {
-	int	i;
-
-	if (!array || !array[0])
-		return (0);
-	i = 0;
-	while (array[i])
-	{
-		if (is_operator(array[i]))
-		{
-			if (!array[i + 1] || is_operator(array[i + 1]))
-			{
-				if (array[i + 1])
-					printf("minishell:\
-						syntax error near unexpected token: %s\n", array[i + 1]);
-				else
-					printf("minishell:\
-						syntax error near unexpected token: newline\n");
-				return (1);
-			}
-		}
-		if (ft_strcmp(array[i], "|") == 0)
-		{
-			if (i == 0)
-			{
-				printf("minishell: syntax error near unexpected token `|'\n");
-				return (1);
-			}
-		}
-		i++;
-	}
-	return (0);
-}
-
-int	tokenize_append_and_heredoc(char **array, int *i, t_token **token)
-{
-	if (ft_strcmp(array[*i], ">>") == 0)
-	{
-		create_token(token, ">>", "append output");
-		(*i)++;
-		if (!array[*i])
-		{
-			printf("syntax error: unexpected end after `>>`\n");
-			return (-1);
-		}
-		create_token(token, array[*i], "word");
-		(*i)++;
-		return (1);
-	}
-	else if (ft_strcmp(array[*i], "<<") == 0)
-	{
-		create_token(token, "<<", "here-document");
-		(*i)++;
-		if (!array[*i])
-		{
-			printf("syntax error: unexpected end after `<<`\n");
-			return (-1);
-		}
-		create_token(token, array[*i], "word");
-		(*i)++;
-		return (1);
-	}
-	return (0);
-}
-
-int	tokenize_pipe_and_redirects(char **array, int *i, t_token **token)
-{
-	if (ft_strcmp(array[*i], "|") == 0)
-	{
-		create_token(token, "|", "pipe");
-		(*i)++;
-		return (1);
-	}
-	else if (ft_strcmp(array[*i], "<") == 0)
+	if (ft_strcmp(array[*i], "<") == 0)
 	{
 		create_token(token, "<", "redirect input");
 		(*i)++;
 		if (!array[*i])
-		{
-			printf("syntax error: unexpected end after `<`\n");
-			return (-1);
-		}
+			return (perror("syntax error: unexpected end after `<`\n"), -1);
 		create_token(token, array[*i], "word");
 		(*i)++;
 		return (1);
@@ -151,10 +76,7 @@ int	tokenize_pipe_and_redirects(char **array, int *i, t_token **token)
 		create_token(token, ">", "redirect output");
 		(*i)++;
 		if (!array[*i])
-		{
-			printf("syntax error: unexpected end after `>`\n");
-			return (-1);
-		}
+			return (perror("syntax error: unexpected end after `>`\n"), -1);
 		create_token(token, array[*i], "word");
 		(*i)++;
 		return (1);
@@ -162,13 +84,11 @@ int	tokenize_pipe_and_redirects(char **array, int *i, t_token **token)
 	return (0);
 }
 
-void	tokenize(char **array, t_token **token)
+void	process_tokens(char **array, t_token **token)
 {
 	int		i;
 	int		result;
 
-	if (!array || !token)
-		return ;
 	i = 0;
 	while (array[i] && array[i][0])
 	{
@@ -186,10 +106,16 @@ void	tokenize(char **array, t_token **token)
 		result = tokenize_pipe_and_redirects(array, &i, token);
 		if (result == 1)
 			continue ;
-		if (check_command(array[i]))
-			create_token(token, array[i], "command");
-		else
-			create_token(token, array[i], "word");
+		create_command_or_word_token(array, i, token);
 		i++;
 	}
+}
+
+void	tokenize(char **array, t_token **token)
+{
+	int	should_continue;
+
+	validate_tokenize_input(array, token, &should_continue);
+	if (should_continue)
+		process_tokens(array, token);
 }

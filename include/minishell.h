@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 20:17:10 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/23 22:18:22 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,6 +213,14 @@ char				*strip_quotes(const char *s);
 int					check_command(char *word);
 int					validate_token(t_token *tok);
 
+int					tokenize_redirects(char **array, int *i, t_token **token);
+int					tokenize_pipe_and_redirects(char **array, int *i,
+						t_token **token);
+void				create_command_or_word_token(char **array, int i,
+						t_token **token);
+void				validate_tokenize_input(char **array, t_token **token,
+						int *should_continue);
+
 /*
 ** ============================================================================
 ** BUILTIN COMMANDS MODULE - All shell built-in commands
@@ -290,6 +298,13 @@ void				close_all_pipes(int pipefd[MAX_COMMANDS][2], int num_cmds);
 int					build_cmd_args(t_token *seg, char *cmd_argv[MAX_ARGS]);
 void				handle_single_builtin(char *cmd_argv[MAX_ARGS],
 						t_token *seg, int cmd_argc, char ***envp);
+
+/* Parse commands */
+void				init_heredoc_fds(int heredoc_fds[MAX_CMDS]);
+int					setup_heredocs_for_cmd(t_token *cmd_start, int cmd_index,
+						int heredoc_fds[MAX_CMDS]);
+int					tokenize_append_and_heredoc(char **array, int *i,
+						t_token **token);
 
 /*
 ** ============================================================================

@@ -44,7 +44,10 @@ PARSER_SRC	=	parsing.c \
 
 # Tokenizer files - converting input to tokens
 TOKEN_SRC	=	tokenize.c \
-			token_utils.c
+			token_utils.c \
+			syntax_check.c \
+			process_redirection.c \
+			tokenize_utils.c
 
 # Built-in command files - all shell built-ins
 BUILTIN_SRC	=	echo.c \
@@ -61,7 +64,9 @@ EXEC_SRC	=	command_lookup.c \
 			executor.c \
 			command_handler.c \
 			pipe_handler.c \
-			process_manager.c
+			process_manager.c \
+			parse_commands.c \
+			heredoc_utils.c
 
 # Signal handling files
 SIGNAL_SRC	=	signals.c \
