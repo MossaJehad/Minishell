@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:32:55 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/24 17:18:56 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/24 17:59:45 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ int	create_heredoc_pipe(int pipefd[2])
 	if (pipe(pipefd) == -1)
 	{
 		perror("pipe");
+		close(pipefd[0]);
+		close(pipefd[1]);
 		return (-1);
 	}
 	return (0);
