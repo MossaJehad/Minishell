@@ -6,13 +6,13 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:32:55 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 22:09:31 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/24 17:18:56 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static int	create_heredoc_pipe(int pipefd[2])
+int	create_heredoc_pipe(int pipefd[2])
 {
 	if (pipe(pipefd) == -1)
 	{
@@ -22,9 +22,9 @@ static int	create_heredoc_pipe(int pipefd[2])
 	return (0);
 }
 
-static int	handle_heredoc_child(int pipefd[2], t_token *tok, t_exec_ctx ctx)
+int	handle_heredoc_child(int pipefd[2], t_token *tok, t_exec_ctx ctx)
 {
-	signal(SIGINT, SIG_DFL);
+	setup_heredoc_signals();
 	close(pipefd[0]);
 	if (read_heredoc_lines(pipefd[1], tok->value) == -1)
 	{
@@ -37,13 +37,14 @@ static int	handle_heredoc_child(int pipefd[2], t_token *tok, t_exec_ctx ctx)
 	exit(0);
 }
 
-static int	handle_heredoc_parent(pid_t pid, int pipefd[2], int *status)
+int	handle_heredoc_parent(pid_t pid, int pipefd[2], int *status)
 {
 	close(pipefd[1]);
 	waitpid(pid, status, 0);
 	if (WIFSIGNALED(*status) && WTERMSIG(*status) == SIGINT)
 	{
 		close(pipefd[0]);
+		g_signal = 130;
 		return (-1);
 	}
 	return (pipefd[0]);

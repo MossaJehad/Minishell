@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:19:05 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 21:25:17 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/24 17:22:07 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,6 @@ void	handle_single_builtin(char *cmd_argv[MAX_ARGS], t_token *seg,
 		handle_cd_command(cmd_argv[1], cmd_argc, envp);
 	else if (!ft_strcmp(cmd_argv[0], "exit"))
 		handle_exit_command(cmd_argv, seg, cmd_argc, envp);
-}
-
-void	init_heredoc_fds(int heredoc_fds[MAX_CMDS])
-{
-	int	k;
-
-	k = 0;
-	while (k < MAX_CMDS)
-	{
-		heredoc_fds[k] = -1;
-		k++;
-	}
 }
 
 int	setup_heredocs_for_cmd(t_token *cmd_start, int cmd_index,
@@ -60,10 +48,25 @@ int	setup_heredocs_for_cmd(t_token *cmd_start, int cmd_index,
 	return (0);
 }
 
+void	sig_check(int status)
+{
+	int		sig;
+
+	sig = WTERMSIG(status);
+	if (sig == SIGINT)
+		set_shell_status(130);
+	else if (sig == SIGQUIT)
+	{
+		set_shell_status(131);
+		write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+	}
+	else
+		set_shell_status(128 + sig);
+}
+
 void	handle_process_status(pid_t pid, int index, int num_cmds)
 {
 	int		status;
-	int		sig;
 	pid_t	ret;
 
 	status = 0;
@@ -75,15 +78,7 @@ void	handle_process_status(pid_t pid, int index, int num_cmds)
 		if (WIFEXITED(status))
 			set_shell_status(WEXITSTATUS(status));
 		else if (WIFSIGNALED(status))
-		{
-			sig = WTERMSIG(status);
-			if (sig == SIGINT)
-				set_shell_status(130);
-			else if (sig == SIGQUIT)
-				set_shell_status(131);
-			else
-				set_shell_status(128 + sig);
-		}
+			sig_check(status);
 	}
 }
 
@@ -97,4 +92,5 @@ void	wait_for_processes(pid_t pids[256], int num_cmds)
 		handle_process_status(pids[i], i, num_cmds);
 		i++;
 	}
+	setup_signal_handlers();
 }

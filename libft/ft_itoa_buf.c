@@ -6,13 +6,13 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 03:55:19 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 18:48:06 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/24 16:56:53 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	fill_digits(int n, char *tmp)
+int	fill_digits(int n, char *tmp)
 {
 	int	i;
 	int	neg;

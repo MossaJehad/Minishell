@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 20:15:57 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 20:16:09 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/24 17:22:18 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,16 @@ void	check_heredoc_only(t_token *token, t_exec_ctx *ctx)
 {
 	if (is_heredoc_only(token))
 		process_heredoc_tokens(token, ctx);
+}
+
+void	init_heredoc_fds(int heredoc_fds[MAX_CMDS])
+{
+	int	k;
+
+	k = 0;
+	while (k < MAX_CMDS)
+	{
+		heredoc_fds[k] = -1;
+		k++;
+	}
 }

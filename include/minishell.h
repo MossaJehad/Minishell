@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 22:18:22 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/24 17:06:46 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,6 +326,7 @@ void				restore_signals(void);
 /* Shell status management */
 int					get_shell_status(void);
 void				set_shell_status(int status);
+void				setup_heredoc_signals(void);
 
 /*
 ** ============================================================================

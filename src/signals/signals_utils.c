@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 15:41:17 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/17 13:18:00 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/24 17:02:07 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,10 @@ int	get_shell_status(void)
 void	set_shell_status(int status)
 {
 	g_signal = status;
+}
+
+void	ignore_signals(void)
+{
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
 }

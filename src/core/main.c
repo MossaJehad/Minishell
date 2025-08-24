@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 20:29:22 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 18:44:23 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/24 17:03:08 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,19 @@ void	null_parse_state(t_parse_state *s)
 	s->arg_count = 0;
 	s->in_single_quote = 0;
 	s->in_double_quote = 0;
+}
+
+void	setup_signal_handlers(void)
+{
+	struct sigaction	sa_int;
+	struct sigaction	sa_quit;
+
+	sa_int.sa_handler = handle_sigint;
+	sigemptyset(&sa_int.sa_mask);
+	sa_int.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa_int, NULL);
+	sa_quit.sa_handler = handle_sigquit;
+	sigemptyset(&sa_quit.sa_mask);
+	sa_quit.sa_flags = SA_RESTART;
+	sigaction(SIGQUIT, &sa_quit, NULL);
 }
