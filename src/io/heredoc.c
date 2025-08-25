@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:32:55 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/25 15:51:13 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/25 20:25:16 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	handle_heredoc_parent(pid_t pid, int pipefd[2], int *status)
 
 /*
 	HEREDOC SHOULD RUN IN PARENT NOT CHILD
-	- Uses pipes, read from the strin, <, <<
+	- Uses pipes, read from the string, <, <<
 */
 int	handle_heredoc(t_token *tok, t_exec_ctx ctx)
 {
