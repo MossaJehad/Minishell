@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:19:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/22 11:27:39 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/25 16:14:05 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ int	handle_single_command(t_token *cmd_starts[256], int heredoc_fds[256],
 	{
 		handle_single_builtin(cmd_argv, seg, cmd_argc, envp);
 		if (heredoc_fds[0] != -1)
+		{
 			close(heredoc_fds[0]);
+			heredoc_fds[0] = -1;
+		}
 		return (1);
 	}
 	return (0);
@@ -42,6 +45,11 @@ int	create_pipes(int pipefd[256][2], int num_cmds)
 		{
 			perror("pipe");
 			set_shell_status(1);
+			while (--i >= 0)
+			{
+				close(pipefd[i][0]);
+				close(pipefd[i][1]);
+			}
 			return (-1);
 		}
 		i++;
@@ -77,5 +85,6 @@ void	setup_child_heredoc(int heredoc_fds[256], int i)
 	{
 		dup2(heredoc_fds[i], STDIN_FILENO);
 		close(heredoc_fds[i]);
+		heredoc_fds[i] = -1;
 	}
 }

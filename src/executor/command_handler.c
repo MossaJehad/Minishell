@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:14:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 20:15:46 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/25 16:17:26 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,31 @@ int	prepare_and_execute_commands(t_token *token, char ***envp, t_exec_ctx *ctx)
 {
 	ctx->cmd_count = parse_commands(token, ctx->cmd_starts, ctx->heredoc_fds);
 	if (ctx->cmd_count == -1)
+	{
+		close_heredoc_fds(ctx->heredoc_fds, MAX_CMDS);
 		return (-1);
+	}
 	if (ctx->cmd_count == 1)
 	{
 		if (handle_single_command(ctx->cmd_starts, ctx->heredoc_fds, envp))
+		{
+			close_heredoc_fds(ctx->heredoc_fds, ctx->cmd_count);	
 			return (0);
+		}
 	}
 	ignore_signals();
 	if (create_pipes(ctx->pipe_fds, ctx->cmd_count) == -1
 		|| fork_processes(ctx->cmd_starts, ctx->cmd_count, ctx->heredoc_fds,
 			ctx->pipe_fds, ctx->pids, *envp) == -1)
 	{
+		restore_signals();
+		return (-1);
+	}
+	if (fork_processes(ctx->cmd_starts, ctx->cmd_count, ctx->heredoc_fds,
+		ctx->pipe_fds, ctx->pids, *envp) == -1)
+	{
+		close_all_pipes(ctx->pipe_fds, ctx->cmd_count);
+		close_heredoc_fds(ctx->heredoc_fds, ctx->cmd_count);
 		restore_signals();
 		return (-1);
 	}
@@ -49,6 +63,8 @@ void	handle_command(t_token *token, char ***envp)
 	check_heredoc_only(token, &ctx);
 	if (prepare_and_execute_commands(token, envp, &ctx) == 0)
 		finalize_command_execution(&ctx);
+	else
+		close_heredoc_fds(ctx.heredoc_fds, ctx.cmd_count);
 }
 
 int	build_cmd_args(t_token *seg, char *cmd_argv[MAX_ARGS])
@@ -79,7 +95,10 @@ void	close_heredoc_fds(int heredoc_fds[MAX_CMDS], int num_cmds)
 	while (i < num_cmds)
 	{
 		if (heredoc_fds[i] != -1)
+		{
 			close(heredoc_fds[i]);
+			heredoc_fds[i] = -1;
+		}
 		i++;
 	}
 }

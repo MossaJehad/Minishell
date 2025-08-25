@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:19:05 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/24 17:59:01 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/25 16:18:30 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,26 @@ int	setup_heredocs_for_cmd(t_token *cmd_start, int cmd_index,
 		int heredoc_fds[MAX_CMDS])
 {
 	t_token	*temp;
+	int		new_fd;
 
 	temp = cmd_start;
 	while (temp && (temp->type != PIPE))
 	{
 		if (temp->type == HEREDOC)
 		{
-			heredoc_fds[cmd_index] = setup_redirection(temp);
-			if (heredoc_fds[cmd_index] == -1)
+			if (heredoc_fds[cmd_index] != -1)
+			{
+				close(heredoc_fds[cmd_index]);
+				heredoc_fds[cmd_index] = -1;
+			}
+			new_fd = setup_redirection(temp);
+			if (new_fd == -1)
 			{
 				perror("heredoc failed");
 				set_shell_status(1);
 				return (-1);
 			}
+			heredoc_fds[cmd_index] = new_fd;
 		}
 		temp = temp->next;
 	}
