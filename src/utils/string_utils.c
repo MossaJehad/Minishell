@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   string_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:28:48 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/17 20:35:47 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/25 18:43:30 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,17 @@ int	has_unclosed_quotes(const char *input)
 		input++;
 	}
 	return (in_single || in_double);
+}
+
+int	is_blank(const char *s)
+{
+	if (!s)
+		return (1);
+	while (*s)
+	{
+		if (!ft_isspace((unsigned char)*s))
+			return (0);
+		s++;
+	}
+	return (1);
 }

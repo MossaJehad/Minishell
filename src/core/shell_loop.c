@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 22:33:21 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 19:53:22 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/25 18:42:54 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ char	*get_input(void)
 		line = append_until_quotes_closed(line);
 		if (!line)
 			continue ;
-		add_history(line);
+		if(line && !is_blank(line))
+			add_history(line);
 		return (line);
 	}
 }
