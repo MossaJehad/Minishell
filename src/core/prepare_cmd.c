@@ -63,20 +63,6 @@ char	**expand_and_validate(char **args, char **envp)
 		set_shell_status(0);
 		return (NULL);
 	}
-	if (args[0][0] == '$' && !command_exists(args[0] + 1, envp))
-	{
-		printf("%s: command not found\n", args[0]);
-		ft_free_arr(args);
-		set_shell_status(127);
-		return (NULL);
-	}
-	if (!command_exists(args[0], envp))
-	{
-		printf("%s: command not found\n", args[0]);
-		ft_free_arr(args);
-		set_shell_status(127);
-		return (NULL);
-	}
 	return (args);
 }
 

@@ -95,22 +95,10 @@ void	close_heredoc_fds(int heredoc_fds[MAX_CMDS], int num_cmds)
 	int	i;
 
 	i = 0;
-	if (num_cmds != -1)
-	{
-		while (i < num_cmds)
-		{
-			if (heredoc_fds[i] != -1 && heredoc_fds[i] != 0)
-			{
-				close(heredoc_fds[i]);
-				heredoc_fds[i] = -1;
-			}
-			i++;
-		}
-		return ;
-	}
+	fprintf(stderr, "%d\n", num_cmds);
 	while (i < MAX_CMDS)
 	{
-		if (heredoc_fds[i] != -1 && heredoc_fds[i] != 0)
+		if (heredoc_fds[i] != -1)
 		{
 			close(heredoc_fds[i]);
 			heredoc_fds[i] = -1;

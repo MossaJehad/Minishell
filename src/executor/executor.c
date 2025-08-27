@@ -160,7 +160,7 @@ void	execute_child_process(t_token *cmd_starts[256], int i,
 		full_path = find_executable(cmd_argv[0], envp);
 	if (!full_path)
 	{
-		perror(cmd_argv[0]);
+		printf("%s: command not found\n", cmd_argv[0]);
 		exit(127);
 	}
 	execve(full_path, cmd_argv, envp);
