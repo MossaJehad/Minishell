@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/25 20:47:43 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/27 17:37:05 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,14 @@ typedef enum e_token_type
 	APPEND
 }					t_token_type;
 
+typedef struct s_exec_ctx t_exec_ctx;
+
 typedef struct s_token
 {
 	char			*value;
 	t_token_type	type;
 	struct s_token	*next;
+	t_exec_ctx		*ctx;
 }					t_token;
 
 /*
@@ -371,7 +374,7 @@ int					handle_file_redirection(t_token *tok);
 void				setup_child_heredoc(int heredoc_fds[MAX_COMMANDS], int i);
 
 /* Heredoc handling */
-int					handle_heredoc(t_token *tok, t_exec_ctx ctx);
+int					handle_heredoc(t_token *tok, t_exec_ctx *ctx);
 int					read_heredoc_lines(int write_fd, const char *delimiter);
 
 /*

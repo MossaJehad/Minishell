@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 20:15:57 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/25 20:49:17 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/27 17:34:00 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	process_heredoc_tokens(t_token *token, t_exec_ctx *ctx)
 	{
 		if (current->type == HEREDOC)
 		{
-			heredoc_fd = handle_heredoc(current->next, *ctx);
+			heredoc_fd = handle_heredoc(current->next, ctx);
 			if (heredoc_fd != -1)
 				close(heredoc_fd);
 			return ;

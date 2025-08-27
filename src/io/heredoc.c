@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:32:55 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/25 20:25:16 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/27 18:00:19 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,18 @@ int	create_heredoc_pipe(int pipefd[2])
 	return (0);
 }
 
-int	handle_heredoc_child(int pipefd[2], t_token *tok, t_exec_ctx ctx)
+int	handle_heredoc_child(int pipefd[2], t_token *tok)
 {
 	setup_heredoc_signals();
 	close(pipefd[0]);
 	if (read_heredoc_lines(pipefd[1], tok->value) == -1)
 	{
 		close(pipefd[1]);
-		close_heredoc_fds(ctx.heredoc_fds, ctx.cmd_count);
+		//close_heredoc_fds(ctx.heredoc_fds, ctx.cmd_count);
 		exit(1);
 	}
 	close(pipefd[1]);
-	close_heredoc_fds(ctx.heredoc_fds, ctx.cmd_count);
+	//close_heredoc_fds(ctx.heredoc_fds, ctx.cmd_count);
 	exit(0);
 }
 
@@ -50,16 +50,13 @@ int	handle_heredoc_parent(pid_t pid, int pipefd[2], int *status)
 	return (pipefd[0]);
 }
 
-/*
-	HEREDOC SHOULD RUN IN PARENT NOT CHILD
-	- Uses pipes, read from the string, <, <<
-*/
-int	handle_heredoc(t_token *tok, t_exec_ctx ctx)
+int	handle_heredoc(t_token *tok, t_exec_ctx *ctx)
 {
 	int		pipefd[2];
 	pid_t	pid;
 	int		status;
 
+	(void)ctx;
 	if (create_heredoc_pipe(pipefd) == -1)
 		return (-1);
 	pid = fork();
@@ -71,7 +68,10 @@ int	handle_heredoc(t_token *tok, t_exec_ctx ctx)
 		return (-1);
 	}
 	if (pid == 0)
-		handle_heredoc_child(pipefd, tok, ctx);
+	{
+		//close_heredoc_fds(ctx->heredoc_fds, -1);
+		handle_heredoc_child(pipefd, tok);
+	}
 	return (handle_heredoc_parent(pid, pipefd, &status));
 }
 
@@ -91,6 +91,11 @@ int	read_heredoc_lines(int write_fd, const char *delimiter)
 		{
 			free(line);
 			break ;
+		}
+		if (g_signal == 130)
+		{
+			free(line);
+			return (-1);
 		}
 		if (write(write_fd, line, ft_strlen(line)) == -1 || write(write_fd,
 				"\n", 1) == -1)

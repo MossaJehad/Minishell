@@ -6,11 +6,12 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:11:46 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 14:39:17 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/27 16:23:29 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include <stdio.h>
 
 void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc,
 		char **envp)
@@ -142,6 +143,7 @@ void	execute_child_process(t_token *cmd_starts[256], int i,
 	setup_child_signals();
 	setup_child_pipes(pipefd, i, num_cmds);
 	setup_child_heredoc(heredoc_fds, i);
+	close_heredoc_fds(heredoc_fds, num_cmds);
 	cmd_argc = prepare_child_command(seg, cmd_argv);
 	if (cmd_argc == -1)
 		exit(1);

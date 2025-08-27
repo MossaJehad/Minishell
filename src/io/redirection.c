@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:32:55 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 19:05:03 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/27 17:38:59 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	setup_redirection(t_token *tok)
 			printf("syntax error: missing heredoc delimiter\n");
 			return (-1);
 		}
-		return (handle_heredoc(tok->next, (t_exec_ctx){0}));
+		return (handle_heredoc(tok->next, tok->ctx));
 	}
 	fd = handle_file_redirection(tok);
 	if (fd < 0)

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:14:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/25 20:47:21 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/27 17:57:31 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,14 @@ void	finalize_command_execution(t_exec_ctx *ctx)
 void	handle_command(t_token *token, char ***envp)
 {
 	t_exec_ctx	ctx;
+	int i;
 
-	ft_bzero(&ctx, sizeof(t_exec_ctx));
+	i = 0;
+	while (i < MAX_CMDS)
+		ctx.heredoc_fds[i++] = -1;
+	token->ctx = &ctx;
 	check_heredoc_only(token, &ctx);
+
 	if (prepare_and_execute_commands(token, envp, &ctx) == 0)
 		finalize_command_execution(&ctx);
 	else
@@ -90,9 +95,22 @@ void	close_heredoc_fds(int heredoc_fds[MAX_CMDS], int num_cmds)
 	int	i;
 
 	i = 0;
-	while (i < num_cmds)
+	if (num_cmds != -1)
 	{
-		if (heredoc_fds[i] != -1)
+		while (i < num_cmds)
+		{
+			if (heredoc_fds[i] != -1 && heredoc_fds[i] != 0)
+			{
+				close(heredoc_fds[i]);
+				heredoc_fds[i] = -1;
+			}
+			i++;
+		}
+		return ;
+	}
+	while (i < MAX_CMDS)
+	{
+		if (heredoc_fds[i] != -1 && heredoc_fds[i] != 0)
 		{
 			close(heredoc_fds[i]);
 			heredoc_fds[i] = -1;

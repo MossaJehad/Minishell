@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:00:00 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/24 17:21:02 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/27 17:58:07 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,14 @@ void	handle_sigint_child(int sig)
 
 void	handle_sigint_heredoc(int sig)
 {
+	int	tmpstdin;
+
 	(void)sig;
 	g_signal = 130;
-	exit(130);
+	tmpstdin = dup(0);
+	close(0);
+	dup2(0, tmpstdin);
+	close(tmpstdin);
 }
 
 void	setup_child_signals(void)
