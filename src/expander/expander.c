@@ -31,39 +31,45 @@ int	handle_dollar_expansion(t_expand_ctx *ctx)
 	return (0);
 }
 
-char	**expand(char **args, char **envp)
+static char	*handle_argument(char *arg, char **envp, int index)
 {
-	int		i;
 	char	*new;
 	char	*trimmed;
 	int		was_quoted;
+	size_t	len;
+
+	was_quoted = 0;
+	len = ft_strlen(arg);
+	if (arg[0] == '\'' && arg[len - 1] == '\'')
+		return (expand_single_quote(arg));
+	else if (arg[0] == '"' && arg[len - 1] == '"')
+		return (expand_double_quote(arg, envp));
+	else if (ft_strchr(arg, '$'))
+	{
+		new = expand_variables_in_string(arg, envp);
+		if (index == 0 && new)
+		{
+			trimmed = trim_whitespace(new);
+			free(new);
+			new = trimmed;
+		}
+		free(arg);
+		return (new);
+	}
+	return (arg);
+}
+
+char	**expand(char **args, char **envp)
+{
+	int		i;
+	char	*new_arg;
 
 	i = -1;
 	while (args[++i])
 	{
-		was_quoted = 0;
-		if (args[i][0] == '\'' && args[i][ft_strlen(args[i]) - 1] == '\'')
-		{
-			args[i] = expand_single_quote(args[i]);
-			was_quoted = 1;
-		}
-		else if (args[i][0] == '"' && args[i][ft_strlen(args[i]) - 1] == '"')
-		{
-			args[i] = expand_double_quote(args[i], envp);
-			was_quoted = 1;
-		}
-		else if (ft_strchr(args[i], '$'))
-		{
-			new = expand_variables_in_string(args[i], envp);
-			if (i == 0 && new)
-			{
-				trimmed = trim_whitespace(new);
-				free(new);
-				new = trimmed;
-			}
-			free(args[i]);
-			args[i] = new;
-		}
+		new_arg = handle_argument(args[i], envp, i);
+		if (new_arg != args[i])
+			args[i] = new_arg;
 	}
 	args = apply_word_splitting(args, envp);
 	return (args);
