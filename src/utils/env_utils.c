@@ -43,6 +43,23 @@ char	*lookup_env_value(const char *name, char **envp)
 	return (NULL);
 }
 
+static void	update_quote_state(t_parse_state *ps, char c)
+{
+	if (c == '\'' && !ps->in_double_quote)
+		ps->in_single_quote = !ps->in_single_quote;
+	else if (c == '"' && !ps->in_single_quote)
+		ps->in_double_quote = !ps->in_double_quote;
+}
+
+static void	process_space(t_parse_state *ps, int *in_word)
+{
+	if (*in_word)
+	{
+		ps->arg_count++;
+		*in_word = 0;
+	}
+}
+
 int	count_words_with_quotes(const char *str)
 {
 	t_parse_state	ps;
@@ -52,19 +69,10 @@ int	count_words_with_quotes(const char *str)
 	in_word = 0;
 	while (str[ps.cursor])
 	{
-		if (str[ps.cursor] == '\'' && !ps.in_double_quote)
-			ps.in_single_quote = !ps.in_single_quote;
-		else if (str[ps.cursor] == '"' && !ps.in_single_quote)
-			ps.in_double_quote = !ps.in_double_quote;
-		else if (ft_isspace(str[ps.cursor])
+		update_quote_state(&ps, str[ps.cursor]);
+		if (ft_isspace(str[ps.cursor])
 			&& !ps.in_single_quote && !ps.in_double_quote)
-		{
-			if (in_word)
-			{
-				ps.arg_count++;
-				in_word = 0;
-			}
-		}
+			process_space(&ps, &in_word);
 		else if (!in_word)
 			in_word = 1;
 		ps.cursor++;
@@ -109,34 +117,46 @@ char	*extract_word(const char *str, int *pos)
 	return (ft_strdup(buffer));
 }
 
-char	**split_words_with_quotes(const char *str)
+static char	**allocate_word_array(const char *str, int word_count)
 {
 	char	**words;
-	int		word_count;
-	int		pos;
 	int		i;
+	int		pos;
+	char	*word;
 
-	if (!str || !*str)
-		return (NULL);
-	word_count = count_words_with_quotes(str);
-	if (word_count == 0)
-		return (NULL);
 	words = ft_calloc(word_count + 1, sizeof(char *));
-	if (!words)
+	if (words == NULL)
 		return (NULL);
-	pos = 0;
 	i = 0;
+	pos = 0;
 	while (i < word_count)
 	{
-		words[i] = extract_word(str, &pos);
-		if (!words[i])
+		word = extract_word(str, &pos);
+		if (word == NULL)
 		{
 			ft_free_arr(words);
 			return (NULL);
 		}
+		words[i] = word;
 		i++;
 	}
 	words[i] = NULL;
+	return (words);
+}
+
+char	**split_words_with_quotes(const char *str)
+{
+	int		word_count;
+	char	**words;
+
+	if (str == NULL)
+		return (NULL);
+	if (*str == '\0')
+		return (NULL);
+	word_count = count_words_with_quotes(str);
+	if (word_count == 0)
+		return (NULL);
+	words = allocate_word_array(str, word_count);
 	return (words);
 }
 
@@ -150,32 +170,45 @@ int	is_quoted_expansion(const char *original_arg)
 			&& original_arg[ft_strlen(original_arg) - 1] == '\''));
 }
 
+static int	count_words_from_split(char *arg)
+{
+	char	**split;
+	int		count;
+	int		j;
+
+	split = split_words_with_quotes(arg);
+	if (split == NULL)
+		return (1);
+	count = 0;
+	j = 0;
+	while (split[j] != NULL)
+	{
+		count++;
+		j++;
+	}
+	ft_free_arr(split);
+	return (count);
+}
+
 static int	count_split_args(char **args)
 {
 	int		total;
-	int		j;
-	char	**split;
 	int		i;
+	int		count;
 
 	total = 0;
 	i = 0;
-	while (args[i])
+	while (args[i] != NULL)
 	{
 		if (!is_quoted_expansion(args[i]) && ft_strchr(args[i], ' '))
 		{
-			split = split_words_with_quotes(args[i]);
-			if (split)
-			{
-				j = 0;
-				while (split[j++])
-					total++;
-				ft_free_arr(split);
-			}
-			else
-				total++;
+			count = count_words_from_split(args[i]);
+			total += count;
 		}
 		else
+		{
 			total++;
+		}
 		i++;
 	}
 	return (total);
