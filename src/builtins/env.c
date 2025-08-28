@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:44:48 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 18:00:56 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 08:05:47 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@ void	handle_env_command(char **env)
 {
 	while (env && *env)
 	{
-		printf("%s\n", *env++);
+		if (ft_strchr(*env, '='))
+			printf("%s\n", *env);
+		env++;
 	}
 }
 
@@ -83,7 +85,8 @@ int	find_env_index(char **env, const char *name)
 	i = 0;
 	while (env[i])
 	{
-		if (ft_strncmp(env[i], name, n) == 0 && env[i][n] == '=')
+		if (ft_strncmp(env[i], name, n) == 0 && 
+			(env[i][n] == '=' || env[i][n] == '\0'))
 			return (i);
 		i++;
 	}

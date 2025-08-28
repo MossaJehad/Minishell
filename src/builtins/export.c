@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:47:13 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 19:58:34 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 08:05:32 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,17 @@ void	process_export_variable(char ***envp, char *arg)
 	}
 	else
 	{
-		buf = ft_strjoin(temp_key, "=");
-		add_or_replace(envp, buf);
-		free(buf);
+		char *existing_value = lookup_env_value(temp_key, *envp);
+		if (existing_value)
+		{
+			buf = ft_strjoin(temp_key, "=");
+			char *full_var = ft_strjoin(buf, existing_value);
+			add_or_replace(envp, full_var);
+			free(buf);
+			free(full_var);
+		}
+		else
+			add_or_replace(envp, temp_key);
 	}
 	free(temp_key);
 }
