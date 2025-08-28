@@ -150,68 +150,122 @@ int	is_quoted_expansion(const char *original_arg)
 			&& original_arg[ft_strlen(original_arg) - 1] == '\''));
 }
 
-char	**apply_word_splitting(char **args, char **envp)
+static int	count_split_args(char **args)
 {
-	char	**new_args;
-	char	**split_words;
-	int		new_count;
-	int		i;
+	int		total;
 	int		j;
-	int		k;
+	char	**split;
+	int		i;
 
-	(void)envp;
-	new_count = 0;
+	total = 0;
 	i = 0;
 	while (args[i])
 	{
 		if (!is_quoted_expansion(args[i]) && ft_strchr(args[i], ' '))
 		{
-			split_words = split_words_with_quotes(args[i]);
-			if (split_words)
+			split = split_words_with_quotes(args[i]);
+			if (split)
 			{
 				j = 0;
-				while (split_words[j])
-				{
-					new_count++;
-					j++;
-				}
-				ft_free_arr(split_words);
+				while (split[j++])
+					total++;
+				ft_free_arr(split);
 			}
 			else
-				new_count++;
+				total++;
 		}
 		else
-			new_count++;
+			total++;
 		i++;
 	}
-	new_args = ft_calloc(new_count + 1, sizeof(char *));
-	if (!new_args)
-		return (args);
+	return (total);
+}
+
+static int	copy_split_array_to_args(char **split, char **new_args, int *k)
+{
+	int		j;
+	char	*dup;
+
+	j = 0;
+	while (split[j] != NULL)
+	{
+		dup = ft_strdup(split[j]);
+		if (dup == NULL)
+		{
+			ft_free_arr(split);
+			return (-1);
+		}
+		new_args[*k] = dup;
+		(*k)++;
+		j++;
+	}
+	ft_free_arr(split);
+	return (0);
+}
+
+static int	copy_and_split_arg(char *arg, char **new_args, int *k)
+{
+	char	**split;
+	char	*dup;
+	int		result;
+
+	split = split_words_with_quotes(arg);
+	if (split != NULL)
+	{
+		result = copy_split_array_to_args(split, new_args, k);
+		if (result == -1)
+			return (-1);
+	}
+	else
+	{
+		dup = ft_strdup(arg);
+		if (dup == NULL)
+			return (-1);
+		new_args[*k] = dup;
+		(*k)++;
+	}
+	return (0);
+}
+
+static void	fill_split_args(char **args, char **new_args)
+{
+	int		i;
+	int		k;
+	char	*dup;
+
 	i = 0;
 	k = 0;
 	while (args[i])
 	{
 		if (!is_quoted_expansion(args[i]) && ft_strchr(args[i], ' '))
 		{
-			split_words = split_words_with_quotes(args[i]);
-			if (split_words)
-			{
-				j = 0;
-				while (split_words[j])
-				{
-					new_args[k++] = ft_strdup(split_words[j]);
-					j++;
-				}
-				ft_free_arr(split_words);
-			}
-			else
-				new_args[k++] = ft_strdup(args[i]);
+			copy_and_split_arg(args[i], new_args, &k);
 		}
 		else
-			new_args[k++] = ft_strdup(args[i]);
+		{
+			dup = ft_strdup(args[i]);
+			if (dup)
+			{
+				new_args[k] = dup;
+				k++;
+			}
+		}
 		i++;
 	}
 	new_args[k] = NULL;
+}
+
+char	**apply_word_splitting(char **args, char **envp)
+{
+	char	**new_args;
+	int		new_count;
+
+	(void)envp;
+	new_count = count_split_args(args);
+	new_args = ft_calloc(new_count + 1, sizeof(char *));
+	if (!new_args)
+		return (args);
+	fill_split_args(args, new_args);
 	ft_free_arr(args);
 	return (new_args);
 }

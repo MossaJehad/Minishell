@@ -71,6 +71,31 @@ static void	skip_heredoc_tokens(t_token **cur)
 		*cur = (*cur)->next;
 }
 
+static int	process_token_and_redirects(t_token **cur
+		, char *cmd_argv[MAX_ARGS], int *cmd_argc)
+{
+	while (*cur && (*cur)->type != PIPE)
+	{
+		if ((*cur)->type == REDIRECT || (*cur)->type == REDIRECT_OUT
+			|| (*cur)->type == APPEND)
+		{
+			if (handle_redirect_tokens(cur) == -1)
+				return (-1);
+			continue ;
+		}
+		if ((*cur)->type == HEREDOC)
+		{
+			skip_heredoc_tokens(cur);
+			continue ;
+		}
+		if ((*cur)->type == WORD || (*cur)->type == COMMAND
+			|| (*cur)->type == QUOTED_STRING)
+			cmd_argv[(*cmd_argc)++] = (*cur)->value;
+		*cur = (*cur)->next;
+	}
+	return (0);
+}
+
 int	prepare_child_command(t_token *seg, char *cmd_argv[MAX_ARGS])
 {
 	int		cmd_argc;
@@ -78,30 +103,12 @@ int	prepare_child_command(t_token *seg, char *cmd_argv[MAX_ARGS])
 
 	cmd_argc = 0;
 	cur = seg;
-	while (cur && cur->type != PIPE)
-	{
-		if (cur->type == REDIRECT || cur->type == REDIRECT_OUT
-			|| cur->type == APPEND)
-		{
-			if (handle_redirect_tokens(&cur) == -1)
-				return (-1);
-			continue ;
-		}
-		if (cur->type == HEREDOC)
-		{
-			skip_heredoc_tokens(&cur);
-			continue ;
-		}
-		if (cur->type == WORD || cur->type == COMMAND
-			|| cur->type == QUOTED_STRING)
-			cmd_argv[cmd_argc++] = cur->value;
-		cur = cur->next;
-	}
+	if (process_token_and_redirects(&cur, cmd_argv, &cmd_argc) == -1)
+		return (-1);
 	cmd_argv[cmd_argc] = NULL;
 	return (cmd_argc);
 }
 
-// Helpers for find_executable
 static char	*get_path_env(char **envp)
 {
 	int	i;

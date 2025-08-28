@@ -71,14 +71,34 @@ void	process_export_assignment(char ***envp, char *arg)
 	free(value);
 }
 
+static void	handle_existing_variable(char ***envp
+	, char *key, char *existing_value)
+{
+	char	*buf;
+	char	*full_var;
+
+	buf = ft_strjoin(key, "=");
+	if (!buf)
+		return ;
+	full_var = ft_strjoin(buf, existing_value);
+	if (!full_var)
+	{
+		free(buf);
+		return ;
+	}
+	add_or_replace(envp, full_var);
+	free(buf);
+	free(full_var);
+}
+
 void	process_export_variable(char ***envp, char *arg)
 {
 	char	*temp_key;
-	char	*buf;
 	char	*existing_value;
-	char	*full_var;
 
 	temp_key = ft_strtrim(arg, "\"");
+	if (!temp_key)
+		return ;
 	if (!is_valid_identifier(temp_key))
 	{
 		set_shell_status(1);
@@ -88,13 +108,7 @@ void	process_export_variable(char ***envp, char *arg)
 	{
 		existing_value = lookup_env_value(temp_key, *envp);
 		if (existing_value)
-		{
-			buf = ft_strjoin(temp_key, "=");
-			full_var = ft_strjoin(buf, existing_value);
-			add_or_replace(envp, full_var);
-			free(buf);
-			free(full_var);
-		}
+			handle_existing_variable(envp, temp_key, existing_value);
 		else
 			add_or_replace(envp, temp_key);
 	}

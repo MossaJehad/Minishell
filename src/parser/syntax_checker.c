@@ -38,8 +38,8 @@ int	handle_double_less(const char *input, t_parse_state *s, char **argv,
 	return (0);
 }
 
-int	handle_double_greater(const char *input, t_parse_state *s, char **argv,
-		char *buffer)
+int	handle_double_greater(const char *input, t_parse_state *s,
+	char **argv, char *buffer)
 {
 	char	*token;
 
