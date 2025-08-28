@@ -13,183 +13,226 @@
 #include "../../include/minishell.h"
 #include <stdio.h>
 
+static void	run_echo_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc)
+{
+	t_token	*cmd_token;
+	int		k;
+
+	cmd_token = NULL;
+	create_token(&cmd_token, cmd_argv[0], "command");
+	k = 1;
+	while (k < cmd_argc)
+		create_token(&cmd_token, cmd_argv[k++], "word");
+	handle_echo_command(cmd_token);
+	free_tokens(cmd_token);
+}
+
+static void	run_pwd_builtin(void)
+{
+	char	cwd[PATH_MAX];
+
+	if (getcwd(cwd, sizeof(cwd)))
+		printf("%s\n", cwd);
+	else
+		perror("pwd");
+}
+
+static void	run_env_builtin(char **envp)
+{
+	handle_env_command(envp);
+}
+
 void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc,
 		char **envp)
 {
-	t_token	*cmd_token;
-	char	cwd[PATH_MAX];
-	int		k;
-
 	if (!ft_strcmp(cmd_argv[0], "echo"))
-	{
-		cmd_token = NULL;
-		create_token(&cmd_token, cmd_argv[0], "command");
-		k = 1;
-		while (k < cmd_argc)
-		{
-			create_token(&cmd_token, cmd_argv[k], "word");
-			k++;
-		}
-		handle_echo_command(cmd_token);
-		free_tokens(cmd_token);
-	}
+		run_echo_builtin(cmd_argv, cmd_argc);
 	else if (!ft_strcmp(cmd_argv[0], "pwd"))
-	{
-		if (getcwd(cwd, sizeof(cwd)))
-			printf("%s\n", cwd);
-		else
-			perror("pwd");
-	}
+		run_pwd_builtin();
 	else if (!ft_strcmp(cmd_argv[0], "env"))
-	{
-		handle_env_command(envp);
-	}
+		run_env_builtin(envp);
+}
+
+// Helpers for prepare_child_command
+static int	handle_redirect_tokens(t_token **cur)
+{
+	if (setup_redirection(*cur) == -1)
+		return (-1);
+	*cur = (*cur)->next;
+	if (*cur)
+		*cur = (*cur)->next;
+	return (0);
+}
+
+static void	skip_heredoc_tokens(t_token **cur)
+{
+	*cur = (*cur)->next;
+	if (*cur)
+		*cur = (*cur)->next;
 }
 
 int	prepare_child_command(t_token *seg, char *cmd_argv[MAX_ARGS])
 {
 	int		cmd_argc;
-	t_token	*current;
+	t_token	*cur;
 
 	cmd_argc = 0;
-	current = seg;
-	while (current && current->type != PIPE)
+	cur = seg;
+	while (cur && cur->type != PIPE)
 	{
-		if (current->type == REDIRECT || current->type == REDIRECT_OUT
-			|| current->type == APPEND)
+		if (cur->type == REDIRECT || cur->type == REDIRECT_OUT
+			|| cur->type == APPEND)
 		{
-			if (setup_redirection(current) == -1)
+			if (handle_redirect_tokens(&cur) == -1)
 				return (-1);
-			current = current->next;
-			if (current)
-				current = current->next;
 			continue ;
 		}
-		else if (current->type == HEREDOC)
+		if (cur->type == HEREDOC)
 		{
-			current = current->next;
-			if (current)
-				current = current->next;
+			skip_heredoc_tokens(&cur);
 			continue ;
 		}
-		if (current->type == WORD || current->type == COMMAND
-			|| current->type == QUOTED_STRING)
-			cmd_argv[cmd_argc++] = current->value;
-		current = current->next;
+		if (cur->type == WORD || cur->type == COMMAND
+			|| cur->type == QUOTED_STRING)
+			cmd_argv[cmd_argc++] = cur->value;
+		cur = cur->next;
 	}
 	cmd_argv[cmd_argc] = NULL;
 	return (cmd_argc);
+}
+
+// Helpers for find_executable
+static char	*get_path_env(char **envp)
+{
+	int	i;
+
+	i = 0;
+	while (envp && envp[i])
+	{
+		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
+			return (envp[i] + 5);
+		i++;
+	}
+	return (NULL);
+}
+
+static char	*build_full_path(char *dir, char *cmd)
+{
+	size_t	len;
+	char	*full;
+
+	len = ft_strlen(dir) + 1 + ft_strlen(cmd) + 1;
+	full = ft_calloc(len, sizeof(char));
+	if (!full)
+		return (NULL);
+	ft_strcpy(full, dir);
+	ft_strcat(full, "/");
+	ft_strcat(full, cmd);
+	return (full);
+}
+
+static char	*search_paths(char **paths, char *cmd)
+{
+	int		i;
+	char	*full;
+
+	i = 0;
+	while (paths && paths[i])
+	{
+		full = build_full_path(paths[i], cmd);
+		if (!full)
+			return (NULL);
+		if (access(full, X_OK) == 0)
+			return (full);
+		free(full);
+		i++;
+	}
+	return (NULL);
 }
 
 char	*find_executable(char *cmd, char **envp)
 {
 	char	*path_env;
 	char	**paths;
-	char	*full_path;
-	int		i;
-	size_t	len;
+	char	*full;
 
-	path_env = NULL;
-	i = 0;
-	while (envp && envp[i])
-	{
-		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
-		{
-			path_env = envp[i] + 5;
-			break ;
-		}
-		i++;
-	}
+	path_env = get_path_env(envp);
 	if (!path_env)
 		return (NULL);
 	paths = ft_split(path_env, ':');
 	if (!paths)
 		return (NULL);
-	i = 0;
-	while (paths[i])
-	{
-		len = ft_strlen(paths[i]) + 1 + ft_strlen(cmd) + 1;
-		full_path = ft_calloc(len, sizeof(char));
-		if (!full_path)
-		{
-			ft_free_arr(paths);
-			return (NULL);
-		}
-		ft_strcpy(full_path, paths[i]);
-		ft_strcat(full_path, "/");
-		ft_strcat(full_path, cmd);
-		if (access(full_path, X_OK) == 0)
-		{
-			ft_free_arr(paths);
-			return (full_path);
-		}
-		free(full_path);
-		i++;
-	}
+	full = search_paths(paths, cmd);
 	ft_free_arr(paths);
-	return (NULL);
+	return (full);
 }
 
-void	execute_child_process(t_token *cmd_starts[256], int i,
-		int heredoc_fds[MAX_CMDS], int pipefd[256][2], int num_cmds,
-		char **envp)
+static int	child_setup_and_collect_args(t_exec_ctx *ctx, int idx,
+	char *cmd_argv[MAX_ARGS])
 {
 	t_token	*seg;
-	char	*cmd_argv[MAX_ARGS];
-	int		cmd_argc;
-	char	*full_path;
 
-	seg = cmd_starts[i];
+	seg = ctx->cmd_starts[idx];
 	setup_child_signals();
-	setup_child_pipes(pipefd, i, num_cmds);
-	setup_child_heredoc(heredoc_fds, i);
-	close_heredoc_fds(heredoc_fds, num_cmds);
-	cmd_argc = prepare_child_command(seg, cmd_argv);
-	if (cmd_argc == -1)
+	setup_child_pipes(ctx->pipe_fds, idx, ctx->cmd_count);
+	setup_child_heredoc(ctx->heredoc_fds, idx);
+	close_heredoc_fds(ctx->heredoc_fds, ctx->cmd_count);
+	return (prepare_child_command(seg, cmd_argv));
+}
+
+static char	*resolve_cmd(char *cmd, char **envp)
+{
+	if (!cmd)
+		return (NULL);
+	if (cmd[0] == '/' || cmd[0] == '.')
+		return (ft_strdup(cmd));
+	return (find_executable(cmd, envp));
+}
+
+void	execute_child_process(t_exec_ctx *ctx, int i, char **envp)
+{
+	char	*argv[MAX_ARGS];
+	int		argc;
+	char	*full;
+
+	argc = child_setup_and_collect_args(ctx, i, argv);
+	if (argc == -1)
 		exit(1);
-	if (cmd_argc == 0 || cmd_argv[0] == NULL)
+	if (argc == 0 || !argv[0])
 		exit(0);
-	if (is_builtin(cmd_argv[0]))
+	if (is_builtin(argv[0]))
 	{
-		execute_child_builtin(cmd_argv, cmd_argc, envp);
+		execute_child_builtin(argv, argc, envp);
 		exit(0);
 	}
-	if (cmd_argv[0][0] == '/' || cmd_argv[0][0] == '.')
-		full_path = ft_strdup(cmd_argv[0]);
-	else
-		full_path = find_executable(cmd_argv[0], envp);
-	if (!full_path)
+	full = resolve_cmd(argv[0], envp);
+	if (!full)
 	{
-		printf("%s: command not found\n", cmd_argv[0]);
+		printf("%s: command not found\n", argv[0]);
 		exit(127);
 	}
-	execve(full_path, cmd_argv, envp);
-	perror(full_path);
-	free(full_path);
+	execve(full, argv, envp);
+	perror(full);
+	free(full);
 	exit(127);
 }
 
-int	fork_processes(t_token *cmd_starts[256], int num_cmds,
-		int heredoc_fds[MAX_CMDS], int pipefd[256][2], pid_t pids[256],
-		char **envp)
+int	fork_processes(t_exec_ctx *ctx, char **envp)
 {
 	int	i;
 
 	i = 0;
-	while (i < num_cmds)
+	while (i < ctx->cmd_count)
 	{
-		pids[i] = fork();
-		if (pids[i] < 0)
+		ctx->pids[i] = fork();
+		if (ctx->pids[i] < 0)
 		{
 			perror("fork");
 			set_shell_status(1);
 			return (-1);
 		}
-		if (pids[i] == 0)
-		{
-			execute_child_process(cmd_starts, i, heredoc_fds, pipefd, num_cmds,
-				envp);
-		}
+		if (ctx->pids[i] == 0)
+			execute_child_process(ctx, i, envp);
 		i++;
 	}
 	return (0);

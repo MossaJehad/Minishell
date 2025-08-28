@@ -25,33 +25,41 @@ void	handle_single_builtin(char *cmd_argv[MAX_ARGS], t_token *seg,
 		handle_exit_command(cmd_argv, seg, cmd_argc, envp);
 }
 
+static int	handle_heredoc_token(t_token *temp,
+		int cmd_index, int heredoc_fds[MAX_CMDS])
+{
+	int	new_fd;
+
+	if (heredoc_fds[cmd_index] != -1)
+	{
+		close(heredoc_fds[cmd_index]);
+		heredoc_fds[cmd_index] = -1;
+	}
+	new_fd = handle_heredoc(temp->next, temp->ctx);
+	if (new_fd == 130)
+		return (-1);
+	if (new_fd == -1)
+	{
+		perror("warning: here-document delimited by EOF");
+		set_shell_status(1);
+		return (-1);
+	}
+	heredoc_fds[cmd_index] = new_fd;
+	return (0);
+}
+
 int	setup_heredocs_for_cmd(t_token *cmd_start, int cmd_index,
 		int heredoc_fds[MAX_CMDS])
 {
 	t_token	*temp;
-	int		new_fd;
 
 	temp = cmd_start;
 	while (temp && (temp->type != PIPE))
 	{
 		if (temp->type == HEREDOC)
 		{
-			if (heredoc_fds[cmd_index] != -1)
-			{
-				close(heredoc_fds[cmd_index]);
-				heredoc_fds[cmd_index] = -1;
-			}
-			new_fd = handle_heredoc(temp->next, temp->ctx);
-			if (new_fd == 130)
-				return -1;
-			if (new_fd == -1)
-			{
-				perror("warning: here-document delimited by EOF");
-				set_shell_status(1);
+			if (handle_heredoc_token(temp, cmd_index, heredoc_fds) != 0)
 				return (-1);
-			}
-			
-			heredoc_fds[cmd_index] = new_fd;
 		}
 		temp = temp->next;
 	}

@@ -12,6 +12,34 @@
 
 #include "../../include/minishell.h"
 
+static int	handle_cmd_count_one(t_exec_ctx *ctx, char ***envp)
+{
+	if (handle_single_command(ctx->cmd_starts, ctx->heredoc_fds, envp))
+	{
+		close_heredoc_fds(ctx->heredoc_fds, MAX_CMDS);
+		return (0);
+	}
+	return (-1);
+}
+
+static int	setup_pipes_and_fork(t_exec_ctx *ctx, char ***envp)
+{
+	if (create_pipes(ctx->pipe_fds, ctx->cmd_count) == -1)
+	{
+		close_heredoc_fds(ctx->heredoc_fds, MAX_CMDS);
+		restore_signals();
+		return (-1);
+	}
+	if (fork_processes(ctx, *envp) == -1)
+	{
+		close_all_pipes(ctx->pipe_fds, ctx->cmd_count);
+		close_heredoc_fds(ctx->heredoc_fds, MAX_CMDS);
+		restore_signals();
+		return (-1);
+	}
+	return (0);
+}
+
 int	prepare_and_execute_commands(t_token *token, char ***envp, t_exec_ctx *ctx)
 {
 	ctx->cmd_count = parse_commands(token, ctx->cmd_starts, ctx->heredoc_fds);
@@ -22,27 +50,12 @@ int	prepare_and_execute_commands(t_token *token, char ***envp, t_exec_ctx *ctx)
 	}
 	if (ctx->cmd_count == 1)
 	{
-		if (handle_single_command(ctx->cmd_starts, ctx->heredoc_fds, envp))
-		{
-			close_heredoc_fds(ctx->heredoc_fds, MAX_CMDS);
+		if (handle_cmd_count_one(ctx, envp) == 0)
 			return (0);
-		}
 	}
 	ignore_signals();
-	if (create_pipes(ctx->pipe_fds, ctx->cmd_count) == -1)
-	{
-		close_heredoc_fds(ctx->heredoc_fds, MAX_CMDS);
-		restore_signals();
+	if (setup_pipes_and_fork(ctx, envp) == -1)
 		return (-1);
-	}
-	if (fork_processes(ctx->cmd_starts, ctx->cmd_count, ctx->heredoc_fds,
-			ctx->pipe_fds, ctx->pids, *envp) == -1)
-	{
-		close_all_pipes(ctx->pipe_fds, ctx->cmd_count);
-		close_heredoc_fds(ctx->heredoc_fds, MAX_CMDS);
-		restore_signals();
-		return (-1);
-	}
 	return (0);
 }
 
@@ -106,3 +119,4 @@ void	close_heredoc_fds(int heredoc_fds[MAX_CMDS], int num_cmds)
 		i++;
 	}
 }
+

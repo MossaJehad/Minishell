@@ -279,14 +279,10 @@ int					parse_commands(t_token *token,
 						int heredoc_fds[MAX_COMMANDS]);
 int					handle_single_command(t_token *cmd_starts[MAX_COMMANDS],
 						int heredoc_fds[MAX_COMMANDS], char ***envp);
-int					fork_processes(t_token *cmd_starts[256], int num_cmds,
-						int heredoc_fds[MAX_CMDS], int pipefd[256][2],
-						pid_t pids[256], char **envp);
+int					fork_processes(t_exec_ctx *ctx, char **envp);
 void				check_heredoc_only(t_token *token, t_exec_ctx *ctx);
 /* Process utilities */
-void				execute_child_process(t_token *cmd_starts[256], int i,
-						int heredoc_fds[MAX_CMDS], int pipefd[256][2],
-						int num_cmds, char **envp);
+void				execute_child_process(t_exec_ctx *ctx, int i, char **envp);
 void				execute_child_builtin(char *cmd_argv[MAX_ARGS],
 						int cmd_argc, char **envp);
 void				wait_for_processes(pid_t pids[MAX_COMMANDS], int num_cmds);
