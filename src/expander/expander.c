@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:18:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 18:38:48 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 18:45:44 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,6 @@ char	**expand(char **args, char **envp)
 			}
 			free(args[i]);
 			args[i] = new;
-			if (!was_quoted && new && ft_strchr(new, ' '))
-			{}
 		}
 	}
 	args = apply_word_splitting(args, envp);
