@@ -152,7 +152,7 @@ COMPILED_FILES = 0
 
 define update_progress
 	$(eval COMPILED_FILES := $(shell echo $$(($(COMPILED_FILES) + 1))))
-	@printf "$(CYAN)[%3d/%d]$(RESET) Compiling $(notdir $<)...\n" $(COMPILED_FILES) $(TOTAL_FILES)
+	@printf "$(CYAN)[%2d/%d]$(RESET) Compiling $(notdir $<)...\n" $(COMPILED_FILES) $(TOTAL_FILES)
 endef
 
 # Error handler
