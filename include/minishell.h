@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 18:39:32 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 21:54:00 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ typedef enum e_token_type
 	APPEND
 }					t_token_type;
 
-typedef struct s_exec_ctx t_exec_ctx;
+typedef struct s_exec_ctx	t_exec_ctx;
 
 typedef struct s_token
 {
@@ -152,7 +152,8 @@ typedef struct s_allstructs
 ** GLOBAL VARIABLES
 ** Signal handling and exit status management
 */
-extern volatile sig_atomic_t	g_signal;	/* Global signal status */
+extern volatile \
+sig_atomic_t				g_signal;
 
 /*
 ** ============================================================================
