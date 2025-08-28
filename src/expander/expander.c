@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:18:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 18:10:40 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 18:38:48 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,22 @@ char	**expand(char **args, char **envp)
 	int		i;
 	char	*new;
 	char	*trimmed;
+	int		was_quoted;
 
 	i = -1;
 	while (args[++i])
 	{
+		was_quoted = 0;
 		if (args[i][0] == '\'' && args[i][ft_strlen(args[i]) - 1] == '\'')
+		{
 			args[i] = expand_single_quote(args[i]);
+			was_quoted = 1;
+		}
 		else if (args[i][0] == '"' && args[i][ft_strlen(args[i]) - 1] == '"')
+		{
 			args[i] = expand_double_quote(args[i], envp);
+			was_quoted = 1;
+		}
 		else if (ft_strchr(args[i], '$'))
 		{
 			new = expand_variables_in_string(args[i], envp);
@@ -55,8 +63,11 @@ char	**expand(char **args, char **envp)
 			}
 			free(args[i]);
 			args[i] = new;
+			if (!was_quoted && new && ft_strchr(new, ' '))
+			{}
 		}
 	}
+	args = apply_word_splitting(args, envp);
 	return (args);
 }
 

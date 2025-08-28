@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 18:08:35 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 18:39:32 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -404,7 +404,7 @@ void				update_pwd_oldpwd(char ***envp, const char *new_pwd,
 
 /* String utilities - Additional functions not in libft */
 int					has_unclosed_quotes(const char *input);
-
+char				**apply_word_splitting(char **args, char **envp);
 /* File descriptor utilities */
 void				close_heredoc_fds(int heredoc_fds[MAX_COMMANDS],
 						int num_cmds);
