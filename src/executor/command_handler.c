@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:14:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 15:54:45 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 16:00:28 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,21 +24,22 @@ int	prepare_and_execute_commands(t_token *token, char ***envp, t_exec_ctx *ctx)
 	{
 		if (handle_single_command(ctx->cmd_starts, ctx->heredoc_fds, envp))
 		{
-			close_heredoc_fds(ctx->heredoc_fds, ctx->cmd_count);	
+			close_heredoc_fds(ctx->heredoc_fds, MAX_CMDS);
 			return (0);
 		}
 	}
 	ignore_signals();
 	if (create_pipes(ctx->pipe_fds, ctx->cmd_count) == -1)
 	{
+		close_heredoc_fds(ctx->heredoc_fds, MAX_CMDS);
 		restore_signals();
 		return (-1);
 	}
 	if (fork_processes(ctx->cmd_starts, ctx->cmd_count, ctx->heredoc_fds,
-		ctx->pipe_fds, ctx->pids, *envp) == -1)
+			ctx->pipe_fds, ctx->pids, *envp) == -1)
 	{
 		close_all_pipes(ctx->pipe_fds, ctx->cmd_count);
-		close_heredoc_fds(ctx->heredoc_fds, ctx->cmd_count);
+		close_heredoc_fds(ctx->heredoc_fds, MAX_CMDS);
 		restore_signals();
 		return (-1);
 	}
@@ -48,7 +49,7 @@ int	prepare_and_execute_commands(t_token *token, char ***envp, t_exec_ctx *ctx)
 void	finalize_command_execution(t_exec_ctx *ctx)
 {
 	close_all_pipes(ctx->pipe_fds, ctx->cmd_count);
-	close_heredoc_fds(ctx->heredoc_fds, ctx->cmd_count);
+	close_heredoc_fds(ctx->heredoc_fds, MAX_CMDS);
 	wait_for_processes(ctx->pids, ctx->cmd_count);
 	restore_signals();
 }
@@ -56,19 +57,17 @@ void	finalize_command_execution(t_exec_ctx *ctx)
 void	handle_command(t_token *token, char ***envp)
 {
 	t_exec_ctx	ctx;
-	int i;
+	int			i;
 
 	memset(&ctx, 0, sizeof(ctx));
 	i = 0;
 	while (i < MAX_CMDS)
 		ctx.heredoc_fds[i++] = -1;
 	token->ctx = &ctx;
-	check_heredoc_only(token, &ctx);
-
 	if (prepare_and_execute_commands(token, envp, &ctx) == 0)
 		finalize_command_execution(&ctx);
 	else
-		close_heredoc_fds(ctx.heredoc_fds, ctx.cmd_count);
+		close_heredoc_fds(ctx.heredoc_fds, MAX_CMDS);
 }
 
 int	build_cmd_args(t_token *seg, char *cmd_argv[MAX_ARGS])
@@ -94,8 +93,8 @@ int	build_cmd_args(t_token *seg, char *cmd_argv[MAX_ARGS])
 void	close_heredoc_fds(int heredoc_fds[MAX_CMDS], int num_cmds)
 {
 	int	i;
-	(void) num_cmds;
 
+	(void)num_cmds;
 	i = 0;
 	while (i < MAX_CMDS)
 	{

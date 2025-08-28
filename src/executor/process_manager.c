@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:19:05 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 15:55:17 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 16:04:49 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	setup_heredocs_for_cmd(t_token *cmd_start, int cmd_index,
 				close(heredoc_fds[cmd_index]);
 				heredoc_fds[cmd_index] = -1;
 			}
-			new_fd = setup_redirection(temp);
+			new_fd = handle_heredoc(temp->next, temp->ctx);
 			if (new_fd == -1)
 			{
 				perror("heredoc failed");
@@ -57,7 +57,7 @@ int	setup_heredocs_for_cmd(t_token *cmd_start, int cmd_index,
 
 void	sig_check(int status)
 {
-	int		sig;
+	int	sig;
 
 	sig = WTERMSIG(status);
 	if (sig == SIGINT)
@@ -91,7 +91,7 @@ void	handle_process_status(pid_t pid, int index, int num_cmds)
 
 void	wait_for_processes(pid_t pids[256], int num_cmds)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	while (i < num_cmds)

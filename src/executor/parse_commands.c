@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 20:21:19 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 20:21:31 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 16:00:38 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ int	init_command_parsing(t_token *token, t_token *cmd_starts[256],
 	if (!token)
 		return (0);
 	cmd_starts[*num_cmds] = token;
-	if (setup_heredocs_for_cmd(cmd_starts[*num_cmds],
-			*num_cmds, heredoc_fds) == -1)
+	if (setup_heredocs_for_cmd(cmd_starts[*num_cmds], *num_cmds, heredoc_fds) ==
+		-1)
 		return (-1);
 	(*num_cmds)++;
 	return (1);
