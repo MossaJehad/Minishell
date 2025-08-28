@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:01:12 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 18:45:51 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 18:07:47 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,4 +71,5 @@ long long	ft_atol(const char *str);
 void		ft_free_multiple(void **ptrs[], size_t count);
 void		ft_itoa_buf(int n, char *buf, int i, int j);
 void		free_split(char **split);
+char		*ft_strncpy(char *dst, const char *src, size_t n);
 #endif

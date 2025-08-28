@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 16:47:31 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 18:08:35 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -397,7 +397,7 @@ void				cleanup_shell_resources(char ***env, t_token *token,
 						char **args, char *input);
 int					is_builtin(const char *cmd);
 int					is_blank(const char *s);
-
+char				*trim_whitespace(char *str);
 /* Directory management */
 void				update_pwd_oldpwd(char ***envp, const char *new_pwd,
 						const char *old_pwd);

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:18:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 18:01:40 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 18:10:40 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,25 +35,27 @@ char	**expand(char **args, char **envp)
 {
 	int		i;
 	char	*new;
+	char	*trimmed;
 
-	i = 0;
-	while (args[i])
+	i = -1;
+	while (args[++i])
 	{
 		if (args[i][0] == '\'' && args[i][ft_strlen(args[i]) - 1] == '\'')
-		{
 			args[i] = expand_single_quote(args[i]);
-		}
 		else if (args[i][0] == '"' && args[i][ft_strlen(args[i]) - 1] == '"')
-		{
 			args[i] = expand_double_quote(args[i], envp);
-		}
 		else if (ft_strchr(args[i], '$'))
 		{
 			new = expand_variables_in_string(args[i], envp);
+			if (i == 0 && new)
+			{
+				trimmed = trim_whitespace(new);
+				free(new);
+				new = trimmed;
+			}
 			free(args[i]);
 			args[i] = new;
 		}
-		i++;
 	}
 	return (args);
 }

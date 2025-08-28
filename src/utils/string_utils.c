@@ -6,23 +6,12 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:28:48 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/25 18:43:30 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 18:08:08 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-/**
- * Checks whether the given input string contains unclosed quotes.
- * It iterates through the string and tracks whether the parser is
- * currently inside single quotes (') or double quotes (").
- * A quote is considered unclosed if one type is opened but not closed
- * before the end of the string.
- *
- * @param input the input string to check
- *
- * @return 1 if there are unclosed quotes, 0 otherwise
- */
 int	has_unclosed_quotes(const char *input)
 {
 	int	in_single;
@@ -52,4 +41,30 @@ int	is_blank(const char *s)
 		s++;
 	}
 	return (1);
+}
+
+char	*trim_whitespace(char *str)
+{
+	char	*start;
+	char	*end;
+	char	*result;
+	size_t	len;
+
+	if (!str)
+		return (NULL);
+	start = str;
+	while (*start && ft_isspace(*start))
+		start++;
+	if (*start == '\0')
+		return (ft_strdup(""));
+	end = start + ft_strlen(start) - 1;
+	while (end > start && ft_isspace(*end))
+		end--;
+	len = end - start + 1;
+	result = ft_calloc(len + 1, sizeof(char));
+	if (!result)
+		return (NULL);
+	ft_strncpy(result, start, len);
+	result[len] = '\0';
+	return (result);
 }
