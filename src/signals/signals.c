@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:00:00 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 16:18:52 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 16:40:27 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	handle_sigint_heredoc(int sig)
 	(void)sig;
 	g_signal = 130;
 	write(STDOUT_FILENO, "\n", 1);
+	rl_done = 1;
 }
 
 void	setup_child_signals(void)

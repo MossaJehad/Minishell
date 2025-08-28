@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:19:05 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 16:31:23 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 16:53:15 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,15 @@ int	setup_heredocs_for_cmd(t_token *cmd_start, int cmd_index,
 				heredoc_fds[cmd_index] = -1;
 			}
 			new_fd = handle_heredoc(temp->next, temp->ctx);
+			if (new_fd == 130)
+				return -1;
 			if (new_fd == -1)
 			{
-				perror("heredoc failed");
+				perror("warning: here-document delimited by EOF");
 				set_shell_status(1);
 				return (-1);
 			}
+			
 			heredoc_fds[cmd_index] = new_fd;
 		}
 		temp = temp->next;

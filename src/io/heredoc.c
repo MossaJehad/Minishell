@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:32:55 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 16:31:09 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 16:53:56 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,6 @@ int	read_heredoc_lines(int write_fd, const char *delimiter)
 			free(line);
 			break ;
 		}
-		if (g_signal == 130)
-		{
-			free(line);
-			return (-1);
-		}
 		if (write(write_fd, line, ft_strlen(line)) == -1 || write(write_fd,
 				"\n", 1) == -1)
 		{
@@ -59,16 +54,19 @@ int	read_heredoc_lines(int write_fd, const char *delimiter)
 int	handle_heredoc(t_token *tok, t_exec_ctx *ctx)
 {
 	int	pipefd[2];
+	int	result;
 
 	(void)ctx;
 	if (create_heredoc_pipe(pipefd) == -1)
 		return (-1);
-	if (read_heredoc_lines(pipefd[1], tok->value) == -1)
+	result = read_heredoc_lines(pipefd[1], tok->value);
+	close(pipefd[1]);
+	if (result == -1)
 	{
 		close(pipefd[0]);
-		close(pipefd[1]);
 		return (-1);
 	}
-	close(pipefd[1]);
+	if(g_signal == 130)
+		return (130);
 	return (pipefd[0]);
 }
