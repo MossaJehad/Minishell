@@ -56,7 +56,7 @@ char	*get_input(void)
 		line = append_until_quotes_closed(line);
 		if (!line)
 			continue ;
-		if(line && !is_blank(line))
+		if (line && !is_blank(line))
 			add_history(line);
 		return (line);
 	}

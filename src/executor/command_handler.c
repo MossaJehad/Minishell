@@ -119,4 +119,3 @@ void	close_heredoc_fds(int heredoc_fds[MAX_CMDS], int num_cmds)
 		i++;
 	}
 }
-

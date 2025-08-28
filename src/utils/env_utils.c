@@ -56,7 +56,8 @@ int	count_words_with_quotes(const char *str)
 			ps.in_single_quote = !ps.in_single_quote;
 		else if (str[ps.cursor] == '"' && !ps.in_single_quote)
 			ps.in_double_quote = !ps.in_double_quote;
-		else if (ft_isspace(str[ps.cursor]) && !ps.in_single_quote && !ps.in_double_quote)
+		else if (ft_isspace(str[ps.cursor])
+			&& !ps.in_single_quote && !ps.in_double_quote)
 		{
 			if (in_word)
 			{
@@ -98,7 +99,7 @@ char	*extract_word(const char *str, int *pos)
 			buffer[buf_idx++] = str[(*pos)++];
 		}
 		else if (ft_isspace(str[*pos]) && !in_single_quote && !in_double_quote)
-			break;
+			break ;
 		else
 			buffer[buf_idx++] = str[(*pos)++];
 	}
@@ -143,8 +144,10 @@ int	is_quoted_expansion(const char *original_arg)
 {
 	if (!original_arg)
 		return (0);
-	return ((original_arg[0] == '"' && original_arg[ft_strlen(original_arg) - 1] == '"') ||
-			(original_arg[0] == '\'' && original_arg[ft_strlen(original_arg) - 1] == '\''));
+	return ((original_arg[0] == '"'
+			&& original_arg[ft_strlen(original_arg) - 1] == '"')
+		|| (original_arg[0] == '\''
+			&& original_arg[ft_strlen(original_arg) - 1] == '\''));
 }
 
 char	**apply_word_splitting(char **args, char **envp)
@@ -152,7 +155,9 @@ char	**apply_word_splitting(char **args, char **envp)
 	char	**new_args;
 	char	**split_words;
 	int		new_count;
-	int		i, j, k;
+	int		i;
+	int		j;
+	int		k;
 
 	(void)envp;
 	new_count = 0;

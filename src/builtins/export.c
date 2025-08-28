@@ -75,6 +75,8 @@ void	process_export_variable(char ***envp, char *arg)
 {
 	char	*temp_key;
 	char	*buf;
+	char	*existing_value;
+	char	*full_var;
 
 	temp_key = ft_strtrim(arg, "\"");
 	if (!is_valid_identifier(temp_key))
@@ -84,11 +86,11 @@ void	process_export_variable(char ***envp, char *arg)
 	}
 	else
 	{
-		char *existing_value = lookup_env_value(temp_key, *envp);
+		existing_value = lookup_env_value(temp_key, *envp);
 		if (existing_value)
 		{
 			buf = ft_strjoin(temp_key, "=");
-			char *full_var = ft_strjoin(buf, existing_value);
+			full_var = ft_strjoin(buf, existing_value);
 			add_or_replace(envp, full_var);
 			free(buf);
 			free(full_var);
