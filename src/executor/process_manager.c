@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:19:05 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/27 16:26:28 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 15:55:17 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,8 @@ void	wait_for_processes(pid_t pids[256], int num_cmds)
 	i = 0;
 	while (i < num_cmds)
 	{
-		handle_process_status(pids[i], i, num_cmds);
+		if (pids[i] > 0)
+			handle_process_status(pids[i], i, num_cmds);
 		i++;
 	}
 	setup_signal_handlers();

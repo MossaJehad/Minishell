@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:14:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/27 17:57:31 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/28 15:54:45 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ void	handle_command(t_token *token, char ***envp)
 	t_exec_ctx	ctx;
 	int i;
 
+	memset(&ctx, 0, sizeof(ctx));
 	i = 0;
 	while (i < MAX_CMDS)
 		ctx.heredoc_fds[i++] = -1;
@@ -93,9 +94,9 @@ int	build_cmd_args(t_token *seg, char *cmd_argv[MAX_ARGS])
 void	close_heredoc_fds(int heredoc_fds[MAX_CMDS], int num_cmds)
 {
 	int	i;
+	(void) num_cmds;
 
 	i = 0;
-	fprintf(stderr, "%d\n", num_cmds);
 	while (i < MAX_CMDS)
 	{
 		if (heredoc_fds[i] != -1)
