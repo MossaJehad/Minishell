@@ -6,13 +6,13 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 20:26:46 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 20:35:20 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 17:02:08 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static char	*get_redirection_type(char *op)
+char	*get_redirection_type(char *op)
 {
 	if (ft_strcmp(op, ">") == 0)
 		return ("output");

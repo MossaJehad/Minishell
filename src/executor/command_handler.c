@@ -6,13 +6,13 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:14:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 16:37:43 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 17:02:08 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static int	setup_pipes_and_fork(t_exec_ctx *ctx, char ***envp)
+int	setup_pipes_and_fork(t_exec_ctx *ctx, char ***envp)
 {
 	if (create_pipes(ctx->pipe_fds, ctx->cmd_count) == -1)
 	{

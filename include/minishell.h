@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 16:39:07 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 17:07:29 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,6 +285,18 @@ int					setup_heredocs_for_cmd(t_token *cmd_start, int cmd_index,
 						int heredoc_fds[MAX_CMDS]);
 int					tokenize_append_and_heredoc(char **array, int *i,
 						t_token **token);
+
+/* Helpers */
+int					process_token_and_redirects(t_token **cur,
+						char *cmd_argv[MAX_ARGS], int *cmd_argc);
+void				run_echo_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc);
+void				run_pwd_builtin(void);
+void				run_env_builtin(char **envp);
+int					handle_redirect_tokens(t_token **cur);
+int					child_setup_and_collect_args(t_exec_ctx *ctx, int idx,
+						char *cmd_argv[MAX_ARGS]);
+char				*resolve_cmd(char *cmd, char **envp);
+void				skip_heredoc_tokens(t_token **cur);
 
 /*
 ** ==============================================================

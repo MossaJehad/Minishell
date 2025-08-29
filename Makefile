@@ -66,7 +66,8 @@ EXEC_SRC	=	command_lookup.c \
 			pipe_handler.c \
 			process_manager.c \
 			parse_commands.c \
-			heredoc_utils.c
+			heredoc_utils.c \
+			executor_child.c
 
 # Signal handling files
 SIGNAL_SRC	=	signals.c \
@@ -87,7 +88,8 @@ UTILS_SRC	=	env_utils.c \
 			utils.c \
 			string_utils.c \
 			validation.c \
-			executor.c
+			executor.c \
+			executor_utils.c
 
 # Combine all sources with their directory paths
 CORE_FILES		=	$(addprefix $(CORE_DIR)/, $(CORE_SRC))

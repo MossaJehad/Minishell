@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 16:37:19 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 16:38:56 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 17:07:18 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,16 @@ void	sig_check(int status)
 	}
 	else
 		set_shell_status(128 + sig);
+}
+
+void	run_env_builtin(char **envp)
+{
+	handle_env_command(envp);
+}
+
+void	skip_heredoc_tokens(t_token **cur)
+{
+	*cur = (*cur)->next;
+	if (*cur)
+		*cur = (*cur)->next;
 }

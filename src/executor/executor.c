@@ -6,13 +6,13 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:11:46 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 16:34:27 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 17:07:13 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static void	run_echo_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc)
+void	run_echo_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc)
 {
 	t_token	*cmd_token;
 	int		k;
@@ -26,7 +26,7 @@ static void	run_echo_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc)
 	free_tokens(cmd_token);
 }
 
-static void	run_pwd_builtin(void)
+void	run_pwd_builtin(void)
 {
 	char	cwd[PATH_MAX];
 
@@ -36,77 +36,8 @@ static void	run_pwd_builtin(void)
 		perror("pwd");
 }
 
-static void	run_env_builtin(char **envp)
-{
-	handle_env_command(envp);
-}
-
-static void	run_exit_builtin_child(char *cmd_argv[MAX_ARGS], int cmd_argc)
-{
-	int	exit_code;
-
-	if (cmd_argc == 1)
-		exit(get_shell_status());
-	else if (cmd_argc == 2)
-	{
-		if (!is_valid_number(cmd_argv[1]) || check_overflow(cmd_argv[1]))
-		{
-			printf("minishell: exit: %s: numeric argument required\n",
-				cmd_argv[1]);
-			exit(2);
-		}
-		exit_code = (unsigned char)ft_atol(cmd_argv[1]);
-		exit(exit_code);
-	}
-	else
-	{
-		if (!is_valid_number(cmd_argv[1]) || check_overflow(cmd_argv[1]))
-		{
-			printf("minishell: exit: %s: numeric argument required\n",
-				cmd_argv[1]);
-			exit(2);
-		}
-		else
-		{
-			printf("minishell: exit: too many arguments\n");
-			exit(1);
-		}
-	}
-}
-
-void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc,
-		char **envp)
-{
-	if (!ft_strcmp(cmd_argv[0], "echo"))
-		run_echo_builtin(cmd_argv, cmd_argc);
-	else if (!ft_strcmp(cmd_argv[0], "pwd"))
-		run_pwd_builtin();
-	else if (!ft_strcmp(cmd_argv[0], "env"))
-		run_env_builtin(envp);
-	else if (!ft_strcmp(cmd_argv[0], "exit"))
-		run_exit_builtin_child(cmd_argv, cmd_argc);
-}
-
-// Helpers for prepare_child_command
-static int	handle_redirect_tokens(t_token **cur)
-{
-	if (setup_redirection(*cur) == -1)
-		return (-1);
-	*cur = (*cur)->next;
-	if (*cur)
-		*cur = (*cur)->next;
-	return (0);
-}
-
-static void	skip_heredoc_tokens(t_token **cur)
-{
-	*cur = (*cur)->next;
-	if (*cur)
-		*cur = (*cur)->next;
-}
-
-static int	process_token_and_redirects(t_token **cur
-		, char *cmd_argv[MAX_ARGS], int *cmd_argc)
+int	process_token_and_redirects(t_token **cur,
+	char *cmd_argv[MAX_ARGS], int *cmd_argc)
 {
 	while (*cur && (*cur)->type != PIPE)
 	{
@@ -128,106 +59,6 @@ static int	process_token_and_redirects(t_token **cur
 		*cur = (*cur)->next;
 	}
 	return (0);
-}
-
-int	prepare_child_command(t_token *seg, char *cmd_argv[MAX_ARGS])
-{
-	int		cmd_argc;
-	t_token	*cur;
-
-	cmd_argc = 0;
-	cur = seg;
-	if (process_token_and_redirects(&cur, cmd_argv, &cmd_argc) == -1)
-		return (-1);
-	cmd_argv[cmd_argc] = NULL;
-	return (cmd_argc);
-}
-
-static char	*get_path_env(char **envp)
-{
-	int	i;
-
-	i = 0;
-	while (envp && envp[i])
-	{
-		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
-			return (envp[i] + 5);
-		i++;
-	}
-	return (NULL);
-}
-
-static char	*build_full_path(char *dir, char *cmd)
-{
-	size_t	len;
-	char	*full;
-
-	len = ft_strlen(dir) + 1 + ft_strlen(cmd) + 1;
-	full = ft_calloc(len, sizeof(char));
-	if (!full)
-		return (NULL);
-	ft_strcpy(full, dir);
-	ft_strcat(full, "/");
-	ft_strcat(full, cmd);
-	return (full);
-}
-
-static char	*search_paths(char **paths, char *cmd)
-{
-	int		i;
-	char	*full;
-
-	i = 0;
-	while (paths && paths[i])
-	{
-		full = build_full_path(paths[i], cmd);
-		if (!full)
-			return (NULL);
-		if (access(full, X_OK) == 0)
-			return (full);
-		free(full);
-		i++;
-	}
-	return (NULL);
-}
-
-char	*find_executable(char *cmd, char **envp)
-{
-	char	*path_env;
-	char	**paths;
-	char	*full;
-
-	path_env = get_path_env(envp);
-	if (!path_env)
-		return (NULL);
-	paths = ft_split(path_env, ':');
-	if (!paths)
-		return (NULL);
-	full = search_paths(paths, cmd);
-	ft_free_arr(paths);
-	return (full);
-}
-
-static int	child_setup_and_collect_args(t_exec_ctx *ctx, int idx,
-	char *cmd_argv[MAX_ARGS])
-{
-	t_token	*seg;
-
-	seg = ctx->cmd_starts[idx];
-	setup_child_signals();
-	setup_child_pipes(ctx->pipe_fds, idx, ctx->cmd_count);
-	setup_child_heredoc(ctx->heredoc_fds, idx);
-	close_heredoc_fds(ctx->heredoc_fds, ctx->cmd_count);
-	return (prepare_child_command(seg, cmd_argv));
-}
-
-static char	*resolve_cmd(char *cmd, char **envp)
-{
-	if (!cmd)
-		return (NULL);
-	if (cmd[0] == '/' || cmd[0] == '.')
-		return (ft_strdup(cmd));
-	return (find_executable(cmd, envp));
 }
 
 void	execute_child_process(t_exec_ctx *ctx, int i, char **envp)

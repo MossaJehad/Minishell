@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:47:13 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 16:35:33 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 17:02:08 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	process_export_assignment(char ***envp, char *arg)
 	free(value);
 }
 
-static void	handle_existing_variable(char ***envp
+void	handle_existing_variable(char ***envp
 	, char *key, char *existing_value)
 {
 	char	*buf;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:18:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 11:02:49 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 17:02:08 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	handle_dollar_expansion(t_expand_ctx *ctx)
 	return (0);
 }
 
-static char	*handle_argument(char *arg, char **envp, int index)
+char	*handle_argument(char *arg, char **envp, int index)
 {
 	char	*new;
 	char	*trimmed;

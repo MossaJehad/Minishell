@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:19:05 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 16:38:52 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 17:02:08 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	handle_single_builtin(char *cmd_argv[MAX_ARGS], t_token *seg,
 		handle_exit_command(cmd_argv, seg, cmd_argc, envp);
 }
 
-static int	handle_heredoc_token(t_token *temp,
+int	handle_heredoc_token(t_token *temp,
 		int cmd_index, int heredoc_fds[MAX_CMDS])
 {
 	int	new_fd;

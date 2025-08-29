@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 20:50:15 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 22:09:22 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 17:02:08 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ char	*lookup_env_value(const char *name, char **envp)
 	return (NULL);
 }
 
-static void	update_quote_state(t_parse_state *ps, char c)
+void	update_quote_state(t_parse_state *ps, char c)
 {
 	if (c == '\'' && !ps->in_double_quote)
 		ps->in_single_quote = !ps->in_single_quote;
@@ -51,7 +51,7 @@ static void	update_quote_state(t_parse_state *ps, char c)
 		ps->in_double_quote = !ps->in_double_quote;
 }
 
-static void	process_space(t_parse_state *ps, int *in_word)
+void	process_space(t_parse_state *ps, int *in_word)
 {
 	if (*in_word)
 	{
@@ -117,7 +117,7 @@ char	*extract_word(const char *str, int *pos)
 	return (ft_strdup(buffer));
 }
 
-static char	**allocate_word_array(const char *str, int word_count)
+char	**allocate_word_array(const char *str, int word_count)
 {
 	char	**words;
 	int		i;
@@ -170,7 +170,7 @@ int	is_quoted_expansion(const char *original_arg)
 			&& original_arg[ft_strlen(original_arg) - 1] == '\''));
 }
 
-static int	count_words_from_split(char *arg)
+int	count_words_from_split(char *arg)
 {
 	char	**split;
 	int		count;
@@ -190,7 +190,7 @@ static int	count_words_from_split(char *arg)
 	return (count);
 }
 
-static int	count_split_args(char **args)
+int	count_split_args(char **args)
 {
 	int		total;
 	int		i;
@@ -214,7 +214,7 @@ static int	count_split_args(char **args)
 	return (total);
 }
 
-static int	copy_split_array_to_args(char **split, char **new_args, int *k)
+int	copy_split_array_to_args(char **split, char **new_args, int *k)
 {
 	int		j;
 	char	*dup;
@@ -236,7 +236,7 @@ static int	copy_split_array_to_args(char **split, char **new_args, int *k)
 	return (0);
 }
 
-static int	copy_and_split_arg(char *arg, char **new_args, int *k)
+int	copy_and_split_arg(char *arg, char **new_args, int *k)
 {
 	char	**split;
 	char	*dup;
@@ -260,7 +260,7 @@ static int	copy_and_split_arg(char *arg, char **new_args, int *k)
 	return (0);
 }
 
-static void	fill_split_args(char **args, char **new_args)
+void	fill_split_args(char **args, char **new_args)
 {
 	int		i;
 	int		k;
