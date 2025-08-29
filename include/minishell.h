@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 12:11:16 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 14:14:56 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
-
+# include <sys/ioctl.h>
 /* External Libraries */
 # include <readline/history.h>
 # include <readline/readline.h>
@@ -301,7 +301,7 @@ void				setup_signal_handlers(void);
 void				setup_child_signals(void);
 void				ignore_signals(void);
 void				restore_signals(void);
-
+void				handle_sig_heredoc(int sig);
 /* Shell status management */
 int					get_shell_status(void);
 void				set_shell_status(int status);
