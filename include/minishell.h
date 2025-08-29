@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 14:14:56 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 16:39:07 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,6 @@
 /* Project Constants */
 # define MAX_ARGS 1024
 # define BUFFER_SIZE 4096
-# define MAX_COMMANDS 256
-# define MAX_PATH_LEN 1024
 # define MAX_CMDS 256
 /* PATH_MAX fallback definition */
 # ifndef PATH_MAX
@@ -238,6 +236,7 @@ char				*determine_cd_target(char *path, char **envp);
 int					is_valid_identifier(const char *str);
 void				extract_key_value(char *arg, char **key, char **value);
 void				assign_env_variable(char ***envp, char *key, char *value);
+void				export_no_args(char **env);
 
 /* Echo command utilities */
 int					count_n_flags(t_token *token);
@@ -257,23 +256,23 @@ void				handle_command(t_token *token, char ***envp);
 
 /* Process management */
 int					parse_commands(t_token *token,
-						t_token *cmd_starts[MAX_COMMANDS],
-						int heredoc_fds[MAX_COMMANDS]);
-int					handle_single_command(t_token *cmd_starts[MAX_COMMANDS],
-						int heredoc_fds[MAX_COMMANDS], char ***envp);
+						t_token *cmd_starts[MAX_CMDS],
+						int heredoc_fds[MAX_CMDS]);
+int					handle_single_command(t_token *cmd_starts[MAX_CMDS],
+						int heredoc_fds[MAX_CMDS], char ***envp);
 int					fork_processes(t_exec_ctx *ctx, char **envp);
 
 /* Process utilities */
 void				execute_child_process(t_exec_ctx *ctx, int i, char **envp);
 void				execute_child_builtin(char *cmd_argv[MAX_ARGS],
 						int cmd_argc, char **envp);
-void				wait_for_processes(pid_t pids[MAX_COMMANDS], int num_cmds);
+void				wait_for_processes(pid_t pids[MAX_CMDS], int num_cmds);
 
 /* Pipe management */
-int					create_pipes(int pipefd[MAX_COMMANDS][2], int num_cmds);
-void				setup_child_pipes(int pipefd[MAX_COMMANDS][2], int i,
+int					create_pipes(int pipefd[MAX_CMDS][2], int num_cmds);
+void				setup_child_pipes(int pipefd[MAX_CMDS][2], int i,
 						int num_cmds);
-void				close_all_pipes(int pipefd[MAX_COMMANDS][2], int num_cmds);
+void				close_all_pipes(int pipefd[MAX_CMDS][2], int num_cmds);
 
 /* Command building */
 int					build_cmd_args(t_token *seg, char *cmd_argv[MAX_ARGS]);
@@ -343,7 +342,7 @@ void				copy_env(char **env, char **envp);
 /* Redirection handling */
 int					setup_redirection(t_token *token);
 int					handle_file_redirection(t_token *tok);
-void				setup_child_heredoc(int heredoc_fds[MAX_COMMANDS], int i);
+void				setup_child_heredoc(int heredoc_fds[MAX_CMDS], int i);
 
 /* Heredoc handling */
 int					handle_heredoc(t_token *tok, t_exec_ctx *ctx);
@@ -367,6 +366,9 @@ void				cleanup_shell_resources(char ***env, t_token *token,
 int					is_builtin(const char *cmd);
 int					is_blank(const char *s);
 char				*trim_whitespace(char *str);
+int					build_cmd_args(t_token *seg, char *cmd_argv[MAX_ARGS]);
+int					handle_cmd_count_one(t_exec_ctx *ctx, char ***envp);
+void				sig_check(int status);
 
 /* Directory management */
 void				update_pwd_oldpwd(char ***envp, const char *new_pwd,
@@ -376,7 +378,7 @@ void				update_pwd_oldpwd(char ***envp, const char *new_pwd,
 int					has_unclosed_quotes(const char *input);
 char				**apply_word_splitting(char **args, char **envp);
 /* File descriptor utilities */
-void				close_heredoc_fds(int heredoc_fds[MAX_COMMANDS],
+void				close_heredoc_fds(int heredoc_fds[MAX_CMDS],
 						int num_cmds);
 
 /* Validation utilities */

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 22:33:21 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/25 19:52:28 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 16:25:36 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 char	*read_prompt_line(void)
 {
-	char	cwd[1024];
+	char	cwd[MAX_ARGS];
 	char	*prompt;
 	char	*tmp1;
 	char	*tmp2;

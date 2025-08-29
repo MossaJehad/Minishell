@@ -6,21 +6,11 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:14:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 16:00:28 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 16:37:43 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-static int	handle_cmd_count_one(t_exec_ctx *ctx, char ***envp)
-{
-	if (handle_single_command(ctx->cmd_starts, ctx->heredoc_fds, envp))
-	{
-		close_heredoc_fds(ctx->heredoc_fds, MAX_CMDS);
-		return (0);
-	}
-	return (-1);
-}
 
 static int	setup_pipes_and_fork(t_exec_ctx *ctx, char ***envp)
 {
@@ -81,26 +71,6 @@ void	handle_command(t_token *token, char ***envp)
 		finalize_command_execution(&ctx);
 	else
 		close_heredoc_fds(ctx.heredoc_fds, MAX_CMDS);
-}
-
-int	build_cmd_args(t_token *seg, char *cmd_argv[MAX_ARGS])
-{
-	int	cmd_argc;
-
-	cmd_argc = 0;
-	while (seg && seg->type != PIPE)
-	{
-		if (seg->type == REDIRECT || seg->type == HEREDOC
-			|| seg->type == APPEND)
-		{
-			seg = seg->next;
-			continue ;
-		}
-		cmd_argv[cmd_argc++] = seg->value;
-		seg = seg->next;
-	}
-	cmd_argv[cmd_argc] = NULL;
-	return (cmd_argc);
 }
 
 void	close_heredoc_fds(int heredoc_fds[MAX_CMDS], int num_cmds)

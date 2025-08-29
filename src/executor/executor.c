@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:11:46 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 12:00:59 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 16:34:27 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ static void	run_exit_builtin_child(char *cmd_argv[MAX_ARGS], int cmd_argc)
 	{
 		if (!is_valid_number(cmd_argv[1]) || check_overflow(cmd_argv[1]))
 		{
-			printf("minishell: exit: %s: numeric argument required\n", cmd_argv[1]);
+			printf("minishell: exit: %s: numeric argument required\n",
+				cmd_argv[1]);
 			exit(2);
 		}
 		exit_code = (unsigned char)ft_atol(cmd_argv[1]);
@@ -61,7 +62,8 @@ static void	run_exit_builtin_child(char *cmd_argv[MAX_ARGS], int cmd_argc)
 	{
 		if (!is_valid_number(cmd_argv[1]) || check_overflow(cmd_argv[1]))
 		{
-			printf("minishell: exit: %s: numeric argument required\n", cmd_argv[1]);
+			printf("minishell: exit: %s: numeric argument required\n",
+				cmd_argv[1]);
 			exit(2);
 		}
 		else

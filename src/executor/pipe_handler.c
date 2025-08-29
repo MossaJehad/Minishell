@@ -6,14 +6,14 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:19:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 16:04:44 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 16:34:50 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	handle_single_command(t_token *cmd_starts[256], int heredoc_fds[256],
-		char ***envp)
+int	handle_single_command(t_token *cmd_starts[MAX_CMDS],
+	int heredoc_fds[MAX_CMDS], char ***envp)
 {
 	t_token	*seg;
 	int		cmd_argc;
@@ -34,7 +34,7 @@ int	handle_single_command(t_token *cmd_starts[256], int heredoc_fds[256],
 	return (0);
 }
 
-int	create_pipes(int pipefd[256][2], int num_cmds)
+int	create_pipes(int pipefd[MAX_CMDS][2], int num_cmds)
 {
 	int	i;
 
@@ -57,7 +57,7 @@ int	create_pipes(int pipefd[256][2], int num_cmds)
 	return (0);
 }
 
-void	close_all_pipes(int pipefd[256][2], int num_cmds)
+void	close_all_pipes(int pipefd[MAX_CMDS][2], int num_cmds)
 {
 	int	j;
 
@@ -70,7 +70,7 @@ void	close_all_pipes(int pipefd[256][2], int num_cmds)
 	}
 }
 
-void	setup_child_pipes(int pipefd[256][2], int i, int num_cmds)
+void	setup_child_pipes(int pipefd[MAX_CMDS][2], int i, int num_cmds)
 {
 	if (i > 0)
 		dup2(pipefd[i - 1][0], STDIN_FILENO);
@@ -79,7 +79,7 @@ void	setup_child_pipes(int pipefd[256][2], int i, int num_cmds)
 	close_all_pipes(pipefd, num_cmds);
 }
 
-void	setup_child_heredoc(int heredoc_fds[256], int i)
+void	setup_child_heredoc(int heredoc_fds[MAX_CMDS], int i)
 {
 	if (heredoc_fds[i] != -1)
 	{

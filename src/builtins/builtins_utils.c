@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 19:58:46 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 20:00:50 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 16:35:37 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,26 @@ void	assign_env_variable(char ***envp, char *key, char *value)
 		free(temp_value);
 		free(temp_key);
 	}
+}
+
+void	export_no_args(char **env)
+{
+	char	**sorted_env;
+	char	*eq;
+	int		j;
+
+	sorted_env = ft_strdup_array(env);
+	ft_sort_array(sorted_env);
+	j = 0;
+	while (sorted_env[j])
+	{
+		eq = ft_strchr(sorted_env[j], '=');
+		if (eq)
+			printf("declare -x %.*s=\"%s\"\n", (int)(eq - sorted_env[j]),
+				sorted_env[j], eq + 1);
+		else
+			printf("declare -x %s\n", sorted_env[j]);
+		j++;
+	}
+	ft_free_arr(sorted_env);
 }

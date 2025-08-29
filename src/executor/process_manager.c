@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_manager.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:19:05 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 11:59:33 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 16:38:52 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,22 +66,6 @@ int	setup_heredocs_for_cmd(t_token *cmd_start, int cmd_index,
 	return (0);
 }
 
-void	sig_check(int status)
-{
-	int	sig;
-
-	sig = WTERMSIG(status);
-	if (sig == SIGINT)
-		set_shell_status(130);
-	else if (sig == SIGQUIT)
-	{
-		set_shell_status(131);
-		write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
-	}
-	else
-		set_shell_status(128 + sig);
-}
-
 void	handle_process_status(pid_t pid, int index, int num_cmds)
 {
 	int		status;
@@ -100,7 +84,7 @@ void	handle_process_status(pid_t pid, int index, int num_cmds)
 	}
 }
 
-void	wait_for_processes(pid_t pids[256], int num_cmds)
+void	wait_for_processes(pid_t pids[MAX_CMDS], int num_cmds)
 {
 	int	i;
 

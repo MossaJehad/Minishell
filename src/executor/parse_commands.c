@@ -6,14 +6,14 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 20:21:19 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 16:00:38 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 16:26:43 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	init_command_parsing(t_token *token, t_token *cmd_starts[256],
-		int heredoc_fds[256], int *num_cmds)
+int	init_command_parsing(t_token *token, t_token *cmd_starts[MAX_CMDS],
+		int heredoc_fds[MAX_CMDS], int *num_cmds)
 {
 	*num_cmds = 0;
 	init_heredoc_fds(heredoc_fds);
@@ -27,8 +27,8 @@ int	init_command_parsing(t_token *token, t_token *cmd_starts[256],
 	return (1);
 }
 
-int	process_piped_commands(t_token *token, t_token *cmd_starts[256],
-		int heredoc_fds[256], int *num_cmds)
+int	process_piped_commands(t_token *token, t_token *cmd_starts[MAX_CMDS],
+		int heredoc_fds[MAX_CMDS], int *num_cmds)
 {
 	t_token	*current;
 
@@ -53,8 +53,8 @@ int	process_piped_commands(t_token *token, t_token *cmd_starts[256],
 	return (*num_cmds);
 }
 
-int	parse_commands(t_token *token, t_token *cmd_starts[256],
-		int heredoc_fds[256])
+int	parse_commands(t_token *token, t_token *cmd_starts[MAX_CMDS],
+		int heredoc_fds[MAX_CMDS])
 {
 	int	num_cmds;
 	int	result;

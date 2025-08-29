@@ -3,36 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:47:13 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 12:01:06 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 16:35:33 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-void	export_no_args(char **env)
-{
-	char	**sorted_env;
-	char	*eq;
-	int		j;
-
-	sorted_env = ft_strdup_array(env);
-	ft_sort_array(sorted_env);
-	j = 0;
-	while (sorted_env[j])
-	{
-		eq = ft_strchr(sorted_env[j], '=');
-		if (eq)
-			printf("declare -x %.*s=\"%s\"\n", (int)(eq - sorted_env[j]),
-				sorted_env[j], eq + 1);
-		else
-			printf("declare -x %s\n", sorted_env[j]);
-		j++;
-	}
-	ft_free_arr(sorted_env);
-}
 
 void	add_or_replace(char ***envp, const char *var)
 {

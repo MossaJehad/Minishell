@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:16:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 18:11:24 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 16:26:59 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	expand_simple_var(t_expand_ctx *ctx)
 {
-	char	var[256];
+	char	var[MAX_CMDS];
 	char	*val;
 	int		k;
 	int		len;
@@ -43,7 +43,7 @@ int	expand_simple_var(t_expand_ctx *ctx)
 
 int	expand_braced_var(t_expand_ctx *ctx)
 {
-	char	var[256];
+	char	var[MAX_CMDS];
 	char	*val;
 	int		k;
 	int		len;
