@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:19:05 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 17:02:08 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 18:41:29 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,11 @@ int	handle_heredoc_token(t_token *temp,
 		return (-1);
 	if (new_fd == -1)
 	{
+		if (g_signal == SIGINT)
+		{
+			set_shell_status(130);
+			return (-1);
+		}
 		perror("warning: here-document delimited by EOF");
 		set_shell_status(1);
 		return (-1);

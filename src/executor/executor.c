@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:11:46 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 17:07:13 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 18:54:39 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,12 +75,13 @@ void	execute_child_process(t_exec_ctx *ctx, int i, char **envp)
 	if (is_builtin(argv[0]))
 	{
 		execute_child_builtin(argv, argc, envp);
+		cleanup_shell_resources(&envp, *ctx->cmd_starts, NULL, NULL);
 		exit(0);
 	}
 	full = resolve_cmd(argv[0], envp);
 	if (!full)
 	{
-		printf("%s: command not found\n", argv[0]);
+		cleanup_shell_resources(&envp, *ctx->cmd_starts, NULL, full);
 		exit(127);
 	}
 	execve(full, argv, envp);

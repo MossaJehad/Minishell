@@ -3,14 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:32:55 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 14:25:46 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 18:55:49 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+void	sig_heredoc(int sig)
+{
+	close(0);
+	g_signal = sig;
+}
 
 int	create_heredoc_pipe(int pipefd[2])
 {
@@ -26,9 +32,17 @@ int	read_heredoc_lines(int write_fd, const char *delimiter)
 {
 	char	*line;
 
+	signal(SIGINT, sig_heredoc);
 	while (1)
 	{
 		line = readline("> ");
+		if (g_signal == SIGINT)
+		{
+			dup2(2, 0);
+			free(line);
+			signal(SIGINT, handle_sigint);
+			return (-1);
+		}
 		if (!line)
 		{
 			printf("\n");
