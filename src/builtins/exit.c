@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:00:00 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/18 13:40:19 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 11:58:46 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,13 @@ int	process_exit_args(char **args, int arg_count)
 {
 	if (arg_count == 1)
 		return (get_shell_status());
-	if (arg_count == 2)
+	if (!is_valid_number(args[1]) || check_overflow(args[1]))
 	{
-		if (!is_valid_number(args[1]) || check_overflow(args[1]))
-			return (-2);
-		return ((unsigned char)ft_atol(args[1]));
+		printf("minishell: exit: %s: numeric argument required\n", args[1]);
+		return (-2);
 	}
+	if (arg_count == 2)
+		return ((unsigned char)ft_atol(args[1]));
 	return (-1);
 }
 
@@ -64,7 +65,7 @@ void	handle_exit_command(char **args, t_token *seg, int arg_count,
 	exit_code = process_exit_args(args, arg_count);
 	if (exit_code == -1)
 	{
-		perror("minishell: exit: too many arguments");
+		printf("minishell: exit: too many arguments\n");
 		set_shell_status(1);
 		return ;
 	}

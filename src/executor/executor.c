@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:11:46 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/27 16:23:29 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 12:00:59 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-#include <stdio.h>
 
 static void	run_echo_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc)
 {
@@ -42,6 +41,37 @@ static void	run_env_builtin(char **envp)
 	handle_env_command(envp);
 }
 
+static void	run_exit_builtin_child(char *cmd_argv[MAX_ARGS], int cmd_argc)
+{
+	int	exit_code;
+
+	if (cmd_argc == 1)
+		exit(get_shell_status());
+	else if (cmd_argc == 2)
+	{
+		if (!is_valid_number(cmd_argv[1]) || check_overflow(cmd_argv[1]))
+		{
+			printf("minishell: exit: %s: numeric argument required\n", cmd_argv[1]);
+			exit(2);
+		}
+		exit_code = (unsigned char)ft_atol(cmd_argv[1]);
+		exit(exit_code);
+	}
+	else
+	{
+		if (!is_valid_number(cmd_argv[1]) || check_overflow(cmd_argv[1]))
+		{
+			printf("minishell: exit: %s: numeric argument required\n", cmd_argv[1]);
+			exit(2);
+		}
+		else
+		{
+			printf("minishell: exit: too many arguments\n");
+			exit(1);
+		}
+	}
+}
+
 void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc,
 		char **envp)
 {
@@ -51,6 +81,8 @@ void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc,
 		run_pwd_builtin();
 	else if (!ft_strcmp(cmd_argv[0], "env"))
 		run_env_builtin(envp);
+	else if (!ft_strcmp(cmd_argv[0], "exit"))
+		run_exit_builtin_child(cmd_argv, cmd_argc);
 }
 
 // Helpers for prepare_child_command

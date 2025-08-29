@@ -6,12 +6,11 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:47:13 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 08:05:32 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 12:01:06 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-#include <stddef.h>
 
 void	export_no_args(char **env)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 22:11:28 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 12:11:16 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 # define MINISHELL_H
 
 /*
-** ============================================================================
-** INCLUDES AND DEFINES
-** ============================================================================
+** ==============================================================
+**					INCLUDES AND DEFINES
+** ==============================================================
 */
 
 /* Standard Libraries */
@@ -49,11 +49,10 @@
 # endif
 
 /*
-** ============================================================================
-** STRUCTURES AND TYPES
-** ============================================================================
+** ==============================================================
+**					STRUCTURES AND TYPES
+** ==============================================================
 */
-
 typedef enum e_token_type
 {
 	WORD,
@@ -156,12 +155,10 @@ extern volatile \
 sig_atomic_t				g_signal;
 
 /*
-** ============================================================================
-** CORE MODULE - Main shell loop and initialization
-** Files: src/core/main.c, src/core/shell_loop.c, src/core/init.c
-** ============================================================================
+** ==============================================================
+**		CORE MODULE - Main shell loop and initialization
+** ==============================================================
 */
-
 /* Main shell functions */
 t_token				*prepare_command(char *input, char ***envp, int arg_count);
 t_token				*handle_operator(char **args, char **envp);
@@ -172,20 +169,16 @@ void				print_welcome_banner(void);
 void				null_shell(t_shell *s);
 
 /*
-** ============================================================================
-** PARSER MODULE - Input parsing and validation
-** Files: src/parser/parsing.c, src/parser/syntax_checker.c,
-	src/parser/quote_handler.c
-** ============================================================================
+** ==============================================================
+**		PARSER MODULE - Input parsing and validation
+** ==============================================================
 */
-
 /* Main parsing functions */
 char				**parse_arguments(const char *input, int *arg_count);
 int					check_syntax_error(char **array);
 
 /* Parser utilities */
 void				null_parse_state(t_parse_state *s);
-char				*unescape_string(const char *src);
 int					handle_double_char_operators(const char *input,
 						t_parse_state *s, char **argv, char *buffer);
 int					handle_single_char_operators(const char *input,
@@ -201,21 +194,18 @@ int					handle_whitespace(const char *input, t_parse_state *s,
 						char **argv, char *buffer);
 
 /*
-** ============================================================================
-** TOKENIZER MODULE - Token creation and management
-** Files: src/tokenizer/tokenize.c, src/tokenizer/token_utils.c
-** ============================================================================
+** ==============================================================
+**		TOKENIZER MODULE - Token creation and management
+** ==============================================================
 */
 
 /* Token creation and management */
 void				tokenize(char **array, t_token **token);
 void				create_token(t_token **token, char *value, char *type);
 void				free_tokens(t_token *token);
-char				*strip_quotes(const char *s);
 
 /* Token classification */
 int					check_command(char *word);
-int					validate_token(t_token *tok);
 
 int					tokenize_redirects(char **array, int *i, t_token **token);
 int					tokenize_pipe_and_redirects(char **array, int *i,
@@ -226,18 +216,14 @@ void				validate_tokenize_input(char **array, t_token **token,
 						int *should_continue);
 
 /*
-** ============================================================================
-** BUILTIN COMMANDS MODULE - All shell built-in commands
-** Files: src/builtins/echo.c, src/builtins/cd.c, src/builtins/pwd.c,
-**        src/builtins/env.c, src/builtins/export.c, src/builtins/unset.c,
-**        src/builtins/exit.c
-** ============================================================================
+** ==============================================================
+**		BUILTIN COMMANDS MODULE - All shell built-in commands
+** ==============================================================
 */
 
 /* Built-in command handlers */
 void				handle_echo_command(t_token *token);
 void				handle_cd_command(char *path, int arg_count, char ***envp);
-void				handle_pwd_command(char ***envp);
 void				handle_env_command(char **env);
 void				handle_export_command(char ***envp, char **args,
 						int arg_count);
@@ -255,24 +241,19 @@ void				assign_env_variable(char ***envp, char *key, char *value);
 
 /* Echo command utilities */
 int					count_n_flags(t_token *token);
-int					is_all_n(const char *str);
 
 /* Exit command utilities */
-void				cleanup_and_exit(int exit_code);
 int					is_valid_number(const char *str);
 int					check_overflow(const char *str);
 
 /*
-** ============================================================================
-** EXECUTOR MODULE - Command execution and process management
-** Files: src/executor/executor.c, src/executor/command_handler.c,
-**        src/executor/pipe_handler.c, src/executor/process_manager.c
-** ============================================================================
+** ==============================================================
+**		EXECUTOR MODULE - Command execution and process management
+** ==============================================================
 */
 
 /* Main command execution */
 void				handle_command(t_token *token, char ***envp);
-int					command_exists(char *cmd, char **envp);
 
 /* Process management */
 int					parse_commands(t_token *token,
@@ -281,7 +262,7 @@ int					parse_commands(t_token *token,
 int					handle_single_command(t_token *cmd_starts[MAX_COMMANDS],
 						int heredoc_fds[MAX_COMMANDS], char ***envp);
 int					fork_processes(t_exec_ctx *ctx, char **envp);
-void				check_heredoc_only(t_token *token, t_exec_ctx *ctx);
+
 /* Process utilities */
 void				execute_child_process(t_exec_ctx *ctx, int i, char **envp);
 void				execute_child_builtin(char *cmd_argv[MAX_ARGS],
@@ -307,15 +288,13 @@ int					tokenize_append_and_heredoc(char **array, int *i,
 						t_token **token);
 
 /*
-** ============================================================================
-** SIGNAL HANDLING MODULE - Signal management
-** Files: src/signals/signals.c, src/signals/signals_utils.c
-** ============================================================================
+** ==============================================================
+**		SIGNAL HANDLING MODULE - Signal management
+** ==============================================================
 */
 
 /* Signal handlers */
 void				handle_sigint(int sig);
-void				handle_sigquit(int sig);
 
 /* Signal setup functions */
 void				setup_signal_handlers(void);
@@ -326,14 +305,11 @@ void				restore_signals(void);
 /* Shell status management */
 int					get_shell_status(void);
 void				set_shell_status(int status);
-void				setup_heredoc_signals(void);
 
 /*
-** ============================================================================
-** VARIABLE EXPANSION MODULE - Environment variable and special expansions
-** Files: src/expander/expander.c, src/expander/variable_expansion.c,
-**        src/expander/quote_expansion.c
-** ============================================================================
+** ==============================================================
+**		VARIABLE EXPANSION MODULE - Env variable and special expansions
+** ==============================================================
 */
 
 /* Main expansion function */
@@ -359,10 +335,9 @@ int					expand_pid(t_expand_ctx *ctx);
 void				copy_env(char **env, char **envp);
 
 /*
-** ============================================================================
-** I/O AND REDIRECTION MODULE - Input/output handling and redirection
-** Files: src/io/input_handler.c, src/io/redirection.c, src/io/heredoc.c
-** ============================================================================
+** ==============================================================
+**		I/O AND REDIRECTION MODULE - Input/output and redirection
+** ==============================================================
 */
 
 /* Redirection handling */
@@ -375,18 +350,15 @@ int					handle_heredoc(t_token *tok, t_exec_ctx *ctx);
 int					read_heredoc_lines(int write_fd, const char *delimiter);
 
 /*
-** ============================================================================
-** UTILITIES MODULE - Helper functions and environment management
-** Files: src/utils/utils.c, src/utils/string_utils.c, src/utils/env_utils.c,
-**        src/utils/validation.c
-** ============================================================================
+** ==============================================================
+**		UTILITIES MODULE - Helper functions and env management
+** ==============================================================
 */
 
 /* Environment variable management */
 char				*lookup_env(const char *name, char **envp);
 void				add_or_replace_env(char ***envp, const char *var);
 void				add_or_replace(char ***envp, const char *var);
-void				add_env_var(char ***envp, const char *var);
 void				remove_env_var(char ***envp, const char *name);
 int					find_env_index(char **envp, const char *name);
 void				replace_env_var(char **env, int idx, const char *var);
@@ -395,6 +367,7 @@ void				cleanup_shell_resources(char ***env, t_token *token,
 int					is_builtin(const char *cmd);
 int					is_blank(const char *s);
 char				*trim_whitespace(char *str);
+
 /* Directory management */
 void				update_pwd_oldpwd(char ***envp, const char *new_pwd,
 						const char *old_pwd);
@@ -412,16 +385,5 @@ int					is_operator(const char *s);
 
 /* Debug and development utilities */
 void				prompt(void);
-
-/*
-** ============================================================================
-** FUNCTION MAPPINGS FOR EXISTING CODE
-** These maintain compatibility with current implementation
-** ============================================================================
-*/
-
-/* Legacy command handlers - to be moved to appropriate modules */
-void				handle_cat_command(char **args, char **envp);
-void				handle_ls_command(char **args, char **envp);
 
 #endif

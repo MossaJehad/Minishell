@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:18:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 22:09:37 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 11:02:49 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,8 @@ static char	*handle_argument(char *arg, char **envp, int index)
 {
 	char	*new;
 	char	*trimmed;
-	int		was_quoted;
 	size_t	len;
 
-	was_quoted = 0;
 	len = ft_strlen(arg);
 	if (arg[0] == '\'' && arg[len - 1] == '\'')
 		return (expand_single_quote(arg));

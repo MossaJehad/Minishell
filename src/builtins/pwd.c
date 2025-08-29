@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:44:15 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/17 20:40:05 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 12:07:24 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,27 +34,4 @@ void	update_pwd_oldpwd(char ***envp, const char *new_pwd,
 		free(oldpwd_var);
 	}
 	ft_free((void *)&old_pwd);
-}
-
-void	handle_pwd_command(char ***envp)
-{
-	char	cwd[PATH_MAX];
-	char	*pwd;
-
-	if (getcwd(cwd, sizeof(cwd)))
-	{
-		printf("%s\n", cwd);
-		update_pwd_oldpwd(envp, cwd, lookup_env_value("PWD", *envp));
-		g_signal = 0;
-		return ;
-	}
-	pwd = lookup_env_value("PWD", *envp);
-	if (pwd)
-	{
-		printf("%s\n", pwd);
-		g_signal = 0;
-		return ;
-	}
-	perror("pwd");
-	g_signal = 1;
 }
