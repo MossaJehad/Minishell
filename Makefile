@@ -86,7 +86,8 @@ IO_SRC		=	input_handler.c \
 UTILS_SRC	=	env_utils.c \
 			utils.c \
 			string_utils.c \
-			validation.c
+			validation.c \
+			executor.c
 
 # Combine all sources with their directory paths
 CORE_FILES		=	$(addprefix $(CORE_DIR)/, $(CORE_SRC))
