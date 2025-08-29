@@ -89,7 +89,9 @@ UTILS_SRC	=	env_utils.c \
 			string_utils.c \
 			validation.c \
 			executor.c \
-			executor_utils.c
+			executor_utils.c \
+			splitters.c \
+			polish_words.c
 
 # Combine all sources with their directory paths
 CORE_FILES		=	$(addprefix $(CORE_DIR)/, $(CORE_SRC))

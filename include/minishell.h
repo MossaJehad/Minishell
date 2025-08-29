@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 17:07:29 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 17:13:48 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,6 +297,11 @@ int					child_setup_and_collect_args(t_exec_ctx *ctx, int idx,
 						char *cmd_argv[MAX_ARGS]);
 char				*resolve_cmd(char *cmd, char **envp);
 void				skip_heredoc_tokens(t_token **cur);
+void				handle_exit_argument(char *arg);
+int					count_words_with_quotes(const char *str);
+int					is_quoted_expansion(const char *original_arg);
+int					count_words_from_split(char *arg);
+char				**split_words_with_quotes(const char *str);
 
 /*
 ** ==============================================================

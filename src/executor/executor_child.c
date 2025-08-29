@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 17:00:53 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 17:02:08 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 17:10:44 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,10 @@
 
 void	run_exit_builtin_child(char *cmd_argv[MAX_ARGS], int cmd_argc)
 {
-	int	exit_code;
-
 	if (cmd_argc == 1)
 		exit(get_shell_status());
 	else if (cmd_argc == 2)
-	{
-		if (!is_valid_number(cmd_argv[1]) || check_overflow(cmd_argv[1]))
-		{
-			printf("minishell: exit: %s: numeric argument required\n",
-				cmd_argv[1]);
-			exit(2);
-		}
-		exit_code = (unsigned char)ft_atol(cmd_argv[1]);
-		exit(exit_code);
-	}
+		handle_exit_argument(cmd_argv[1]);
 	else
 	{
 		if (!is_valid_number(cmd_argv[1]) || check_overflow(cmd_argv[1]))

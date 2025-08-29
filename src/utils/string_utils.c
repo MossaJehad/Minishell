@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:28:48 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 18:08:08 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 17:28:59 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,34 @@ char	*trim_whitespace(char *str)
 	ft_strncpy(result, start, len);
 	result[len] = '\0';
 	return (result);
+}
+
+int	is_quoted_expansion(const char *original_arg)
+{
+	if (!original_arg)
+		return (0);
+	return ((original_arg[0] == '"'
+			&& original_arg[ft_strlen(original_arg) - 1] == '"')
+		|| (original_arg[0] == '\''
+			&& original_arg[ft_strlen(original_arg) - 1] == '\''));
+}
+
+int	count_words_from_split(char *arg)
+{
+	char	**split;
+	int		count;
+	int		j;
+
+	split = split_words_with_quotes(arg);
+	if (split == NULL)
+		return (1);
+	count = 0;
+	j = 0;
+	while (split[j] != NULL)
+	{
+		count++;
+		j++;
+	}
+	ft_free_arr(split);
+	return (count);
 }
