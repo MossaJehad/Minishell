@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 17:43:01 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 20:11:24 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@
 # include "../libft/libft.h"
 
 /* Project Constants */
-# define MAX_ARGS 1024
+# define MAX_ARGS 4096
 # define BUFFER_SIZE 4096
-# define MAX_CMDS 256
+# define MAX_CMDS 4096
 /* PATH_MAX fallback definition */
 # ifndef PATH_MAX
 #  define PATH_MAX 4096
@@ -253,7 +253,7 @@ int					check_overflow(const char *str);
 
 /* Main command execution */
 void				handle_command(t_token *token, char ***envp);
-
+void				print_ctx(t_exec_ctx *ctx);
 /* Process management */
 int					parse_commands(t_token *token,
 						t_token *cmd_starts[MAX_CMDS],
@@ -318,10 +318,12 @@ void				setup_child_signals(void);
 void				ignore_signals(void);
 void				restore_signals(void);
 void				handle_sig_heredoc(int sig);
+void				sig_heredoc(int sig);
+int					handle_sigint_case(char *line);
+
 /* Shell status management */
 int					get_shell_status(void);
 void				set_shell_status(int status);
-
 /*
 ** ==============================================================
 **		VARIABLE EXPANSION MODULE - Env variable and special expansions

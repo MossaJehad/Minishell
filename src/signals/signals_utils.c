@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 15:41:17 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 12:09:17 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 20:11:16 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,12 @@ void	ignore_signals(void)
 {
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGTSTP, SIG_IGN);
+}
+
+int	handle_sigint_case(char *line)
+{
+	dup2(2, 0);
+	free(line);
+	signal(SIGINT, handle_sigint);
+	return (-1);
 }

@@ -6,17 +6,11 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:32:55 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 18:55:49 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 20:11:03 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-void	sig_heredoc(int sig)
-{
-	close(0);
-	g_signal = sig;
-}
 
 int	create_heredoc_pipe(int pipefd[2])
 {
@@ -28,41 +22,49 @@ int	create_heredoc_pipe(int pipefd[2])
 	return (0);
 }
 
+int	handle_write_line(int write_fd, char *line)
+{
+	if (write(write_fd, line, ft_strlen(line)) == -1
+		|| write(write_fd, "\n", 1) == -1)
+	{
+		perror("write to heredoc pipe");
+		free(line);
+		return (-1);
+	}
+	free(line);
+	return (0);
+}
+
+int	process_line(int write_fd, char *line, const char *delimiter)
+{
+	if (!line)
+	{
+		printf("\n");
+		return (1);
+	}
+	if (ft_strcmp(line, delimiter) == 0)
+	{
+		free(line);
+		return (1);
+	}
+	return handle_write_line(write_fd, line);
+}
+
 int	read_heredoc_lines(int write_fd, const char *delimiter)
 {
 	char	*line;
+	int		status;
 
 	signal(SIGINT, sig_heredoc);
 	while (1)
 	{
 		line = readline("> ");
 		if (g_signal == SIGINT)
-		{
-			dup2(2, 0);
-			free(line);
-			signal(SIGINT, handle_sigint);
-			return (-1);
-		}
-		if (!line)
-		{
-			printf("\n");
-			break ;
-		}
-		if (ft_strcmp(line, delimiter) == 0)
-		{
-			free(line);
-			break ;
-		}
-		if (write(write_fd, line, ft_strlen(line)) == -1 || write(write_fd,
-				"\n", 1) == -1)
-		{
-			perror("write to heredoc pipe");
-			free(line);
-			return (-1);
-		}
-		free(line);
+			return handle_sigint_case(line);
+		status = process_line(write_fd, line, delimiter);
+		if (status != 0)
+			return (status == -1 ? -1 : 0);
 	}
-	return (0);
 }
 
 int	handle_heredoc(t_token *tok, t_exec_ctx *ctx)

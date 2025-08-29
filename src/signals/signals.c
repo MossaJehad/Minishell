@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 12:00:00 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 14:25:56 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/29 20:09:50 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,11 @@ void	setup_child_signals(void)
 {
 	signal(SIGINT, handle_sigint_child);
 	signal(SIGQUIT, SIG_DFL);
+}
+
+void	sig_heredoc(int sig)
+{
+	printf("\n");
+	close(0);
+	g_signal = sig;
 }
