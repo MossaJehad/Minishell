@@ -6,7 +6,7 @@
 /*   By: malja-fa <malja-fa@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 07:59:28 by malja-fa         ###   ########.fr       */
+/*   Updated: 2025/08/30 12:23:27 by malja-fa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -317,8 +317,8 @@ void				handle_sigint(int sig);
 /* Signal setup functions */
 void				setup_signal_handlers(void);
 void				setup_child_signals(void);
-void				ignore_signals(void);
-void				restore_signals(void);
+void				setup_signals2(void);
+void				handle_sigint2(int sig);
 void				handle_sig_heredoc(int sig);
 void				sig_heredoc(int sig);
 int					handle_sigint_case(char *line);

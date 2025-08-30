@@ -6,7 +6,7 @@
 /*   By: malja-fa <malja-fa@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 22:33:21 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 11:22:06 by malja-fa         ###   ########.fr       */
+/*   Updated: 2025/08/30 12:24:25 by malja-fa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ char	*get_input(void)
 {
 	char	*line;
 
-	ignore_signals();
+	setup_signal_handlers();
 	while (1)
 	{
 		line = read_prompt_line();
@@ -53,6 +53,7 @@ char	*get_input(void)
 			free(line);
 			continue ;
 		}
+		setup_signals2();
 		add_history(line);
 		line = append_until_quotes_closed(line);
 		if (!line)

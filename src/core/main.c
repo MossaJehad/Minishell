@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: malja-fa <malja-fa@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 20:29:22 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 16:18:16 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 12:27:17 by malja-fa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,12 @@ void	null_parse_state(t_parse_state *s)
 
 void	setup_signal_handlers(void)
 {
-	signal(SIGINT, handle_sigint);
+	write(1, "\n", 1);
+	struct sigaction sa;
+	sa.sa_handler = handle_sigint2;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa, NULL);
 	signal(SIGQUIT, SIG_IGN);
+	signal(SIGSTOP, SIG_IGN);
 }

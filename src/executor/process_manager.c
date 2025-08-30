@@ -6,7 +6,7 @@
 /*   By: malja-fa <malja-fa@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:19:05 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 11:37:12 by malja-fa         ###   ########.fr       */
+/*   Updated: 2025/08/30 11:51:00 by malja-fa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,5 +98,4 @@ void	wait_for_processes(pid_t pids[MAX_CMDS], int num_cmds)
 			handle_process_status(pids[i], i, num_cmds);
 		i++;
 	}
-	setup_signal_handlers();
 }
