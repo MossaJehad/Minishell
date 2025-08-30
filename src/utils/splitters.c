@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 17:12:52 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 17:12:59 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 13:39:03 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,11 @@ int	count_split_args(char **args)
 	i = 0;
 	while (args[i] != NULL)
 	{
+		if (ft_strcmp(args[i], "\001") == 0)
+		{
+			i++;
+			continue ;
+		}
 		if (!is_quoted_expansion(args[i]) && ft_strchr(args[i], ' '))
 		{
 			count = count_words_from_split(args[i]);
@@ -92,6 +97,11 @@ void	fill_split_args(char **args, char **new_args)
 	k = 0;
 	while (args[i])
 	{
+		if (ft_strcmp(args[i], "\001") == 0)
+		{
+			i++;
+			continue ;
+		}
 		if (!is_quoted_expansion(args[i]) && ft_strchr(args[i], ' '))
 		{
 			copy_and_split_arg(args[i], new_args, &k);
@@ -117,6 +127,11 @@ char	**apply_word_splitting(char **args, char **envp)
 
 	(void)envp;
 	new_count = count_split_args(args);
+	if (new_count == 0)
+	{
+		ft_free_arr(args);
+		return (NULL);
+	}
 	new_args = ft_calloc(new_count + 1, sizeof(char *));
 	if (!new_args)
 		return (args);

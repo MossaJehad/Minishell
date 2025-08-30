@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:30 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 20:51:00 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 13:38:34 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,11 +88,18 @@ void	process_tokens(char **array, t_token **token)
 {
 	int		i;
 	int		result;
+	int		is_first;
 
 	i = 0;
+	is_first = 1;
 	while (array[i] && array[i][0])
 	{
-		while (!array[i][0])
+		if (!is_first && array[i][0] == '\0')
+		{
+			i++;
+			continue ;
+		}
+		while (!array[i][0] && array[i + 1])
 			i++;
 		result = tokenize_append_and_heredoc(array, &i, token);
 		if (result == -1)
@@ -102,11 +109,18 @@ void	process_tokens(char **array, t_token **token)
 			return ;
 		}
 		if (result == 1)
+		{
+			is_first = 0;
 			continue ;
+		}
 		result = tokenize_pipe_and_redirects(array, &i, token);
 		if (result == 1)
+		{
+			is_first = (ft_strcmp(array[i - 1], "|") == 0);
 			continue ;
+		}
 		create_command_or_word_token(array, i, token);
+		is_first = 0;
 		i++;
 	}
 }

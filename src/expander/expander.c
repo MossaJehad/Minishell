@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:18:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 17:42:52 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 13:29:20 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,19 @@ int	handle_dollar_expansion(t_expand_ctx *ctx)
 	return (0);
 }
 
+static int	is_whitespace_only(const char *str)
+{
+	if (!str)
+		return (1);
+	while (*str)
+	{
+		if (!ft_isspace(*str))
+			return (0);
+		str++;
+	}
+	return (1);
+}
+
 char	*handle_argument(char *arg, char **envp, int index)
 {
 	char	*new;
@@ -45,6 +58,12 @@ char	*handle_argument(char *arg, char **envp, int index)
 	else if (ft_strchr(arg, '$'))
 	{
 		new = expand_variables_in_string(arg, envp);
+		if (new && is_whitespace_only(new))
+		{
+			free(new);
+			free(arg);
+			return (ft_strdup("\001"));
+		}
 		if (index == 0 && new)
 		{
 			trimmed = trim_whitespace(new);

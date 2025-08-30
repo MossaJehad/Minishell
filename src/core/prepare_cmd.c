@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 19:53:36 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 19:54:09 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 13:31:10 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,14 @@ char	**expand_and_validate(char **args, char **envp)
 	args = expand(args, envp);
 	if (!args)
 		return (NULL);
-	if (!args[0] || args[0][0] == '\0')
+	if (args[0] && args[0][0] == '\0')
+	{
+		write(2, ": command not found\n", 20);
+		ft_free_arr(args);
+		set_shell_status(127);
+		return (NULL);
+	}
+	if (!args[0])
 	{
 		ft_free_arr(args);
 		set_shell_status(0);

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 16:14:31 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/23 18:56:51 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 13:39:25 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,20 @@ void	run_parsing_loop(const char *input, t_parse_state *s, char **argv,
 	while (input[s->cursor])
 	{
 		if (handle_quotes(input, s, buffer))
+		{
+			if (!s->in_single_quote && !s->in_double_quote)
+			{
+				if (s->buffer_pos == 2
+					&& ((buffer[0] == '\'' && buffer[1] == '\'')
+						|| (buffer[0] == '"' && buffer[1] == '"')))
+				{
+					buffer[s->buffer_pos] = '\0';
+					argv[s->arg_count++] = ft_strdup(buffer);
+					s->buffer_pos = 0;
+				}
+			}
 			continue ;
+		}
 		if (handle_whitespace(input, s, argv, buffer))
 			continue ;
 		if (handle_double_char_operators(input, s, argv, buffer))
