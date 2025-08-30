@@ -6,11 +6,23 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 16:14:31 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 13:39:25 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 14:14:03 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+void	flush_empty_quotes(t_parse_state *s, char **argv, char *buffer)
+{
+	if (s->buffer_pos == 2
+		&& ((buffer[0] == '\'' && buffer[1] == '\'')
+			|| (buffer[0] == '"' && buffer[1] == '"')))
+	{
+		buffer[s->buffer_pos] = '\0';
+		argv[s->arg_count++] = ft_strdup(buffer);
+		s->buffer_pos = 0;
+	}
+}
 
 void	run_parsing_loop(const char *input, t_parse_state *s, char **argv,
 		char *buffer)
@@ -20,16 +32,7 @@ void	run_parsing_loop(const char *input, t_parse_state *s, char **argv,
 		if (handle_quotes(input, s, buffer))
 		{
 			if (!s->in_single_quote && !s->in_double_quote)
-			{
-				if (s->buffer_pos == 2
-					&& ((buffer[0] == '\'' && buffer[1] == '\'')
-						|| (buffer[0] == '"' && buffer[1] == '"')))
-				{
-					buffer[s->buffer_pos] = '\0';
-					argv[s->arg_count++] = ft_strdup(buffer);
-					s->buffer_pos = 0;
-				}
-			}
+				flush_empty_quotes(s, argv, buffer);
 			continue ;
 		}
 		if (handle_whitespace(input, s, argv, buffer))

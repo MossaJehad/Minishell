@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:18:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 13:29:20 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:05:28 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,35 +44,35 @@ static int	is_whitespace_only(const char *str)
 	return (1);
 }
 
-char	*handle_argument(char *arg, char **envp, int index)
+static char	*handle_dollar_exp(char *arg, char **envp, int index)
 {
 	char	*new;
 	char	*trimmed;
-	size_t	len;
 
-	len = ft_strlen(arg);
-	if (arg[0] == '\'' && arg[len - 1] == '\'')
-		return (expand_single_quote(arg));
-	else if (arg[0] == '"' && arg[len - 1] == '"')
-		return (expand_double_quote(arg, envp));
-	else if (ft_strchr(arg, '$'))
+	new = expand_variables_in_string(arg, envp);
+	free(arg);
+	if (new && is_whitespace_only(new))
 	{
-		new = expand_variables_in_string(arg, envp);
-		if (new && is_whitespace_only(new))
-		{
-			free(new);
-			free(arg);
-			return (ft_strdup("\001"));
-		}
-		if (index == 0 && new)
-		{
-			trimmed = trim_whitespace(new);
-			free(new);
-			new = trimmed;
-		}
-		free(arg);
-		return (new);
+		free(new);
+		return (ft_strdup("\001"));
 	}
+	if (index == 0 && new)
+	{
+		trimmed = trim_whitespace(new);
+		free(new);
+		new = trimmed;
+	}
+	return (new);
+}
+
+char	*handle_argument(char *arg, char **envp, int index)
+{
+	if (arg[0] == '\'' && arg[ft_strlen(arg) - 1] == '\'')
+		return (expand_single_quote(arg));
+	if (arg[0] == '"' && arg[ft_strlen(arg) - 1] == '"')
+		return (expand_double_quote(arg, envp));
+	if (ft_strchr(arg, '$'))
+		return (handle_dollar_exp(arg, envp, index));
 	return (arg);
 }
 
