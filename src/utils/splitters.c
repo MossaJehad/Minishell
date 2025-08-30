@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 17:12:52 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 14:18:15 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:08:22 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,32 +87,32 @@ int	copy_and_split_arg(char *arg, char **new_args, int *k)
 	return (0);
 }
 
+void	process_arg(char *arg, char **new_args, int *k)
+{
+	char	*dup;
+
+	if (ft_strcmp(arg, "\001") == 0)
+		return ;
+	if (!is_quoted_expansion(arg) && ft_strchr(arg, ' '))
+		copy_and_split_arg(arg, new_args, k);
+	else
+	{
+		dup = ft_strdup(arg);
+		if (dup)
+			new_args[(*k)++] = dup;
+	}
+}
+
 void	fill_split_args(char **args, char **new_args)
 {
-	int		i;
-	int		k;
-	char	*dup;
+	int	i;
+	int	k;
 
 	i = 0;
 	k = 0;
 	while (args[i])
 	{
-		if (ft_strcmp(args[i], "\001") == 0)
-		{
-			i++;
-			continue ;
-		}
-		if (!is_quoted_expansion(args[i]) && ft_strchr(args[i], ' '))
-			copy_and_split_arg(args[i], new_args, &k);
-		else
-		{
-			dup = ft_strdup(args[i]);
-			if (dup)
-			{
-				new_args[k] = dup;
-				k++;
-			}
-		}
+		process_arg(args[i], new_args, &k);
 		i++;
 	}
 	new_args[k] = NULL;
