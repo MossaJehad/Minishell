@@ -1,0 +1,11 @@
+a.out
+include
+libft
+main.c
+Makefile
+minishell
+o
+obj
+readline_curses.supp
+src
+todo.md

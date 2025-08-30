@@ -6,7 +6,7 @@
 /*   By: malja-fa <malja-fa@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:11:46 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 10:44:22 by malja-fa         ###   ########.fr       */
+/*   Updated: 2025/08/30 11:22:41 by malja-fa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ void	execute_child_process(t_exec_ctx *ctx, int i, char **envp)
 	char	*full;
 
 	argc = child_setup_and_collect_args(ctx, i, argv);
-	fprintf(stderr, "%d\n", argc);
 	if (argc == -1)
 	{
 		cleanup_shell_resources(&envp, *ctx->cmd_starts, NULL, NULL);

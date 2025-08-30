@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell_loop.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: malja-fa <malja-fa@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 22:33:21 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 16:25:36 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 11:22:06 by malja-fa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,10 @@ char	*get_input(void)
 			free(line);
 			continue ;
 		}
+		add_history(line);
 		line = append_until_quotes_closed(line);
 		if (!line)
 			continue ;
-		if (line && !is_blank(line))
-			add_history(line);
 		return (line);
 	}
 }

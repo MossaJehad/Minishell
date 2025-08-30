@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_manager.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: malja-fa <malja-fa@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:19:05 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 18:41:29 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 11:37:12 by malja-fa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,6 @@ int	handle_heredoc_token(t_token *temp,
 		heredoc_fds[cmd_index] = -1;
 	}
 	new_fd = handle_heredoc(temp->next, temp->ctx);
-	if (new_fd == 130)
-		return (-1);
 	if (new_fd == -1)
 	{
 		if (g_signal == SIGINT)
