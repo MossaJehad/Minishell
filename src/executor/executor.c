@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: malja-fa <malja-fa@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:11:46 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 20:01:40 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 10:44:22 by malja-fa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,17 @@ void	execute_child_process(t_exec_ctx *ctx, int i, char **envp)
 	char	*full;
 
 	argc = child_setup_and_collect_args(ctx, i, argv);
+	fprintf(stderr, "%d\n", argc);
 	if (argc == -1)
+	{
+		cleanup_shell_resources(&envp, *ctx->cmd_starts, NULL, NULL);
 		exit(1);
+	}
 	if (argc == 0 || !argv[0])
+	{
+		cleanup_shell_resources(&envp, *ctx->cmd_starts, NULL, NULL);
 		exit(0);
+	}
 	if (is_builtin(argv[0]))
 	{
 		execute_child_builtin(argv, argc, envp);
@@ -81,11 +88,24 @@ void	execute_child_process(t_exec_ctx *ctx, int i, char **envp)
 	full = resolve_cmd(argv[0], envp);
 	if (!full)
 	{
+		if (is_dir(argv[0], 1) == 126)
+		{
+			cleanup_shell_resources(&envp, *ctx->cmd_starts, NULL, full);
+			exit (126);	
+		}
+		write(2, argv[0], ft_strlen(argv[0]));
+		write(2, ": command not found\n", 21);
 		cleanup_shell_resources(&envp, *ctx->cmd_starts, NULL, full);
 		exit(127);
 	}
 	execve(full, argv, envp);
+	cleanup_shell_resources(&envp, *ctx->cmd_starts, NULL, NULL);
 	perror(full);
+	if (access(full, F_OK) == 0)
+	{
+		free(full);
+		exit (126);
+	}
 	free(full);
 	exit(127);
 }

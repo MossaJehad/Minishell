@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: malja-fa <malja-fa@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 17:06:09 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 17:06:17 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 07:59:43 by malja-fa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,10 @@ char	*resolve_cmd(char *cmd, char **envp)
 	if (!cmd)
 		return (NULL);
 	if (cmd[0] == '/' || cmd[0] == '.')
+	{
+		if (is_dir(cmd, 0))
+			return (NULL);
 		return (ft_strdup(cmd));
+	}
 	return (find_executable(cmd, envp));
 }

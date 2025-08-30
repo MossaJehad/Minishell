@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: malja-fa <malja-fa@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 20:11:24 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 07:59:28 by malja-fa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include <sys/stat.h>
 # include <sys/ioctl.h>
 /* External Libraries */
 # include <readline/history.h>
@@ -267,6 +268,7 @@ void				execute_child_process(t_exec_ctx *ctx, int i, char **envp);
 void				execute_child_builtin(char *cmd_argv[MAX_ARGS],
 						int cmd_argc, char **envp);
 void				wait_for_processes(pid_t pids[MAX_CMDS], int num_cmds);
+int 				is_dir (char *cmd, int flag);
 
 /* Pipe management */
 int					create_pipes(int pipefd[MAX_CMDS][2], int num_cmds);
