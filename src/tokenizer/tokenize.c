@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:30 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 13:38:34 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:25:26 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,11 +84,38 @@ int	tokenize_redirects(char **array, int *i, t_token **token)
 	return (0);
 }
 
+int	handle_token_dispatch(char **array, int *i, t_token **token, int *is_first)
+{
+	int	result;
+
+	result = tokenize_append_and_heredoc(array, i, token);
+	if (result == -1)
+	{
+		free_tokens(*token);
+		*token = NULL;
+		return (-1);
+	}
+	if (result == 1)
+	{
+		*is_first = 0;
+		return (1);
+	}
+	result = tokenize_pipe_and_redirects(array, i, token);
+	if (result == 1)
+	{
+		*is_first = (ft_strcmp(array[*i - 1], "|") == 0);
+		return (1);
+	}
+	create_command_or_word_token(array, *i, token);
+	*is_first = 0;
+	return (0);
+}
+
 void	process_tokens(char **array, t_token **token)
 {
-	int		i;
-	int		result;
-	int		is_first;
+	int	i;
+	int	is_first;
+	int	result;
 
 	i = 0;
 	is_first = 1;
@@ -101,26 +128,11 @@ void	process_tokens(char **array, t_token **token)
 		}
 		while (!array[i][0] && array[i + 1])
 			i++;
-		result = tokenize_append_and_heredoc(array, &i, token);
+		result = handle_token_dispatch(array, &i, token, &is_first);
 		if (result == -1)
-		{
-			free_tokens(*token);
-			*token = NULL;
 			return ;
-		}
 		if (result == 1)
-		{
-			is_first = 0;
 			continue ;
-		}
-		result = tokenize_pipe_and_redirects(array, &i, token);
-		if (result == 1)
-		{
-			is_first = (ft_strcmp(array[i - 1], "|") == 0);
-			continue ;
-		}
-		create_command_or_word_token(array, i, token);
-		is_first = 0;
 		i++;
 	}
 }
