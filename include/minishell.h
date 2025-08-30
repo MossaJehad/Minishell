@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 13:00:30 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:32:09 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,7 @@ typedef struct s_exec_ctx
 	int		heredoc_fds[MAX_CMDS];	/* Heredoc file descriptors */
 	pid_t	pids[MAX_CMDS];			/* Process IDs of child processes */
 	int		cmd_count;				/* Number of commands to execute */
+	int		extra_counter;			/* Extra counter */
 	t_token	*cmd_starts[MAX_CMDS];	/* Start token of each command */
 }					t_exec_ctx;
 
@@ -264,7 +265,7 @@ int					handle_single_command(t_token *cmd_starts[MAX_CMDS],
 int					fork_processes(t_exec_ctx *ctx, char **envp);
 
 /* Process utilities */
-void				execute_child_process(t_exec_ctx *ctx, int i, char **envp);
+void				execute_child_process(t_exec_ctx *ctx, char **envp);
 void				execute_child_builtin(char *cmd_argv[MAX_ARGS],
 						int cmd_argc, char **envp);
 void				wait_for_processes(pid_t pids[MAX_CMDS], int num_cmds);
