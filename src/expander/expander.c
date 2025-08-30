@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:18:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 15:22:35 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:56:24 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,6 @@ int	handle_dollar_expansion(t_expand_ctx *ctx)
 		return (copy_char(ctx->input, &ctx->in_idx, ctx->output, ctx->out_idx));
 	}
 	return (0);
-}
-
-int	is_whitespace_only(const char *str)
-{
-	if (!str)
-		return (1);
-	while (*str)
-	{
-		if (!ft_isspace(*str))
-			return (0);
-		str++;
-	}
-	return (1);
 }
 
 char	*handle_dollar_exp(char *arg, char **envp, int index)

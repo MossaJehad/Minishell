@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 12:53:23 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 18:49:17 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:55:46 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,21 @@ void	handle_exit_argument(char *arg)
 	}
 	exit_code = (unsigned char)ft_atol(arg);
 	exit(exit_code);
+}
+
+char	*extract_inner_single_quote(const char *arg, int len)
+{
+	char	*str;
+	int		i;
+	int		j;
+
+	str = ft_calloc(len - 1, sizeof(char));
+	if (!str)
+		return (NULL);
+	i = 1;
+	j = 0;
+	while (i < len - 1)
+		str[j++] = arg[i++];
+	str[j] = '\0';
+	return (str);
 }

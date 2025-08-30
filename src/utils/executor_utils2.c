@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 12:59:22 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 13:00:41 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:56:47 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,17 @@ int	is_dir(char *cmd, int flag)
 		}
 	}
 	return (0);
+}
+
+int	is_whitespace_only(const char *str)
+{
+	if (!str)
+		return (1);
+	while (*str)
+	{
+		if (!ft_isspace(*str))
+			return (0);
+		str++;
+	}
+	return (1);
 }

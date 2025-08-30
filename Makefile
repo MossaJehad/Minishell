@@ -67,7 +67,9 @@ EXEC_SRC	=	command_lookup.c \
 			process_manager.c \
 			parse_commands.c \
 			heredoc_utils.c \
-			executor_child.c
+			executor_child.c \
+			exit_handler.c \
+			execute_helper.c 
 
 # Signal handling files
 SIGNAL_SRC	=	signals.c \

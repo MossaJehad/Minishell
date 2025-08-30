@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 15:32:09 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:59:23 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,7 +267,7 @@ int					fork_processes(t_exec_ctx *ctx, char **envp);
 /* Process utilities */
 void				execute_child_process(t_exec_ctx *ctx, char **envp);
 void				execute_child_builtin(char *cmd_argv[MAX_ARGS],
-						int cmd_argc, char **envp);
+						int cmd_argc, char **envp, t_exec_ctx *ctx);
 void				wait_for_processes(pid_t pids[MAX_CMDS], int num_cmds);
 int					is_dir(char *cmd, int flag);
 
@@ -305,6 +305,9 @@ int					count_words_with_quotes(const char *str);
 int					is_quoted_expansion(const char *original_arg);
 int					count_words_from_split(char *arg);
 char				**split_words_with_quotes(const char *str);
+int					handle_exit_code(char *cmd_argv[MAX_ARGS], int cmd_argc);
+void				exit_with_cleanup(int exit_code, char **envp,
+						t_exec_ctx *ctx);
 
 /*
 ** ==============================================================
@@ -391,6 +394,10 @@ char				*trim_whitespace(char *str);
 int					build_cmd_args(t_token *seg, char *cmd_argv[MAX_ARGS]);
 int					handle_cmd_count_one(t_exec_ctx *ctx, char ***envp);
 void				sig_check(int status);
+char				*extract_inner_single_quote(const char *arg, int len);
+int					is_whitespace_only(const char *str);
+void				find_type(t_token *newt, char *type);
+int					count_split_args(char **args);
 
 /* Directory management */
 void				update_pwd_oldpwd(char ***envp, const char *new_pwd,
@@ -407,7 +414,7 @@ void				close_heredoc_fds(int heredoc_fds[MAX_CMDS],
 int					ft_isdigit(int c);
 int					is_operator(const char *s);
 
-/* Debug and development utilities */
+/* Development utilities */
 void				prompt(void);
 
 #endif

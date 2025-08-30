@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:28:48 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 20:01:47 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:59:12 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,53 @@ int	search_type(t_exec_ctx *ctx)
 	ctx->cmd_count = holder.cmd_count;
 	ctx->cmd_starts[0] = holder.cmd_starts[0];
 	return (counter);
+}
+
+void	find_type(t_token *newt, char *type)
+{
+	if (ft_strcmp(type, "command") == 0)
+		newt->type = COMMAND;
+	else if (ft_strcmp(type, "word") == 0)
+		newt->type = WORD;
+	else if (ft_strcmp(type, "pipe") == 0)
+		newt->type = PIPE;
+	else if (ft_strcmp(type, "redirect input") == 0)
+		newt->type = REDIRECT;
+	else if (ft_strcmp(type, "redirect output") == 0)
+		newt->type = REDIRECT_OUT;
+	else if (ft_strcmp(type, "append output") == 0)
+		newt->type = APPEND;
+	else if (ft_strcmp(type, "here-document") == 0)
+		newt->type = HEREDOC;
+	else
+		newt->type = WORD;
+}
+
+int	count_split_args(char **args)
+{
+	int		total;
+	int		i;
+	int		count;
+
+	total = 0;
+	i = 0;
+	while (args[i] != NULL)
+	{
+		if (ft_strcmp(args[i], "\001") == 0)
+		{
+			i++;
+			continue ;
+		}
+		if (!is_quoted_expansion(args[i]) && ft_strchr(args[i], ' '))
+		{
+			count = count_words_from_split(args[i]);
+			total += count;
+		}
+		else
+		{
+			total++;
+		}
+		i++;
+	}
+	return (total);
 }

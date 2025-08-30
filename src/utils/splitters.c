@@ -6,40 +6,11 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 17:12:52 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 15:08:22 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:59:37 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-int	count_split_args(char **args)
-{
-	int		total;
-	int		i;
-	int		count;
-
-	total = 0;
-	i = 0;
-	while (args[i] != NULL)
-	{
-		if (ft_strcmp(args[i], "\001") == 0)
-		{
-			i++;
-			continue ;
-		}
-		if (!is_quoted_expansion(args[i]) && ft_strchr(args[i], ' '))
-		{
-			count = count_words_from_split(args[i]);
-			total += count;
-		}
-		else
-		{
-			total++;
-		}
-		i++;
-	}
-	return (total);
-}
 
 int	copy_split_array_to_args(char **split, char **new_args, int *k)
 {

@@ -6,36 +6,23 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 17:00:53 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/29 17:10:44 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:54:31 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	run_exit_builtin_child(char *cmd_argv[MAX_ARGS], int cmd_argc)
+void	run_exit_builtin_child(char *cmd_argv[MAX_ARGS], int cmd_argc,
+		char **envp, t_exec_ctx *ctx)
 {
-	if (cmd_argc == 1)
-		exit(get_shell_status());
-	else if (cmd_argc == 2)
-		handle_exit_argument(cmd_argv[1]);
-	else
-	{
-		if (!is_valid_number(cmd_argv[1]) || check_overflow(cmd_argv[1]))
-		{
-			printf("minishell: exit: %s: numeric argument required\n",
-				cmd_argv[1]);
-			exit(2);
-		}
-		else
-		{
-			printf("minishell: exit: too many arguments\n");
-			exit(1);
-		}
-	}
+	int	exit_code;
+
+	exit_code = handle_exit_code(cmd_argv, cmd_argc);
+	exit_with_cleanup(exit_code, envp, ctx);
 }
 
 void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc,
-		char **envp)
+		char **envp, t_exec_ctx *ctx)
 {
 	if (!ft_strcmp(cmd_argv[0], "echo"))
 		run_echo_builtin(cmd_argv, cmd_argc);
@@ -44,10 +31,9 @@ void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc,
 	else if (!ft_strcmp(cmd_argv[0], "env"))
 		run_env_builtin(envp);
 	else if (!ft_strcmp(cmd_argv[0], "exit"))
-		run_exit_builtin_child(cmd_argv, cmd_argc);
+		run_exit_builtin_child(cmd_argv, cmd_argc, envp, ctx);
 }
 
-// Helpers for prepare_child_command
 int	handle_redirect_tokens(t_token **cur)
 {
 	if (setup_redirection(*cur) == -1)

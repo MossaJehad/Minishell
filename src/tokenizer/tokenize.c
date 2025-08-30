@@ -6,56 +6,36 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:30 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 15:25:26 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:58:25 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	find_type(t_token *new, char *type)
-{
-	if (ft_strcmp(type, "command") == 0)
-		new->type = COMMAND;
-	else if (ft_strcmp(type, "word") == 0)
-		new->type = WORD;
-	else if (ft_strcmp(type, "pipe") == 0)
-		new->type = PIPE;
-	else if (ft_strcmp(type, "redirect input") == 0)
-		new->type = REDIRECT;
-	else if (ft_strcmp(type, "redirect output") == 0)
-		new->type = REDIRECT_OUT;
-	else if (ft_strcmp(type, "append output") == 0)
-		new->type = APPEND;
-	else if (ft_strcmp(type, "here-document") == 0)
-		new->type = HEREDOC;
-	else
-		new->type = WORD;
-}
-
 void	create_token(t_token **token, char *value, char *type)
 {
-	t_token	*new;
+	t_token	*newt;
 	t_token	*temp;
 
 	if (!value || !type)
 		return ;
-	new = ft_calloc(1, sizeof(t_token));
-	new->value = ft_strdup(value);
-	new->next = NULL;
-	find_type(new, type);
-	if (!new->value)
+	newt = ft_calloc(1, sizeof(t_token));
+	newt->value = ft_strdup(value);
+	newt->next = NULL;
+	find_type(newt, type);
+	if (!newt->value)
 	{
-		free(new);
+		free(newt);
 		return ;
 	}
 	if (!*token)
-		*token = new;
+		*token = newt;
 	else
 	{
 		temp = *token;
 		while (temp->next)
 			temp = temp->next;
-		temp->next = new;
+		temp->next = newt;
 	}
 }
 
