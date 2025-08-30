@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 17:00:53 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 15:54:31 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 19:15:44 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	execute_child_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc,
 	else if (!ft_strcmp(cmd_argv[0], "pwd"))
 		run_pwd_builtin();
 	else if (!ft_strcmp(cmd_argv[0], "env"))
-		run_env_builtin(envp);
+		run_env_builtin(cmd_argv, envp);
 	else if (!ft_strcmp(cmd_argv[0], "exit"))
 		run_exit_builtin_child(cmd_argv, cmd_argc, envp, ctx);
 }

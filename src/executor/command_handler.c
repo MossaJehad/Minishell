@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_handler.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: malja-fa <malja-fa@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:14:14 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 12:25:30 by malja-fa         ###   ########.fr       */
+/*   Updated: 2025/08/30 18:41:32 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	handle_command(t_token *token, char ***envp)
 	t_exec_ctx	ctx;
 	int			i;
 
-	memset(&ctx, 0, sizeof(ctx));
+	ft_memset(&ctx, 0, sizeof(ctx));
 	i = 0;
 	while (i < MAX_CMDS)
 		ctx.heredoc_fds[i++] = -1;

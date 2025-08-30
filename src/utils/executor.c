@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: malja-fa <malja-fa@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 16:37:19 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 10:38:35 by malja-fa         ###   ########.fr       */
+/*   Updated: 2025/08/30 19:17:32 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,9 @@ void	sig_check(int status)
 		set_shell_status(128 + sig);
 }
 
-void	run_env_builtin(char **envp)
+void	run_env_builtin(char *cmd_argv[MAX_ARGS], char **envp)
 {
-	handle_env_command(envp);
+	handle_env_command(cmd_argv, envp);
 }
 
 void	skip_heredoc_tokens(t_token **cur)

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:30:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 15:59:23 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 19:17:23 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,7 +224,7 @@ void				validate_tokenize_input(char **array, t_token **token,
 /* Built-in command handlers */
 void				handle_echo_command(t_token *token);
 void				handle_cd_command(char *path, int arg_count, char ***envp);
-void				handle_env_command(char **env);
+void				handle_env_command(char *cmd_argv[MAX_ARGS], char **env);
 void				handle_export_command(char ***envp, char **args,
 						int arg_count);
 void				handle_unset_command(char ***envp, char **args,
@@ -294,7 +294,7 @@ int					process_token_and_redirects(t_token **cur,
 						char *cmd_argv[MAX_ARGS], int *cmd_argc);
 void				run_echo_builtin(char *cmd_argv[MAX_ARGS], int cmd_argc);
 void				run_pwd_builtin(void);
-void				run_env_builtin(char **envp);
+void				run_env_builtin(char *cmd_argv[MAX_ARGS], char **envp);
 int					handle_redirect_tokens(t_token **cur);
 int					child_setup_and_collect_args(t_exec_ctx *ctx, int idx,
 						char *cmd_argv[MAX_ARGS]);

@@ -3,17 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhasoneh <mhasoneh@student.42amman.com     +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:44:48 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/28 08:05:47 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 19:19:09 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	handle_env_command(char **env)
+void	handle_env_command(char *cmd_argv[MAX_ARGS], char **env)
 {
+	if (cmd_argv[1])
+	{
+		printf("minishell: env: '%s': No such file or directory\n",
+			cmd_argv[1]);
+		set_shell_status(127);
+		return ;
+	}
 	while (env && *env)
 	{
 		if (ft_strchr(*env, '='))
@@ -60,7 +67,7 @@ void	add_or_replace_env(char ***envp, const char *var)
 	char	*name;
 	int		idx;
 
-	eq = strchr(var, '=');
+	eq = ft_strchr(var, '=');
 	if (eq)
 		keylen = (size_t)(eq - var);
 	else

@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:18:28 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 15:56:24 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 18:43:27 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int	expand_pid(t_expand_ctx *ctx)
 		pid = fork();
 		if (pid == 0)
 			exit(0);
-		sprintf(pid_str, "%d", pid);
+		ft_itoa_buf(pid, pid_str, 0, 0);
 		len = ft_strlen(pid_str);
 		if (ctx->out_idx + len < BUFFER_SIZE * 4 - 1)
 		{
