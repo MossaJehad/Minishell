@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: malja-fa <malja-fa@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:32:55 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 11:32:34 by malja-fa         ###   ########.fr       */
+/*   Updated: 2025/08/30 13:01:06 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	process_line(int write_fd, char *line, const char *delimiter)
 		free(line);
 		return (1);
 	}
-	return handle_write_line(write_fd, line);
+	return (handle_write_line(write_fd, line));
 }
 
 int	read_heredoc_lines(int write_fd, const char *delimiter)
@@ -60,10 +60,15 @@ int	read_heredoc_lines(int write_fd, const char *delimiter)
 	{
 		line = readline("> ");
 		if (g_signal == SIGINT)
-			return handle_sigint_case(line);
+			return (handle_sigint_case(line));
 		status = process_line(write_fd, line, delimiter);
 		if (status != 0)
-			return (status == -1 ? -1 : 0);
+		{
+			if (status == -1)
+				return (-1);
+			else
+				return (0);
+		}
 	}
 }
 

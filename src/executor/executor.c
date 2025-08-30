@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: malja-fa <malja-fa@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:11:46 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 11:22:41 by malja-fa         ###   ########.fr       */
+/*   Updated: 2025/08/30 12:58:59 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	execute_child_process(t_exec_ctx *ctx, int i, char **envp)
 		if (is_dir(argv[0], 1) == 126)
 		{
 			cleanup_shell_resources(&envp, *ctx->cmd_starts, NULL, full);
-			exit (126);	
+			exit (126);
 		}
 		write(2, argv[0], ft_strlen(argv[0]));
 		write(2, ": command not found\n", 21);

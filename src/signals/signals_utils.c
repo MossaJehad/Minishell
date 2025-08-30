@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: malja-fa <malja-fa@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 15:41:17 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 12:27:21 by malja-fa         ###   ########.fr       */
+/*   Updated: 2025/08/30 12:58:45 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int	handle_sigint_case(char *line)
 void	setup_signals2(void)
 {
 	struct sigaction	sa;
+
 	sa.sa_handler = set_shell_status;
 	sa.sa_flags = SA_RESTART;
 	sigemptyset(&sa.sa_mask);
