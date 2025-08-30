@@ -6,7 +6,7 @@
 /*   By: mhasoneh <mhasoneh@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 15:57:26 by mhasoneh          #+#    #+#             */
-/*   Updated: 2025/08/30 14:33:56 by mhasoneh         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:23:15 by mhasoneh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,35 +66,37 @@ char	*expand_double_quote(char *arg, char **envp)
 	return (result);
 }
 
-char	*expand_single_quote(char *arg)
+char	*extract_inner_single_quote(const char *arg, int len)
 {
 	char	*str;
-	int		len;
 	int		i;
 	int		j;
 
-	if (ft_strcmp(arg, "''") == 0)
-	{
-		free(arg);
-		return (ft_strdup(""));
-	}
-	if (!arg || ft_strlen(arg) < 2)
-	{
-		free(arg);
-		return (ft_strdup(""));
-	}
-	len = ft_strlen(arg);
 	str = ft_calloc(len - 1, sizeof(char));
 	if (!str)
-	{
-		free(arg);
 		return (NULL);
-	}
 	i = 1;
 	j = 0;
 	while (i < len - 1)
 		str[j++] = arg[i++];
 	str[j] = '\0';
+	return (str);
+}
+
+char	*expand_single_quote(char *arg)
+{
+	char	*str;
+	int		len;
+
+	if (!arg)
+		return (ft_strdup(""));
+	len = ft_strlen(arg);
+	if (ft_strcmp(arg, "''") == 0 || len < 2)
+	{
+		free(arg);
+		return (ft_strdup(""));
+	}
+	str = extract_inner_single_quote(arg, len);
 	free(arg);
 	return (str);
 }
